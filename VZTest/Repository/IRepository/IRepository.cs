@@ -4,9 +4,11 @@ namespace VZTest.Repository.IRepository
 {
     public interface IRepository<T> where T : class
     {
-        void Add(T value);
+        Task AddAsync(T value);
+        Task AddRangeAsync(IEnumerable<T> values);
         void Remove(T value);
         T? FirstOrDefault(Expression<Func<T, bool>> filter);
+        IEnumerable<T> GetWhere(Expression<Func<T, bool>> filter);
         IEnumerable<T> GetAll();
     }
 }

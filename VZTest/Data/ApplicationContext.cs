@@ -20,10 +20,10 @@ namespace VZTest.Data
         public DbSet<DoubleAnswer> DoubleAnswers { get; set; }
         public DbSet<TextAnswer> TextAnswers { get; set; }
         public DbSet<RadioAnswer> RadioAnswers { get; set; }
-        public DbSet<DateAnswerOptional> DateAnswerOptionals { get; set; }
-        public DbSet<IntAnswerOptional> IntAnswerOptionals { get; set; }
-        public DbSet<DoubleAnswerOptional> DoubleAnswerOptionals { get; set; }
-        public DbSet<TextAnswerOptional> TextAnswerOptionals { get; set; }
-        public DbSet<RadioAnswerOptional> RadioAnswerOptionals { get; set; }
+        public DbSet<DateAnswerOptional> DateAnswersOptional { get; set; }
+        public DbSet<IntAnswerOptional> IntAnswersOptional { get; set; }
+        public DbSet<DoubleAnswerOptional> DoubleAnswersOptional { get; set; }
+        public DbSet<TextAnswerOptional> TextAnswersOptional { get; set; }
+        public DbSet<RadioAnswerOptional> RadioAnswersOptional { get; set; }
     }
 }

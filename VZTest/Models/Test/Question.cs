@@ -7,11 +7,19 @@ namespace VZTest.Models.Test
     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey("Test")]
         public int TestId { get; set; }
-        public Test Test { get; set; }
-        public string UserId { get; set; }
         public string Title { get; set; }
+        public QuestionType Type { get; set; }
         public string? ImageName { get; set; }
+        [NotMapped]
+        public IEnumerable<Option> Options { get; set; }
+    }
+    public enum QuestionType
+    {
+        Text,
+        Radio,
+        Int,
+        Double,
+        Date
     }
 }

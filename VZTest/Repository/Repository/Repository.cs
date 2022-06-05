@@ -16,14 +16,20 @@ namespace VZTest.Repository.Repository
             set = db.Set<T>();
         }
 
-        public void Add(T value)
-            => set.Add(value);
+        public async Task AddAsync(T value)
+            => await set.AddAsync(value);
+
+        public async Task AddRangeAsync(IEnumerable<T> values)
+            => await set.AddRangeAsync(values);
 
         public T? FirstOrDefault(Expression<Func<T, bool>> filter)
             => set.FirstOrDefault(filter);
 
         public IEnumerable<T> GetAll()
             => set;
+
+        public IEnumerable<T> GetWhere(Expression<Func<T, bool>> filter)
+            => set.Where(filter);
 
         public void Remove(T value)
             => set.Remove(value);

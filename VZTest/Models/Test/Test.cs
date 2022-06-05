@@ -10,9 +10,10 @@ namespace VZTest.Models.Test
         public string Title { get; set; }
         public string? Description { get; set; }
         public string? ImageName { get; set; }
+        public string? UserId { get; set; }
         public bool Opened { get; set; }
         public DateTime CreatedTime { get; set; }
         [NotMapped]
-        public List<Question> Questions { get; set; }
+        public IEnumerable<Question> Questions { get; set; }
     }
 }
