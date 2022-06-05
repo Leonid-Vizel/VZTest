@@ -7,11 +7,8 @@ namespace VZTest.Models.Test
     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey("Attempt")]
         public int AttemptId { get; set; }
-        public Attempt Attempt { get; set; }
-        [ForeignKey("Question")]
         public int QuestionId { get; set; }
-        public Question Question { get; set; }
+        public string Discriminator { get; set; }
     }
 }

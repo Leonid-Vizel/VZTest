@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using VZTest.Data;
 using VZTest.Models;
+using VZTest.Models.Test;
+using VZTest.Models.Test.Answers;
 
 namespace VZTest.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private ApplicationDbContext db;
+        public HomeController(ApplicationDbContext db)
         {
-            _logger = logger;
+            this.db = db;
         }
 
         public IActionResult Index()
