@@ -11,6 +11,7 @@ namespace VZTest.Models.Test
         public string Title { get; set; }
         public QuestionType Type { get; set; }
         public string? ImageName { get; set; }
+        public int Number { get; set; }
         [NotMapped]
         public IEnumerable<Option> Options { get; set; }
     }
