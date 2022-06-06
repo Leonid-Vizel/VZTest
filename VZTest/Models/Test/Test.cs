@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography;
 
 namespace VZTest.Models.Test
 {
@@ -12,6 +13,8 @@ namespace VZTest.Models.Test
         public string? ImageName { get; set; }
         public string? UserId { get; set; }
         public bool Opened { get; set; }
+        public bool Public { get; set; }
+        public byte[]? PasswordHash { get; set; }
         public DateTime CreatedTime { get; set; }
         [NotMapped]
         public IEnumerable<Question> Questions { get; set; }

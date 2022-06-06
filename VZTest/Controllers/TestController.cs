@@ -67,6 +67,16 @@ namespace VZTest.Controllers
             return View();
         }
 
+        public IActionResult List()
+        {
+            return View();
+        }
+
+        public IActionResult MyTests()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Search(int id)
