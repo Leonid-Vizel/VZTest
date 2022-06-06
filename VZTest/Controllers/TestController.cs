@@ -1,10 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using VZTest.Models.Test;
+using VZTest.Repository.IRepository;
 
 namespace VZTest.Controllers
 {
     public class TestController : Controller
     {
+        private IUnitOfWork unitOfWork;
+        private SignInManager<IdentityUser> signInManager;
+
+        public TestController(IUnitOfWork unitOfWork, SignInManager<IdentityUser> signInManager)
+        {
+            this.unitOfWork = unitOfWork;
+            this.signInManager = signInManager;
+        }
+
         public IActionResult Create()
         {
             return View();

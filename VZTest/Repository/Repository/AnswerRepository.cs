@@ -14,6 +14,12 @@ namespace VZTest.Repository.Repository
             this.db = db;
         }
 
+        public IEnumerable<CheckAnswer> GetCheckAnswers()
+            => db.CheckAnswers;
+
+        public IEnumerable<CheckAnswerOptional> GetCheckAnswersOptional()
+            => db.CheckAnswersOptional;
+
         public IEnumerable<DateAnswer> GetDateAnswers()
             => db.DateAnswers;
 

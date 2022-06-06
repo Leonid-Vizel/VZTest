@@ -10,12 +10,14 @@ namespace VZTest.Repository.IRepository
         IEnumerable<DoubleAnswer> GetDoubleAnswers();
         IEnumerable<TextAnswer> GetTextAnswers();
         IEnumerable<RadioAnswer> GetRadioAnswers();
+        IEnumerable<CheckAnswer> GetCheckAnswers();
 
         IEnumerable<DateAnswerOptional> GetDateAnswersOptional();
         IEnumerable<IntAnswerOptional> GetIntAnswersOptional();
         IEnumerable<DoubleAnswerOptional> GetDoubleAnswersOptional();
         IEnumerable<TextAnswerOptional> GetTextAnswersOptional();
         IEnumerable<RadioAnswerOptional> GetRadioAnswersOptional();
+        IEnumerable<CheckAnswerOptional> GetCheckAnswersOptional();
 
         void Update(Answer value);
         Task SaveAsync();

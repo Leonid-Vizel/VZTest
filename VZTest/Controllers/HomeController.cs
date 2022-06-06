@@ -48,7 +48,7 @@ namespace VZTest.Controllers
             //};
             //await unitOfWork.AddTest(test1);
             //await unitOfWork.Save();
-            var a = unitOfWork.GetUserTests("123").ToList();
+            var a = unitOfWork.GetUserTests("123", false).ToList();
             return View();
         }
 

@@ -13,6 +13,7 @@ namespace VZTest.Repository.Repository
         public IOptionRepository OptionRepository { get; set; }
         public IQuestionRepository QuestionRepository { get; set; }
         public ITestRepository TestRepository { get; set; }
+        public ICorrectAnswerRepository CorrectAnswerRepository { get; set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -22,6 +23,7 @@ namespace VZTest.Repository.Repository
             OptionRepository = new OptionRepository(db);
             QuestionRepository = new QuestionRepository(db);
             TestRepository = new TestRepository(db);
+            CorrectAnswerRepository = new CorrectAnswerRepository(db);
         }
 
         public async Task Save()
@@ -38,20 +40,46 @@ namespace VZTest.Repository.Repository
             return userAttempts;
         }
 
-        public IEnumerable<Test> GetUserTests(string userId)
+        public IEnumerable<Test> GetUserTests(string userId, bool loadAnswers)
         {
             IEnumerable<Test> userTests =
                 TestRepository.GetWhere(x => !string.IsNullOrEmpty(x.UserId) && x.UserId.Equals(userId)).ToList();
             foreach (Test test in userTests)
             {
-                test.Questions = GetTestQuestions(test.Id);
+                test.Questions = GetTestQuestions(test.Id, loadAnswers);
             }
             return userTests;
         }
 
-        public IEnumerable<Question> GetTestQuestions(int testId)
+        public Test? GetTestById (int testId, bool loadAnswers)
+        {
+            Test? test = TestRepository.FirstOrDefault(x => x.Id == testId);
+            if (test == null)
+            {
+                return null;
+            }
+            test.Questions = GetTestQuestions(test.Id, loadAnswers);
+            return test;
+        }
+
+        public IEnumerable<Question> GetTestQuestions(int testId, bool loadAnswers)
         {
             IEnumerable<Question> questions = QuestionRepository.GetWhere(x => x.Id == testId).ToList();
+            if (loadAnswers)
+            {
+                foreach (Question question in questions)
+                {
+                    question.Options = GetQuestionOptions(question.Id);
+                    question.CorrectAnswer = GetQuestionCorrectAnswer(question.Id);
+                }
+            }
+            else
+            {
+                foreach (Question question in questions)
+                {
+                    question.Options = GetQuestionOptions(question.Id);
+                }
+            }
             foreach (Question question in questions)
             {
                 question.Options = GetQuestionOptions(question.Id);
@@ -84,5 +112,8 @@ namespace VZTest.Repository.Repository
                 await OptionRepository.AddRangeAsync(question.Options);
             }
         }
+
+        public CorrectAnswer? GetQuestionCorrectAnswer(int questionId)
+            => CorrectAnswerRepository.FirstOrDefault(x => x.Id == questionId);
     }
 }

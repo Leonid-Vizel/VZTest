@@ -11,8 +11,10 @@ namespace VZTest.Repository.IRepository
         ITestRepository TestRepository { get; set; }
 
         IEnumerable<Attempt> GetUserAttempts(string userId);
-        IEnumerable<Test> GetUserTests(string userId);
-        IEnumerable<Question> GetTestQuestions(int testId);
+        IEnumerable<Test> GetUserTests(string userId, bool loadAnswers);
+        IEnumerable<Question> GetTestQuestions(int testId, bool loadAnswers);
+        CorrectAnswer? GetQuestionCorrectAnswer(int questionId);
+        Test? GetTestById(int testId, bool loadAnswers);
         IEnumerable<Option> GetQuestionOptions(int questionId);
         IEnumerable<Answer> GetAttemptAnswers(int attemptId);
 
