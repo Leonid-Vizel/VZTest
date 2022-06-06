@@ -10,7 +10,8 @@ namespace VZTest.Repository.IRepository
         IQuestionRepository QuestionRepository { get; set; }
         ITestRepository TestRepository { get; set; }
 
-        IEnumerable<Attempt> GetUserAttempts(string userId);
+        IEnumerable<Attempt> GetUserAttempts(string userId, bool loadAnswers);
+        IEnumerable<Attempt> GetTestAttempts(int testId, bool loadAnswers);
         Task<IEnumerable<TestStatistics>> GetUserTestsStatistics(string userId);
         IEnumerable<Test> GetPublicTests();
         IEnumerable<Question> GetTestQuestions(int testId, bool loadAnswers);
@@ -23,7 +24,8 @@ namespace VZTest.Repository.IRepository
         CorrectAnswer? GetQuestionCorrectAnswer(int questionId);
         Test? GetTestById(int testId, bool loadAnswers);
 
+        void RemoveTest(int testId);
         Task AddTest(Test value);
-        Task Save();
+        Task SaveAsync();
     }
 }

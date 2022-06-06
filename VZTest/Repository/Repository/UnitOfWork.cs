@@ -26,16 +26,19 @@ namespace VZTest.Repository.Repository
             CorrectAnswerRepository = new CorrectAnswerRepository(db);
         }
 
-        public async Task Save()
+        public async Task SaveAsync()
             => await db.SaveChangesAsync();
 
-        public IEnumerable<Attempt> GetUserAttempts(string userId)
+        public IEnumerable<Attempt> GetUserAttempts(string userId, bool loadAnswers)
         {
             IEnumerable<Attempt> userAttempts =
                 AttemptRepository.GetWhere(x => !string.IsNullOrEmpty(x.UserId) && x.UserId.Equals(userId));
-            foreach (Attempt attempt in userAttempts)
+            if (loadAnswers)
             {
-                attempt.Answers = GetAttemptAnswers(attempt.Id);
+                foreach (Attempt attempt in userAttempts)
+                {
+                    attempt.Answers = GetAttemptAnswers(attempt.Id);
+                }
             }
             return userAttempts;
         }
@@ -90,6 +93,19 @@ namespace VZTest.Repository.Repository
             return questions;
         }
 
+        public IEnumerable<Attempt> GetTestAttempts(int testId, bool loadAnswers)
+        {
+            IEnumerable<Attempt> testAttempts = AttemptRepository.GetWhere(x => x.TestId == testId);
+            if (loadAnswers)
+            {
+                foreach (Attempt attempt in testAttempts)
+                {
+                    attempt.Answers = GetAttemptAnswers(attempt.Id);
+                }
+            }
+            return testAttempts;
+        }
+
         public IEnumerable<Option> GetQuestionOptions(int questionId)
             => OptionRepository.GetWhere(x => x.Id == questionId);
 
@@ -112,7 +128,39 @@ namespace VZTest.Repository.Repository
                 {
                     option.QuestionId = question.Id;
                 }
+                if (question.CorrectAnswer != null)
+                {
+                    await CorrectAnswerRepository.AddAsync(question.CorrectAnswer);
+                }
                 await OptionRepository.AddRangeAsync(question.Options);
+            }
+        }
+
+        public void RemoveTest(int testId)
+        {
+            Test? test = GetTestById(testId, true);
+            if (test == null)
+            {
+                return;
+            }
+            TestRepository.Remove(test);
+            foreach(Question question in test.Questions)
+            {
+                QuestionRepository.Remove(question);
+                CorrectAnswerRepository.Remove(question.CorrectAnswer);
+                foreach(Option option in question.Options)
+                {
+                    OptionRepository.Remove(option);
+                }
+            }
+            IEnumerable<Attempt> attempts = GetTestAttempts(test.Id, true);
+            foreach(Attempt attempt in attempts)
+            {
+                AttemptRepository.Remove(attempt);
+                foreach(Answer answer in attempt.Answers)
+                {
+                    AnswerRepository.Remove(answer);
+                }
             }
         }
 

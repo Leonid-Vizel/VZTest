@@ -7,5 +7,6 @@ namespace VZTest.Models.Test
         [Key]
         public int Id { get; set; }
         public int QuestionId { get; set; }
+        public string Discriminator { get; set; }
     }
 }

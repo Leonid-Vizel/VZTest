@@ -92,46 +92,38 @@ namespace VZTest.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Open(int id)
+        public async Task Open(int id)
         {
             Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
             if (foundTest == null)
             {
-                return RedirectToAction("MyTests");
+                return;
             }
             foundTest.Opened = true;
             unitOfWork.TestRepository.Update(foundTest);
-            await unitOfWork.Save();
-            return RedirectToAction("MyTests");
+            await unitOfWork.SaveAsync();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Close(int id)
+        public async Task Close(int id)
         {
             Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
             if (foundTest == null)
             {
-                return RedirectToAction("MyTests");
+                return;
             }
             foundTest.Opened = false;
             unitOfWork.TestRepository.Update(foundTest);
-            await unitOfWork.Save();
-            return RedirectToAction("MyTests");
+            await unitOfWork.SaveAsync();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task Delete(int id)
         {
-            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
-            if (foundTest == null)
-            {
-                return RedirectToAction("MyTests");
-            }
-            unitOfWork.TestRepository.Remove(foundTest);
-            await unitOfWork.Save();
-            return RedirectToAction("MyTests");
+            unitOfWork.RemoveTest(id);
+            await unitOfWork.SaveAsync();
         }
 
         [HttpPost]

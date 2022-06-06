@@ -22,6 +22,7 @@ namespace VZTest.Models.Test
     {
         Text,
         Radio,
+        Check,
         Int,
         Double,
         Date

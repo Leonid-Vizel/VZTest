@@ -1,26 +1,100 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using VZTest.Models.Test
+@inject SignInManager<IdentityUser> signInManager
 @model IEnumerable<TestStatistics>
 @{
     ViewData["Title"] = "Ваши тесты";
 }
 
 <script>
-    function SetClipboard(content)
-    {
-        navigator.clipboard.writeText(content);
-        document.getElementById('copyIcon').setAttribute('class','bi bi-check2');
-        var interval = setInterval(function(){SetIconBack()},2500);
-    }
+        function SetClipboard(content)
+        {
+            navigator.clipboard.writeText(content);
+            document.getElementById('copyIcon').setAttribute('class','bi bi-check2');
+            var interval = setInterval(function(){SetIconBack()},2500);
+        }
 
-    function SetIconBack()
-    {
-        document.getElementById('copyIcon').setAttribute('class','bi bi-clipboard-check');
-    }
+        function SetIconBack()
+        {
+            document.getElementById('copyIcon').setAttribute('class','bi bi-clipboard-check');
+        }
+
+        function Open(openId)
+        {
+            var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+            swal({
+            title: "Вы действительно хотите открыть этот тест?",
+            text: "После открытия другие пользователи смогут проходить Ваш тест!",
+            icon: "warning",
+            buttons: ["Отмена", "Открыть"]
+            })
+            .then((willDelete) => {
+                if (willDelete)
+                {
+                    $.ajax({
+                    type: "POST",
+                    url: "/Test/Open/",
+                    data: {id: openId, __RequestVerificationToken: verificationValue },
+                    success: function() { location.reload(true); }
+                    });
+                }
+            });
+        }
+
+        function Close(closeId)
+        {
+            var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+            swal({
+            title: "Вы действительно хотите закрыть этот тест?",
+            text: "Прохождение этого теста другими пользователями будет невозможно, однако сам тест удалён не будет!",
+            icon: "warning",
+            buttons: ["Отмена", "Закрыть"]
+            })
+            .then((willDelete) => {
+                if (willDelete)
+                {
+                    $.ajax({
+                    type: "POST",
+                    url: "/Test/Close/",
+                    data: {id: closeId, __RequestVerificationToken: verificationValue },
+                    success: function() { location.reload(true); }
+                    });
+                }
+            });
+        }
+
+        function Delete(deleteId)
+        {
+            var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+            swal({
+            title: "Вы действительно хотите удалить этот тест?",
+            text: "После удаления теста воостановить его будет невозможно!",
+            icon: "warning",
+            buttons: ["Отмена", "Удалить"],
+            dangerMode : true
+            })
+            .then((willDelete) => {
+                if (willDelete)
+                {
+                    $.ajax({
+                    type: "POST",
+                    url: "/Test/Delete/",
+                    data: {id: deleteId, __RequestVerificationToken: verificationValue },
+                    success: function() { location.reload(true); }
+                    });
+                }
+            });
+        }
 </script>
 
 <h2><i class="bi bi-list-stars"></i> @ViewData["Title"]</h2>
 <hr>
+
+@if (!signInManager.IsSignedIn(User))
+{
+    <h5>Войдите в свой аккаунт</h5>
+    return;
+}
 
 @if (Model.Count() > 0)
 {
@@ -43,18 +117,18 @@
                 </div>
             </div>
             <div class="text-end">
-                <form method="post">
-                    <button class="btn btn-outline-success" type="submit"><i class="bi bi-file-earmark-text"></i> Результаты</button>
+                <form>
+                    <button class="btn btn-outline-success" type="submit"><i class="bi bi-file-earmark-text"></i> Результаты</button> @*Доработать*@ 
                     <a class="btn btn-outline-warning" asp-controller="Test" asp-action="Edit" asp-route-Id="@test.Test.Id"><i class="bi bi-pencil"></i> Редактировать</a>
                     @if (test.Test.Opened)
                     {
-                        <button asp-action="Close" asp-route-Id="@test.Test.Id" class="btn btn-outline-success" type="submit"><i class="bi bi-door-closed"></i> Закрыть</button>
+                        <a class="btn btn-outline-warning" onclick = "Close(@test.Test.Id);"><i class="bi bi-door-closed"></i> Закрыть</a>
                     }
                     else
                     {
-                        <button asp-action="Open" asp-route-Id="@test.Test.Id" class="btn btn-outline-warning" type="submit"><i class="bi bi-door-open"></i> Открыть</button>
+                        <a class="btn btn-outline-success" onclick = "Open(@test.Test.Id);"><i class="bi bi-door-open"></i> Открыть</a>
                     }
-                    <button asp-action="Delete" asp-route-Id="@test.Test.Id" class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i> Удалить</button>
+                    <a class="btn btn-outline-danger" onclick = "Delete(@test.Test.Id);"><i class="bi bi-trash"></i> Удалить</a>
                 </form>
             </div>
         </div>
