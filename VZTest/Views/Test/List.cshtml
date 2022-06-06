@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using VZTest.Models.Test
+@model IEnumerable<Test>
+@{
+    ViewData["Title"] = "Публичные тесты";
+}
+
+<h1 class = "text-center">@ViewData["Title"]</h1>
+<div class="list-group">
+    @foreach (Test test in Model)
+    {
+        <a asp-controller = "Test" asp-action = "Preview" asp-route-id = "@test.Id" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">@test.Title</h5>
+                <small>0 <i class="bi bi-star"></i></small>
+            </div>
+            @if (@test.Description!=null)
+            {
+                <p class="mb-1">@test.Description</p>
+            }
+            else
+            {
+                <p class="mb-1">Без описания</p>
+            }
+            <small>ID:@test.Id</small>
+        </a>
+    }
+</div>

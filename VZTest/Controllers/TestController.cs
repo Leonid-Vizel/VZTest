@@ -9,11 +9,13 @@ namespace VZTest.Controllers
     {
         private IUnitOfWork unitOfWork;
         private SignInManager<IdentityUser> signInManager;
+        private UserManager<IdentityUser> userManager;
 
-        public TestController(IUnitOfWork unitOfWork, SignInManager<IdentityUser> signInManager)
+        public TestController(IUnitOfWork unitOfWork, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
         {
             this.unitOfWork = unitOfWork;
             this.signInManager = signInManager;
+            this.userManager = userManager;
         }
 
         public IActionResult Create()
@@ -52,14 +54,21 @@ namespace VZTest.Controllers
             return View();
         }
 
-        public IActionResult Attempt()
+        public IActionResult Attempt(int id)
+        {
+            return View(unitOfWork.GetTestById(id, false));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Attempt(object inProgress)
         {
             return View();
         }
 
-        public IActionResult Preview()
+        public IActionResult Preview(int id)
         {
-            return View();
+            return View(unitOfWork.GetTestById(id,false));
         }
 
         public IActionResult Search()
@@ -69,12 +78,16 @@ namespace VZTest.Controllers
 
         public IActionResult List()
         {
-            return View();
+            return View(unitOfWork.GetPublicTests());
         }
 
-        public IActionResult MyTests()
+        public async Task<IActionResult> MyTests()
         {
-            return View();
+            if (!signInManager.IsSignedIn(User))
+            {
+                return View(null);
+            }
+            return View(await unitOfWork.GetUserTestsStatistics(userManager.GetUserId(User)));
         }
 
         [HttpPost]

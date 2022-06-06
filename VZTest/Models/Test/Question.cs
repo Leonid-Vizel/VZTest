@@ -13,6 +13,7 @@ namespace VZTest.Models.Test
         public QuestionType Type { get; set; }
         public string? ImageName { get; set; }
         public int Number { get; set; }
+        public double Balls { get; set; }
         [NotMapped]
         public IEnumerable<Option> Options { get; set; }
         public CorrectAnswer? CorrectAnswer { get; set; }

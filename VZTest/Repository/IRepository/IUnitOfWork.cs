@@ -11,15 +11,19 @@ namespace VZTest.Repository.IRepository
         ITestRepository TestRepository { get; set; }
 
         IEnumerable<Attempt> GetUserAttempts(string userId);
-        IEnumerable<Test> GetUserTests(string userId, bool loadAnswers);
+        Task<IEnumerable<TestStatistics>> GetUserTestsStatistics(string userId);
+        IEnumerable<Test> GetPublicTests();
         IEnumerable<Question> GetTestQuestions(int testId, bool loadAnswers);
-        CorrectAnswer? GetQuestionCorrectAnswer(int questionId);
-        Test? GetTestById(int testId, bool loadAnswers);
         IEnumerable<Option> GetQuestionOptions(int questionId);
         IEnumerable<Answer> GetAttemptAnswers(int attemptId);
+        Task<int> GetTestAttemptsCount(int testId);
+        Task<int> GetTestQuestionCount(int testId);
+        Task<TestStatistics?> GetTestStatistics(int testId);
+
+        CorrectAnswer? GetQuestionCorrectAnswer(int questionId);
+        Test? GetTestById(int testId, bool loadAnswers);
 
         Task AddTest(Test value);
-
         Task Save();
     }
 }

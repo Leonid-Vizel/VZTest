@@ -40,18 +40,21 @@ namespace VZTest.Repository.Repository
             return userAttempts;
         }
 
-        public IEnumerable<Test> GetUserTests(string userId, bool loadAnswers)
+        public async Task<IEnumerable<TestStatistics>> GetUserTestsStatistics(string userId)
         {
-            IEnumerable<Test> userTests =
-                TestRepository.GetWhere(x => !string.IsNullOrEmpty(x.UserId) && x.UserId.Equals(userId)).ToList();
-            foreach (Test test in userTests)
+            IEnumerable<Test> userTests = TestRepository.GetWhere(x => !string.IsNullOrEmpty(x.UserId) && x.UserId.Equals(userId)).ToList();
+            List<TestStatistics> userTestStatistics = new List<TestStatistics>();
+            foreach(Test test in userTests)
             {
-                test.Questions = GetTestQuestions(test.Id, loadAnswers);
+                userTestStatistics.Add(await GetTestStatistics(test));
             }
-            return userTests;
+            return userTestStatistics;
         }
 
-        public Test? GetTestById (int testId, bool loadAnswers)
+        public IEnumerable<Test> GetPublicTests()
+            => TestRepository.GetWhere(x => x.Public).ToList();
+
+        public Test? GetTestById(int testId, bool loadAnswers)
         {
             Test? test = TestRepository.FirstOrDefault(x => x.Id == testId);
             if (test == null)
@@ -115,5 +118,36 @@ namespace VZTest.Repository.Repository
 
         public CorrectAnswer? GetQuestionCorrectAnswer(int questionId)
             => CorrectAnswerRepository.FirstOrDefault(x => x.Id == questionId);
+
+        public async Task<int> GetTestAttemptsCount(int testId)
+            => await AttemptRepository.CountAsync(x => x.Id == testId);
+
+        public async Task<int> GetTestQuestionCount(int testId)
+            => await QuestionRepository.CountAsync(x => x.Id == testId);
+
+        public async Task<TestStatistics?> GetTestStatistics(int testId)
+        {
+            Test? test = TestRepository.FirstOrDefault(x => x.Id == testId);
+            if (test == null)
+            {
+                return null;
+            }
+            return new TestStatistics()
+            {
+                Test = test,
+                QuestionCount = await GetTestQuestionCount(testId),
+                AttemptsCount = await GetTestAttemptsCount(testId)
+            };
+        }
+
+        private async Task<TestStatistics> GetTestStatistics(Test test)
+        {
+            return new TestStatistics()
+            {
+                Test = test,
+                QuestionCount = await GetTestQuestionCount(test.Id),
+                AttemptsCount = await GetTestAttemptsCount(test.Id)
+            };
+        }
     }
 }

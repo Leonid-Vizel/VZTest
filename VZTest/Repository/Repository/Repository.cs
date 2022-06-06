@@ -22,6 +22,12 @@ namespace VZTest.Repository.Repository
         public async Task AddRangeAsync(IEnumerable<T> values)
             => await set.AddRangeAsync(values);
 
+        public async Task<int> CountAsync()
+            => await set.CountAsync();
+
+        public async Task<int> CountAsync(Expression<Func<T, bool>> filter)
+            => await set.CountAsync(filter);
+
         public T? FirstOrDefault(Expression<Func<T, bool>> filter)
             => set.FirstOrDefault(filter);
 

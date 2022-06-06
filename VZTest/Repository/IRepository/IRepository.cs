@@ -8,6 +8,8 @@ namespace VZTest.Repository.IRepository
         Task AddRangeAsync(IEnumerable<T> values);
         void Remove(T value);
         T? FirstOrDefault(Expression<Func<T, bool>> filter);
+        Task<int> CountAsync();
+        Task<int> CountAsync(Expression<Func<T, bool>> filter);
         IEnumerable<T> GetWhere(Expression<Func<T, bool>> filter);
         IEnumerable<T> GetAll();
     }
