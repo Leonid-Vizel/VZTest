@@ -92,6 +92,50 @@ namespace VZTest.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Open(int id)
+        {
+            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            if (foundTest == null)
+            {
+                return RedirectToAction("MyTests");
+            }
+            foundTest.Opened = true;
+            unitOfWork.TestRepository.Update(foundTest);
+            await unitOfWork.Save();
+            return RedirectToAction("MyTests");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Close(int id)
+        {
+            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            if (foundTest == null)
+            {
+                return RedirectToAction("MyTests");
+            }
+            foundTest.Opened = false;
+            unitOfWork.TestRepository.Update(foundTest);
+            await unitOfWork.Save();
+            return RedirectToAction("MyTests");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            if (foundTest == null)
+            {
+                return RedirectToAction("MyTests");
+            }
+            unitOfWork.TestRepository.Remove(foundTest);
+            await unitOfWork.Save();
+            return RedirectToAction("MyTests");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Search(int id)
         {
             return View();

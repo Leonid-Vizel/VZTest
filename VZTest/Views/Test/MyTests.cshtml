@@ -30,7 +30,7 @@
             <h5><a class="link" asp-controller="Test" asp-action="Priview" asp-route-Id="@test.Test.Id">@test.Test.Title</a></h5>
             <div class="row col-12">
                 <div class="col-3">
-                    <h6>Номер: #@test.Test.Id <a class = "btn btn-outline-primary btn-sm" onclick = "SetClipboard(@test.Test.Id)"><i id = "copyIcon" class="bi bi-clipboard-check"></i></a></h6>
+                    <h6>Номер: #@test.Test.Id <a class="btn btn-outline-primary btn-sm" onclick="SetClipboard(@test.Test.Id)"><i id="copyIcon" class="bi bi-clipboard-check"></i></a></h6>
                 </div>
                 <div class="col-3">
                     <h6>Создано: @test.Test.CreatedTime.ToString("dd.MM.yyyy")</h6>
@@ -43,18 +43,18 @@
                 </div>
             </div>
             <div class="text-end">
-                <form method= "post" asp-route-Id = "@test.Test.Id">
-                <button class = "btn btn-outline-success" type = "submit"><i class="bi bi-file-earmark-text"></i> Результаты</button>
-                <a class="btn btn-outline-warning" asp-controller = "Test" asp-action = "Edit" asp-route-Id = "@test.Test.Id"><i class="bi bi-pencil"></i> Редактировать</a>
-                @if (test.Test.Opened)
-                {
-                    <a class="btn btn-outline-warning" asp-controller = "Test" asp-action = "Close" asp-route-Id = "@test.Test.Id"><i class="bi bi-door-closed"></i> Закрыть</a>
-                }
-                else
-                {
-                    <a class="btn btn-outline-success" asp-controller = "Test" asp-action = "Open" asp-route-Id = "@test.Test.Id"><i class="bi bi-door-open"></i> Открыть</a>
-                }
-                <a class="btn btn-outline-danger" asp-controller = "Test" asp-action = "Delete" asp-route-Id = "@test.Test.Id"><i class="bi bi-trash"></i> Удалить</a>
+                <form method="post">
+                    <button class="btn btn-outline-success" type="submit"><i class="bi bi-file-earmark-text"></i> Результаты</button>
+                    <a class="btn btn-outline-warning" asp-controller="Test" asp-action="Edit" asp-route-Id="@test.Test.Id"><i class="bi bi-pencil"></i> Редактировать</a>
+                    @if (test.Test.Opened)
+                    {
+                        <button asp-action="Close" asp-route-Id="@test.Test.Id" class="btn btn-outline-success" type="submit"><i class="bi bi-door-closed"></i> Закрыть</button>
+                    }
+                    else
+                    {
+                        <button asp-action="Open" asp-route-Id="@test.Test.Id" class="btn btn-outline-warning" type="submit"><i class="bi bi-door-open"></i> Открыть</button>
+                    }
+                    <button asp-action="Delete" asp-route-Id="@test.Test.Id" class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i> Удалить</button>
                 </form>
             </div>
         </div>
@@ -63,5 +63,5 @@
 }
 else
 {
-    <h5>Вы пока не создали ни одного опроса.</h5>
+    <h5>Вы пока не создали ни одного теста.</h5>
 }

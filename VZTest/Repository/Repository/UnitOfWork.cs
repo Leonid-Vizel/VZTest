@@ -52,7 +52,7 @@ namespace VZTest.Repository.Repository
         }
 
         public IEnumerable<Test> GetPublicTests()
-            => TestRepository.GetWhere(x => x.Public).ToList();
+            => TestRepository.GetWhere(x => x.Public && x.Opened).ToList();
 
         public Test? GetTestById(int testId, bool loadAnswers)
         {
