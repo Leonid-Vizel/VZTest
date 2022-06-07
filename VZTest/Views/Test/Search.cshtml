@@ -5,6 +5,9 @@
     ViewData["Title"] = "Поиск";
 }
 
+<partial name = "_AjaxPartial"></partial>
+<partial name = "_SweetAlertsPartial"></partial>
+
 <h2><i class="bi bi-search"></i> @ViewData["Title"]</h2>
 <hr>
 
@@ -14,15 +17,96 @@
     return;
 }
 
+<script>
+
+    function Search()
+    {
+        var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+        var id = document.getElementById('SearchId').value;
+        $.ajax({
+                type: "POST",
+                url: "/Test/SearchNoPassword/",
+                data: {id: id, __RequestVerificationToken: verificationValue },
+                error: function(error)
+                {
+                    if (error.status == 404)
+                    {
+                        swal("Тест не найден!", "Попробуйте другой номер или свяжитесь с автором теста.", "error");
+                    }
+                    else if (error.status == 401)
+                    {
+                        swal("Авторизуйтесь!", "Войдите в свой ааканут перед тем, как проходить тесты.", "error");
+                    }
+                },
+                success: function(data)
+                {
+                    if (data == 'Redirect')
+                    {
+                        window.location.replace("/Test/Preview/" + id);
+                    }
+                    else if (data == 'Closed')
+                    {
+                        swal("Тест закрыт!", "Тест закрыт для общего доступа, только автор может его видеть. Свяжитесь с автором.", "error");
+                    }
+                    else if (data == 'NeedPassword')
+                    {
+                        swal({
+                          text: 'Введите пароль для данного теста',
+                          content: "input",
+                          button: {
+                            text: "Открыть",
+                            closeModal: false
+                          }})
+                        .then(password => {
+                             $.ajax({
+                                type: "POST",
+                                url: "/Test/SearchPassword/",
+                                data: {id: id, password: password, __RequestVerificationToken: verificationValue },
+                                error: function(error)
+                                {
+                                    swal.stopLoading();
+                                    swal.close();
+                                    HandleError(error);
+                                },
+                                success: function(data)
+                                {
+                                    swal.stopLoading();
+                                    swal.close();
+                                    if (data == 'WrongPassword')
+                                    {
+                                        swal("Неверный пароль!", "Попробуйте другой пароль.", "error");
+                                    }
+                                    else if (data == 'RedirectOnlyId')
+                                    {
+                                        window.location.replace("/Test/Preview/" + id);
+                                    }
+                                    else if (data.startsWith('RedirectHash'))
+                                    {
+                                        window.location.replace("/Test/Preview/" + id + "?passwordHash="+data.replace('RedirectHash:',''));
+                                    }
+                                    else
+                                    {
+                                        swal("Ошибка!", "Ошибка поиска попробуйте позже", "error");
+                                    }
+                                }});
+                        });
+                    }
+                    else
+                    {
+                        swal("Ошибка!", "Ошибка поиска попробуйте позже", "error");
+                    }
+                }});
+    }
+</script>
 
 <form class="col-lg-6 offset-lg-3 ">
     <div class="row justify-content-center">
         <h5 class = "text-center">Введите ID:</h5>
         <input id="SearchId" type = "number" class="form-control">
-        <h5 class = "text-center" hidden>Введите пароль:</h5>
-        <input id="PasswordHash" type = "password" class="form-control" hidden>
+@*        <h5 class = "text-center" hidden>Введите пароль:</h5>
+        <input id="PasswordHash" type = "password" class="form-control" hidden>*@
         <span class="input-group-btn text-center">
-            <button class="btn btn-outline-primary mt-1">Найти</button>
+            <a class="btn btn-outline-primary mt-1" onclick = "Search();">Найти</a>
         </span>
     </div>
 </form>

@@ -17,7 +17,7 @@ namespace VZTest.Models.Test
         public int MaxAttempts { get; set; }
         public bool Opened { get; set; }
         public bool Public { get; set; }
-        public byte[]? PasswordHash { get; set; }
+        public string? PasswordHash { get; set; }
         public DateTime CreatedTime { get; set; }
         [NotMapped]
         public IEnumerable<Question> Questions { get; set; }

@@ -20,55 +20,12 @@ namespace VZTest.Controllers
             this.userManager = userManager;
         }
 
-        public IActionResult Create()
+        public IActionResult Preview(int id, string passwordHash = "123123123")
         {
             return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(object inProgress)
-        {
-            return View();
-        }
-
-        public IActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Test updateTest)
-        {
-            return View();
-        }
-
-        public IActionResult Attempt(int id)
-        {
-            return View(unitOfWork.GetTestById(id, false));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Attempt(object inProgress)
-        {
-            return View();
-        }
-
-        public IActionResult Preview(int id)
-        {
-            return View(unitOfWork.GetTestById(id,false));
         }
 
         public IActionResult Search()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Search(int id, string passwordHash)
         {
             return View();
         }
@@ -172,6 +129,57 @@ namespace VZTest.Controllers
                 return Ok();
             }
             return StatusCode(403);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SearchNoPassword(int id)
+        {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return StatusCode(401);
+            }
+            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            if (foundTest == null)
+            {
+                return StatusCode(404);
+            }
+            if (!foundTest.Opened)
+            {
+                return Content("Closed");
+            }
+            if (foundTest.PasswordHash == null)
+            {
+                return Content("Redirect");
+            }
+            return Content("NeedPassword");
+        }
+
+        public IActionResult SearchPassword(int id, string password)
+        {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return StatusCode(401);
+            }
+            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            if (foundTest == null)
+            {
+                return StatusCode(404);
+            }
+            if (!foundTest.Opened)
+            {
+                return Content("Closed");
+            }
+            if (foundTest.PasswordHash == null)
+            {
+                return Content("RedirectOnlyId");
+            }
+            string hash = Hasher.HashPassword(password);
+            if (foundTest.PasswordHash.Equals(hash))
+            {
+                return Content($"RedirectHash:{hash}");
+            }
+            return Content("WrongPassword");
         }
 
         #endregion
