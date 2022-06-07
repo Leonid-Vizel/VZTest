@@ -20,9 +20,26 @@ namespace VZTest.Controllers
             this.userManager = userManager;
         }
 
-        public IActionResult Preview(int id, string passwordHash = "123123123")
+        public async Task<IActionResult> Preview(int id, string passwordHash = "")
         {
-            return View();
+            if (!signInManager.IsSignedIn(User))
+            {
+                return View(null);
+            }
+            TestStatistics? foundTest = await unitOfWork.GetTestStatistics(id, userManager.GetUserId(User));
+            if (foundTest == null)
+            {
+                return View(null);
+            }
+            if (foundTest.Test.UserId != null && foundTest.Test.UserId.Equals(userManager.GetUserId(User)))
+            {
+                return View(foundTest);
+            }
+            if (foundTest.Test.PasswordHash != null && !foundTest.Test.PasswordHash.Equals(passwordHash))
+            {
+                return View(null);
+            }
+            return View(foundTest);
         }
 
         public IActionResult Search()

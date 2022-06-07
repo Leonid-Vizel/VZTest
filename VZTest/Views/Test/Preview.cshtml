@@ -1,3 +1,25 @@
-﻿@{
-
+﻿@using Microsoft.AspNetCore.Identity
+@using VZTest.Models.Test
+@inject SignInManager<IdentityUser> signInManager
+@model TestStatistics
+@{
+    ViewData["Title"] = "Предпросмотр теста";
 }
+
+@if (!signInManager.IsSignedIn(User))
+{
+    <h5>Войдите в свой аккаунт</h5>
+    return;
+}
+
+@if (Model == null)
+{
+    <h5>Здесь пока пусто</h5>
+    return;
+}
+<h1 class="text-center">Информация об опросе #@Model.Test.Id</h1>
+<span style="white-space: pre-line">Название: <b>@Model.Test.Title</b>
+    Описание: <b>@Model.Test.Description</b>
+</span>
+<span style="white-space: pre-line">Был пройден пользователями платформы <b>@Model.AttemptsCount @WordHelp.Inflect(Model.AttemptsCount,"раз","раз","раза")</b></span>
+<hr />

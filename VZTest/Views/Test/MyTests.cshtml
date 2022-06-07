@@ -135,7 +135,7 @@
     @foreach (TestStatistics test in Model)
     {
         <div class="container" id="test-container-@test.Test.Id" name="test-container">
-            <h5><a class="link" asp-controller="Test" asp-action="Priview" asp-route-Id="@test.Test.Id">@test.Test.Title</a></h5>
+            <h5><a class="link" asp-controller="Test" asp-action="Preview" asp-route-Id="@test.Test.Id">@test.Test.Title</a></h5>
             <div class="row col-12">
                 <div class="col-3">
                     <h6>Номер: #@test.Test.Id <a class="btn btn-outline-primary btn-sm" onclick="SetClipboard(@test.Test.Id)"><i id="copyIcon" class="bi bi-clipboard-check"></i></a></h6>
