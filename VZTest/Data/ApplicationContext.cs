@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using VZTest.Models;
 using VZTest.Models.Test;
 using VZTest.Models.Test.Answers;
 using VZTest.Models.Test.CorrectAnswers;
@@ -17,6 +18,7 @@ namespace VZTest.Data
         public DbSet<Attempt> Attempts { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<CorrectAnswer> CorrectAnswers { get; set; }
+        public DbSet<UserStar> UserStars { get; set; }
         //Implementing Table Per Hierarchy (TPH) EF Inheritance Pattern for Answer
         public DbSet<DateAnswer> DateAnswers { get; set; }
         public DbSet<IntAnswer> IntAnswers { get; set; }

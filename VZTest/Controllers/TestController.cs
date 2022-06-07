@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using VZTest.Models;
 using VZTest.Models.Test;
 using VZTest.Repository.IRepository;
 
@@ -76,9 +77,13 @@ namespace VZTest.Controllers
             return View();
         }
 
-        public IActionResult List()
+        public async Task<IActionResult> List()
         {
-            return View(unitOfWork.GetPublicTests());
+            if (!signInManager.IsSignedIn(User))
+            {
+                return View(null);
+            }
+            return View(await unitOfWork.GetPublicTestsStatistics(userManager.GetUserId(User)));
         }
 
         public async Task<IActionResult> MyTests()
@@ -90,41 +95,75 @@ namespace VZTest.Controllers
             return View(await unitOfWork.GetUserTestsStatistics(userManager.GetUserId(User)));
         }
 
+        #region Ajax Methods
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task Open(int id)
+        public async Task<IActionResult> StarToggle(int id)
         {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return StatusCode(401); //unauthorised
+            }
             Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
             if (foundTest == null)
             {
-                return;
+                return StatusCode(404); //not found
             }
-            foundTest.Opened = true;
-            unitOfWork.TestRepository.Update(foundTest);
-            await unitOfWork.SaveAsync();
+            if (!string.IsNullOrEmpty(foundTest.UserId) && foundTest.UserId.Equals(userManager.GetUserId(User)))
+            {
+                return StatusCode(403); //forbidden
+            }
+            await unitOfWork.UserStarRepository.AddAsync(new UserStar() { TestId = id, UserId = userManager.GetUserId(User)});
+            return Ok();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task Close(int id)
+        public async Task<IActionResult> OpenToggle(int id, bool opened)
         {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return StatusCode(401); //unauthorised
+            }
             Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
             if (foundTest == null)
             {
-                return;
+                return StatusCode(404); //not found
             }
-            foundTest.Opened = false;
-            unitOfWork.TestRepository.Update(foundTest);
-            await unitOfWork.SaveAsync();
+            if (!string.IsNullOrEmpty(foundTest.UserId) && foundTest.UserId.Equals(userManager.GetUserId(User)))
+            {
+                foundTest.Opened = !opened;
+                unitOfWork.TestRepository.Update(foundTest);
+                await unitOfWork.SaveAsync();
+                return Ok();
+            }
+            return StatusCode(403); //forbidden
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            unitOfWork.RemoveTest(id);
-            await unitOfWork.SaveAsync();
+            if (!signInManager.IsSignedIn(User))
+            {
+                return StatusCode(401);
+            }
+            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            if (foundTest == null)
+            {
+                return StatusCode(404);
+            }
+            if (!string.IsNullOrEmpty(foundTest.UserId) && foundTest.UserId.Equals(userManager.GetUserId(User)))
+            {
+                unitOfWork.RemoveTest(id);
+                await unitOfWork.SaveAsync();
+                return Ok();
+            }
+            return StatusCode(403);
         }
+
+        #endregion
 
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -1,28 +1,59 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using VZTest.Models.Test
-@model IEnumerable<Test>
+@inject SignInManager<IdentityUser> signInManager
+@model IEnumerable<TestStatistics>
 @{
     ViewData["Title"] = "Публичные тесты";
 }
 
-<h1 class = "text-center">@ViewData["Title"]</h1>
-<div class="list-group">
-    @foreach (Test test in Model)
+<script>
+    function StarToggle()
     {
-        <a asp-controller = "Test" asp-action = "Preview" asp-route-id = "@test.Id" class="list-group-item list-group-item-action flex-column align-items-start">
+
+    }
+</script>
+
+<h2><i class="bi bi-list-check"></i> @ViewData["Title"]</h2>
+<hr>
+
+@if (!signInManager.IsSignedIn(User))
+{
+    <h5>Войдите в свой аккаунт</h5>
+    return;
+}
+
+@if (Model == null || Model.Count() == 0)
+{
+    <h5>Здесь пока пусто</h5>
+    return;
+}
+
+<div class="list-group">
+    @foreach (TestStatistics testStat in Model)
+    {
+        <div class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">@test.Title</h5>
-                <small>0 <i class="bi bi-star"></i></small>
+                <a asp-controller="Test" asp-action="Preview" asp-route-id="@testStat.Test.Id">
+                    <h5 class="mb-1">@testStat.Test.Title</h5>
+                </a>
+                @if (testStat.CurrectUserStarred)
+                {
+                    <a class="btn btn-success"><small>@testStat.StarsCount <i class="bi bi-star"></i></small></a>
+                }
+                else
+                {
+                    <a class="btn btn-outline-success"><small>@testStat.StarsCount <i class="bi bi-star"></i></small></a>
+                }
             </div>
-            @if (@test.Description!=null)
+            @if (testStat.Test.Description != null)
             {
-                <p class="mb-1">@test.Description</p>
+                <p class="mb-1">@testStat.Test.Description</p>
             }
             else
             {
                 <p class="mb-1">Без описания</p>
             }
-            <small>ID:@test.Id</small>
-        </a>
+            <small>ID:@testStat.Test.Id</small>
+        </div>
     }
 </div>

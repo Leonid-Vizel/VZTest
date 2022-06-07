@@ -4,10 +4,11 @@
     ViewData["Title"] = "Поиск";
 }
 
+<h2><i class="bi bi-search"></i> @ViewData["Title"]</h2>
+<hr>
+
 @if (!signInManager.IsSignedIn(User))
 {
-    <h1 class = "text-center">Войдите в аккаунт</h1>
+    <h5 class = "text-center">Войдите в аккаунт</h5>
     return;
 }
-
-<h1 class = "text-center">Поиск</h1>

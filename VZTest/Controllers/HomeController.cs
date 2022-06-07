@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using VZTest.Data;
 using VZTest.Models;
 using VZTest.Models.Test;
-using VZTest.Models.Test.Answers;
 using VZTest.Models.Test.CorrectAnswers;
 using VZTest.Repository.IRepository;
 
