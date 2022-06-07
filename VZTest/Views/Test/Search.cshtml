@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> signInManager
+@model SearchModel;
 @{
     ViewData["Title"] = "Поиск";
 }
@@ -9,6 +10,19 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <h5 class = "text-center">Войдите в аккаунт</h5>
+    <h5 class="text-center">Войдите в аккаунт</h5>
     return;
 }
+
+
+<form class="col-lg-6 offset-lg-3 ">
+    <div class="row justify-content-center">
+        <h5 class = "text-center">Введите ID:</h5>
+        <input id="SearchId" type = "number" class="form-control">
+        <h5 class = "text-center" hidden>Введите пароль:</h5>
+        <input id="PasswordHash" type = "password" class="form-control" hidden>
+        <span class="input-group-btn text-center">
+            <button class="btn btn-outline-primary mt-1">Найти</button>
+        </span>
+    </div>
+</form>

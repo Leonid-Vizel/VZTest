@@ -32,18 +32,6 @@ namespace VZTest.Controllers
             return View();
         }
 
-        public IActionResult Recreate()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Recreate(int Id)
-        {
-            return View();
-        }
-
         public IActionResult Edit(int id)
         {
             return View();
@@ -74,6 +62,13 @@ namespace VZTest.Controllers
         }
 
         public IActionResult Search()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Search(int id, string passwordHash)
         {
             return View();
         }
@@ -180,12 +175,5 @@ namespace VZTest.Controllers
         }
 
         #endregion
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Search(int id)
-        {
-            return View();
-        }
     }
 }

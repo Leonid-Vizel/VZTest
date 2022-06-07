@@ -6,6 +6,9 @@
     ViewData["Title"] = "Публичные тесты";
 }
 
+<partial name = "_AjaxPartial"></partial>
+<partial name = "_SweetAlertsPartial"></partial>
+
 <script>
     function StarToggle(id)
     {
@@ -20,15 +23,13 @@
                     if (starred)
                     {
                         var element = document.getElementById("unstar-toggle-"+id);
-                        element.setAttribute('class', 'btn btn-outline-success');
                         element.innerHTML = "<small>" + data + " <i class=\"bi bi-star\"></i></small>";
                         element.setAttribute('id', "star-toggle-"+id);
                     }
                     else
                     {
                         var element = document.getElementById("star-toggle-"+id);
-                        element.setAttribute('class', 'btn btn-success');
-                        element.innerHTML = "<small>" + data + " <i class=\"bi bi-star\"></i></small>";
+                        element.innerHTML = "<small>" + data + " <i class=\"bi bi-star-fill\"></i></small>";
                         element.setAttribute('id', "unstar-toggle-"+id);
                     }
                 }});
@@ -60,7 +61,7 @@
                 </a>
                 @if (testStat.CurrectUserStarred)
                 {
-                    <a id="unstar-toggle-@testStat.Test.Id" class="btn btn-success" onclick="StarToggle(@testStat.Test.Id);"><small>@testStat.StarsCount <i class="bi bi-star"></i></small></a>
+                    <a id="unstar-toggle-@testStat.Test.Id" class="btn btn-outline-success" onclick="StarToggle(@testStat.Test.Id);"><small>@testStat.StarsCount <i class="bi bi-star-fill"></i></small></a>
                 }
                 else
                 {
