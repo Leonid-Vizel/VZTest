@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using VZTest.Models;
 using VZTest.Models.Test;
 using VZTest.Repository.IRepository;
@@ -99,7 +100,7 @@ namespace VZTest.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> StarToggle(int id)
+        public async Task<IActionResult> StarToggle(int id, bool starred)
         {
             if (!signInManager.IsSignedIn(User))
             {
@@ -114,8 +115,23 @@ namespace VZTest.Controllers
             {
                 return StatusCode(403); //forbidden
             }
-            await unitOfWork.UserStarRepository.AddAsync(new UserStar() { TestId = id, UserId = userManager.GetUserId(User)});
-            return Ok();
+            if (!starred && unitOfWork.CheckUserLiked(id, userManager.GetUserId(User)))
+            {
+                return StatusCode(403); //forbidden
+            }
+            if (starred)
+            {
+                if (!unitOfWork.RemoveUserStar(id, userManager.GetUserId(User)))
+                {
+                    return StatusCode(404); //not found
+                }
+            }
+            else
+            {
+                await unitOfWork.UserStarRepository.AddAsync(new UserStar() { TestId = id, UserId = userManager.GetUserId(User) });
+            }
+            await unitOfWork.SaveAsync();
+            return Content(JsonConvert.SerializeObject(await unitOfWork.GetTestStarsCount(id)));
         }
 
         [HttpPost]

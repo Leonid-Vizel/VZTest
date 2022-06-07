@@ -7,9 +7,31 @@
 }
 
 <script>
-    function StarToggle()
+    function StarToggle(id)
     {
-
+        var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+        var starred = document.getElementById("star-toggle-"+id) == null;
+        $.ajax({
+                type: "POST",
+                url: "/Test/StarToggle/",
+                data: {id: id, starred: starred, __RequestVerificationToken: verificationValue },
+                success: function(data)
+                {
+                    if (starred)
+                    {
+                        var element = document.getElementById("unstar-toggle-"+id);
+                        element.setAttribute('class', 'btn btn-outline-success');
+                        element.innerHTML = "<small>" + data + " <i class=\"bi bi-star\"></i></small>";
+                        element.setAttribute('id', "star-toggle-"+id);
+                    }
+                    else
+                    {
+                        var element = document.getElementById("star-toggle-"+id);
+                        element.setAttribute('class', 'btn btn-success');
+                        element.innerHTML = "<small>" + data + " <i class=\"bi bi-star\"></i></small>";
+                        element.setAttribute('id', "unstar-toggle-"+id);
+                    }
+                }});
     }
 </script>
 
@@ -27,7 +49,7 @@
     <h5>Здесь пока пусто</h5>
     return;
 }
-
+<form></form> @*FOR VALIDATION TOKEN*@
 <div class="list-group">
     @foreach (TestStatistics testStat in Model)
     {
@@ -38,11 +60,11 @@
                 </a>
                 @if (testStat.CurrectUserStarred)
                 {
-                    <a class="btn btn-success"><small>@testStat.StarsCount <i class="bi bi-star"></i></small></a>
+                    <a id="unstar-toggle-@testStat.Test.Id" class="btn btn-success" onclick="StarToggle(@testStat.Test.Id);"><small>@testStat.StarsCount <i class="bi bi-star"></i></small></a>
                 }
                 else
                 {
-                    <a class="btn btn-outline-success"><small>@testStat.StarsCount <i class="bi bi-star"></i></small></a>
+                    <a id="star-toggle-@testStat.Test.Id" class="btn btn-outline-success" onclick="StarToggle(@testStat.Test.Id);"><small>@testStat.StarsCount <i class="bi bi-star"></i></small></a>
                 }
             </div>
             @if (testStat.Test.Description != null)

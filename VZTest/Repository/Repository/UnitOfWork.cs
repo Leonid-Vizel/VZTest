@@ -34,7 +34,7 @@ namespace VZTest.Repository.Repository
 
         public bool RemoveUserStar(int testId, string userId)
         {
-            UserStar? star = UserStarRepository.FirstOrDefault(x => x.Id == testId && x.UserId.Equals(userId));
+            UserStar? star = UserStarRepository.FirstOrDefault(x => x.TestId == testId && x.UserId.Equals(userId));
             if (star == null)
             {
                 return false;
@@ -45,7 +45,7 @@ namespace VZTest.Repository.Repository
 
         public bool CheckUserLiked(int testId, string userId)
         {
-            UserStar? star = UserStarRepository.FirstOrDefault(x => x.Id == testId && x.UserId.Equals(userId));
+            UserStar? star = UserStarRepository.FirstOrDefault(x => x.TestId == testId && x.UserId.Equals(userId));
             if (star == null)
             {
                 return false;
@@ -53,8 +53,11 @@ namespace VZTest.Repository.Repository
             return true;
         }
 
-        public async Task<int> GetTestStars(int testId)
-            => await UserStarRepository.CountAsync(x=>x.TestId == testId);
+        public IEnumerable<UserStar> GetTestStars(int testId)
+            => UserStarRepository.GetWhere(x => x.TestId == testId);
+
+        public async Task<int> GetTestStarsCount(int testId)
+            => await UserStarRepository.CountAsync(x => x.TestId == testId);
 
         public IEnumerable<Attempt> GetUserAttempts(string userId, bool loadAnswers)
         {
@@ -74,7 +77,7 @@ namespace VZTest.Repository.Repository
         {
             IEnumerable<Test> userTests = TestRepository.GetWhere(x => !string.IsNullOrEmpty(x.UserId) && x.UserId.Equals(userId)).ToList();
             List<TestStatistics> userTestStatistics = new List<TestStatistics>();
-            foreach(Test test in userTests)
+            foreach (Test test in userTests)
             {
                 userTestStatistics.Add(await GetTestStatistics(test, userId));
             }
@@ -87,7 +90,7 @@ namespace VZTest.Repository.Repository
             List<TestStatistics> testStatistics = new List<TestStatistics>();
             foreach (Test test in foundTests)
             {
-                testStatistics.Add(await GetTestStatistics(test,userId));
+                testStatistics.Add(await GetTestStatistics(test, userId));
             }
             return testStatistics;
         }
@@ -179,23 +182,29 @@ namespace VZTest.Repository.Repository
                 return;
             }
             TestRepository.Remove(test);
-            foreach(Question question in test.Questions)
+            foreach (Question question in test.Questions)
             {
                 QuestionRepository.Remove(question);
                 CorrectAnswerRepository.Remove(question.CorrectAnswer);
-                foreach(Option option in question.Options)
+                foreach (Option option in question.Options)
                 {
                     OptionRepository.Remove(option);
                 }
             }
             IEnumerable<Attempt> attempts = GetTestAttempts(test.Id, true);
-            foreach(Attempt attempt in attempts)
+            foreach (Attempt attempt in attempts)
             {
                 AttemptRepository.Remove(attempt);
-                foreach(Answer answer in attempt.Answers)
+                foreach (Answer answer in attempt.Answers)
                 {
                     AnswerRepository.Remove(answer);
                 }
+            }
+
+            IEnumerable<UserStar> stars = GetTestStars(test.Id);
+            foreach (UserStar userStar in stars)
+            {
+                UserStarRepository.Remove(userStar);
             }
         }
 
@@ -220,7 +229,7 @@ namespace VZTest.Repository.Repository
                 Test = test,
                 QuestionCount = await GetTestQuestionCount(testId),
                 AttemptsCount = await GetTestAttemptsCount(testId),
-                StarsCount = await GetTestStars(testId),
+                StarsCount = await GetTestStarsCount(testId),
                 CurrectUserStarred = CheckUserLiked(testId, userId)
             };
         }
@@ -232,7 +241,7 @@ namespace VZTest.Repository.Repository
                 Test = test,
                 QuestionCount = await GetTestQuestionCount(test.Id),
                 AttemptsCount = await GetTestAttemptsCount(test.Id),
-                StarsCount = await GetTestStars(test.Id),
+                StarsCount = await GetTestStarsCount(test.Id),
                 CurrectUserStarred = CheckUserLiked(test.Id, userId)
             };
         }

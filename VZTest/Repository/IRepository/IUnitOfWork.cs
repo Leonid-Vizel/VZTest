@@ -1,4 +1,5 @@
-﻿using VZTest.Models.Test;
+﻿using VZTest.Models;
+using VZTest.Models.Test;
 
 namespace VZTest.Repository.IRepository
 {
@@ -18,6 +19,7 @@ namespace VZTest.Repository.IRepository
         Task<IEnumerable<TestStatistics>> GetPublicTestsStatistics(string userId);
         IEnumerable<Question> GetTestQuestions(int testId, bool loadAnswers);
         IEnumerable<Option> GetQuestionOptions(int questionId);
+        IEnumerable<UserStar> GetTestStars(int testId);
         IEnumerable<Answer> GetAttemptAnswers(int attemptId);
         Task<int> GetTestAttemptsCount(int testId);
         Task<int> GetTestQuestionCount(int testId);
@@ -25,7 +27,7 @@ namespace VZTest.Repository.IRepository
 
         bool RemoveUserStar(int testId, string userId);
         bool CheckUserLiked(int testId, string userId);
-        Task<int> GetTestStars(int testId);
+        Task<int> GetTestStarsCount(int testId);
 
         CorrectAnswer? GetQuestionCorrectAnswer(int questionId);
         Test? GetTestById(int testId, bool loadAnswers);
