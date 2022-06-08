@@ -82,6 +82,8 @@ namespace VZTest.Controllers
                 model.Forbidden = true;
                 return View(model);
             }
+            model.Liked = unitOfWork.CheckUserLiked(id, userId);
+            model.StarsCount = await unitOfWork.GetTestStarsCount(id);
             model.Test = foundTest;
             model.TotalAttempts = await unitOfWork.GetTestAttemptsCount(id);
             model.UserAttempts = unitOfWork.GetUserTestAttempt(id, userId);

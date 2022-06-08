@@ -24,7 +24,50 @@
     return;
 }
 
-<h2><i class="bi bi-list-check"></i> Информация об опросе #@Model.Test.Id</h2>
+<script>
+    function StarToggle(id)
+    {
+        var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+        var starred = document.getElementById("star-toggle-"+id) == null;
+        $.ajax({
+                type: "POST",
+                url: "/Test/StarToggle/",
+                data: {id: id, starred: starred, __RequestVerificationToken: verificationValue },
+                success: function(data)
+                {
+                    if (starred)
+                    {
+                        var element = document.getElementById("unstar-toggle-"+id);
+                        element.innerHTML = "<small>" + data + " <i class=\"bi bi-star\"></i></small>";
+                        element.setAttribute('id', "star-toggle-"+id);
+                    }
+                    else
+                    {
+                        var element = document.getElementById("star-toggle-"+id);
+                        element.innerHTML = "<small>" + data + " <i class=\"bi bi-star-fill\"></i></small>";
+                        element.setAttribute('id', "unstar-toggle-"+id);
+                    }
+                }});
+    }
+</script>
+
+<style>
+h2 {
+  display:inline-block;
+  float:left;
+}
+</style>
+    <h2><i class="bi bi-list-check"></i> Информация об опросе #@Model.Test.Id</h2>
+<div class="pull-left">  
+    @if (Model.Liked)
+    {
+        <a id="unstar-toggle-@Model.Test.Id" class="btn btn-outline-success mx-3" onclick="StarToggle(@Model.Test.Id);"><small>@Model.StarsCount <i class="bi bi-star-fill"></i></small></a>
+    }
+    else
+    {
+        <a id="star-toggle-@Model.Test.Id" class="btn btn-outline-success mx-3" onclick="StarToggle(@Model.Test.Id);"><small>@Model.StarsCount <i class="bi bi-star"></i></small></a>
+    }
+</div>
 <hr>
 <span style="white-space: pre-line">Название: <b>@Model.Test.Title</b>
     Описание: <b>@Model.Test.Description</b>
