@@ -7,6 +7,10 @@ namespace VZTest
     {
         public static string HashPassword(string rawData)
         {
+            if (string.IsNullOrEmpty(rawData))
+            {
+                return "";
+            }
             // Create a SHA256   
             using (SHA256 sha256Hash = SHA256.Create())
             {

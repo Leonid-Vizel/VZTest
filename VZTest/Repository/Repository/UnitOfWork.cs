@@ -108,7 +108,7 @@ namespace VZTest.Repository.Repository
 
         public IEnumerable<Question> GetTestQuestions(int testId, bool loadAnswers)
         {
-            IEnumerable<Question> questions = QuestionRepository.GetWhere(x => x.Id == testId).ToList();
+            IEnumerable<Question> questions = QuestionRepository.GetWhere(x => x.TestId == testId).ToList();
             if (loadAnswers)
             {
                 foreach (Question question in questions)
@@ -145,10 +145,10 @@ namespace VZTest.Repository.Repository
         }
 
         public IEnumerable<Option> GetQuestionOptions(int questionId)
-            => OptionRepository.GetWhere(x => x.Id == questionId);
+            => OptionRepository.GetWhere(x => x.QuestionId == questionId);
 
         public IEnumerable<Answer> GetAttemptAnswers(int attemptId)
-            => AnswerRepository.GetWhere(x => x.Id == attemptId);
+            => AnswerRepository.GetWhere(x => x.AttemptId == attemptId);
 
         public async Task AddTest(Test value)
         {
@@ -209,13 +209,13 @@ namespace VZTest.Repository.Repository
         }
 
         public CorrectAnswer? GetQuestionCorrectAnswer(int questionId)
-            => CorrectAnswerRepository.FirstOrDefault(x => x.Id == questionId);
+            => CorrectAnswerRepository.FirstOrDefault(x => x.QuestionId == questionId);
 
         public async Task<int> GetTestAttemptsCount(int testId)
-            => await AttemptRepository.CountAsync(x => x.Id == testId);
+            => await AttemptRepository.CountAsync(x => x.TestId == testId);
 
         public async Task<int> GetTestQuestionCount(int testId)
-            => await QuestionRepository.CountAsync(x => x.Id == testId);
+            => await QuestionRepository.CountAsync(x => x.TestId == testId);
 
         public async Task<TestStatistics?> GetTestStatistics(int testId, string userId)
         {

@@ -8,13 +8,19 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <h5>Войдите в свой аккаунт</h5>
+    <h5>Войдите в свой аккаунт!</h5>
     return;
 }
 
-@if (Model == null)
+@if (Model == null || Model.Forbidden)
 {
-    <h5>Доступ к опросу закрыт</h5>
+    <h5>Доступ к опросу закрыт!</h5>
+    return;
+}
+
+@if (Model.NotFound)
+{
+    <h5>Такой тест не найден!</h5>
     return;
 }
 
@@ -22,6 +28,7 @@
 <hr>
 <span style="white-space: pre-line">Название: <b>@Model.Test.Title</b>
     Описание: <b>@Model.Test.Description</b>
+    Максимальное количество попыток: <b>@Model.Test.MaxAttempts</b>
 </span>
 <span style="white-space: pre-line">Был пройден пользователями платформы <b>@Model.TotalAttempts @WordHelp.Inflect(Model.TotalAttempts,"раз","раз","раза")</b></span>
 <hr>

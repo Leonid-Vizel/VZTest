@@ -27,16 +27,18 @@ namespace VZTest.Controllers
                 return View(null);
             }
             string userId = userManager.GetUserId(User);
+            TestPriviewModel model = new TestPriviewModel();
             Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
             if (foundTest == null)
             {
-                return View(null);
+                model.NotFound = true;
+                return View(model);
             }
             if (foundTest.UserId.Equals(userId) && foundTest.PasswordHash != null && !foundTest.PasswordHash.Equals(passwordHash))
             {
-                return View(null);
+                model.Forbidden = true;
+                return View(model);
             }
-            TestPriviewModel model = new TestPriviewModel();
             model.Test = foundTest;
             model.TotalAttempts = await unitOfWork.GetTestAttemptsCount(id);
             model.UserAttempts = unitOfWork.GetUserTestAttempt(id, userId);
@@ -56,16 +58,20 @@ namespace VZTest.Controllers
             TestStatistics? foundTest = await unitOfWork.GetTestStatistics(id, userId);
             if (foundTest == null)
             {
-                return View(null);
+                TestPriviewModel model = new TestPriviewModel();
+                model.NotFound = true;
+                return View(model);
             }
             if (!foundTest.Test.UserId.Equals(userId) && foundTest.Test.PasswordHash != null && !foundTest.Test.PasswordHash.Equals(passwordHash))
             {
-                return View(null);
+                TestPriviewModel model = new TestPriviewModel();
+                model.Forbidden = true;
+                return View(model);
             }
             IEnumerable<Attempt> userAttempts = unitOfWork.GetUserTestAttempt(id, userId);
             if (foundTest.Test.MaxAttempts <= userAttempts.Count())
             {
-                return View(null);
+                return RedirectToAction("Preview");
             }
             Attempt attempt = new Attempt();
             attempt.UserId = userId;
