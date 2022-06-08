@@ -39,11 +39,11 @@
     {
         if (attempt.Active)
         {
-            <a asp-controller="Test" asp-action="Attempt" asp-route-id="@attempt.Id">[Активная] Попытка от @attempt.TimeStarted.ToString("dd.MM.yyyy HH.mm.ss")</a>
+            <a asp-controller="Test" asp-action="Attempt" asp-route-id="@attempt.Id">[Активная] Попытка от @attempt.TimeStarted.ToString("dd.MM.yyyy HH:mm:ss")</a>
         }
         else
         {
-            <a asp-controller="Test" asp-action="Attempt" asp-route-id="@attempt.Id">[Завершена] Попытка от @attempt.TimeStarted.ToString("dd.MM.yyyy HH.mm.ss")</a>
+            <a asp-controller="Test" asp-action="Attempt" asp-route-id="@attempt.Id">[Завершена] Попытка от @attempt.TimeStarted.ToString("dd.MM.yyyy HH:mm:ss")</a>
         }
         <hr>
     }

@@ -20,6 +20,49 @@ namespace VZTest.Controllers
             this.userManager = userManager;
         }
 
+        #region Attempt
+        public IActionResult Attempt(int id)
+        {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return View(null); //Authorize
+            }
+            Attempt? attempt = unitOfWork.GetAttemptWithAnswers(id);
+            if (attempt == null)
+            {
+                return View(null); //NotFound
+            }
+            if (!attempt.UserId.Equals(userManager.GetUserId(User)))
+            {
+                return View(null); //Forbidden
+            }
+            if (attempt.Active)
+            {
+                return RedirectToAction("Results", new { Id = attempt.Id });
+            }
+            Test? test = unitOfWork.GetTestById(attempt.TestId, false);
+            if (test == null)
+            {
+                return View(null); //NotFound
+            }
+            AttemptModel attemptModel = new AttemptModel();
+            attemptModel.Attempt = attempt;
+            attemptModel.Test = test;
+            return View(attemptModel); //Ok
+        }
+
+        #endregion
+
+        #region Results
+
+        public IActionResult Results(int id)
+        {
+            return null;
+        }
+
+        #endregion
+
+        #region Preview
         public async Task<IActionResult> Preview(int id, string passwordHash = "")
         {
             if (!signInManager.IsSignedIn(User))
@@ -82,6 +125,7 @@ namespace VZTest.Controllers
             await unitOfWork.SaveAsync();
             return RedirectToAction("Attempt", new { id = attempt.Id });
         }
+        #endregion
 
         public IActionResult Search()
         {
@@ -107,7 +151,6 @@ namespace VZTest.Controllers
         }
 
         #region Ajax Methods
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> StarToggle(int id, bool starred)
@@ -213,6 +256,8 @@ namespace VZTest.Controllers
             return Content("NeedPassword");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SearchPassword(int id, string password)
         {
             if (!signInManager.IsSignedIn(User))
@@ -240,6 +285,12 @@ namespace VZTest.Controllers
             return Content("WrongPassword");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SaveAttemptAnswer(int attemptId, int questionId, object value)
+        {
+            return null;
+        }
         #endregion
     }
 }

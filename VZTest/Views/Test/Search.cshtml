@@ -52,7 +52,13 @@
                     {
                         swal({
                           text: 'Введите пароль для данного теста',
-                          content: "input",
+                          content: {
+                            element: "input",
+                            attributes: {
+                              placeholder: "Пароль",
+                              type: "password",
+                            },
+                          },
                           button: {
                             text: "Открыть",
                             closeModal: false

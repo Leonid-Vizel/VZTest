@@ -13,28 +13,50 @@ namespace VZTest.Repository.IRepository
         ICorrectAnswerRepository CorrectAnswerRepository { get; set; }
         IUserStarRepository UserStarRepository { get; set; }
 
+        #region Attempts
         IEnumerable<Attempt> GetUserAttempts(string userId, bool loadAnswers);
         IEnumerable<Attempt> GetTestAttempts(int testId, bool loadAnswers);
+        IEnumerable<Attempt> GetUserTestAttempt(int testId, string userId);
+        Attempt? GetAttemptWithAnswers(int attemptId);
+        Task<int> GetTestAttemptsCount(int testId);
+        #endregion
+
+        #region TestStatistics
         Task<IEnumerable<TestStatistics>> GetUserTestsStatistics(string userId);
         Task<IEnumerable<TestStatistics>> GetPublicTestsStatistics(string userId);
-        IEnumerable<Question> GetTestQuestions(int testId, bool loadAnswers);
-        IEnumerable<Option> GetQuestionOptions(int questionId);
-        IEnumerable<UserStar> GetTestStars(int testId);
-        IEnumerable<Answer> GetAttemptAnswers(int attemptId);
-        Task<int> GetTestAttemptsCount(int testId);
-        Task<int> GetTestQuestionCount(int testId);
-        IEnumerable<Attempt> GetUserTestAttempt(int testId, string userId);
         Task<TestStatistics?> GetTestStatistics(int testId, string userId);
+        #endregion
 
+        #region Questions
+        IEnumerable<Question> GetTestQuestions(int testId, bool loadAnswers);
+        Task<int> GetTestQuestionCount(int testId);
+        #endregion
+
+        #region UserStars
+        IEnumerable<UserStar> GetTestStars(int testId);
         bool RemoveUserStar(int testId, string userId);
         bool CheckUserLiked(int testId, string userId);
         Task<int> GetTestStarsCount(int testId);
+        #endregion
 
-        CorrectAnswer? GetQuestionCorrectAnswer(int questionId);
+        #region Tests
         Test? GetTestById(int testId, bool loadAnswers);
-
         void RemoveTest(int testId);
         Task AddTest(Test value);
+        #endregion
+
+        #region Options
+        IEnumerable<Option> GetQuestionOptions(int questionId);
+        #endregion
+
+        #region Answers
+        IEnumerable<Answer> GetAttemptAnswers(int attemptId);
+        #endregion
+
+        #region CorrectAnswer
+        CorrectAnswer? GetQuestionCorrectAnswer(int questionId);
+        #endregion
+
         Task SaveAsync();
     }
 }

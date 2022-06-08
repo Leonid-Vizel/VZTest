@@ -29,50 +29,7 @@ namespace VZTest.Repository.Repository
             UserStarRepository = new UserStarRepository(db);
         }
 
-        public async Task SaveAsync()
-            => await db.SaveChangesAsync();
-
-        public bool RemoveUserStar(int testId, string userId)
-        {
-            UserStar? star = UserStarRepository.FirstOrDefault(x => x.TestId == testId && x.UserId.Equals(userId));
-            if (star == null)
-            {
-                return false;
-            }
-            UserStarRepository.Remove(star);
-            return true;
-        }
-
-        public bool CheckUserLiked(int testId, string userId)
-        {
-            UserStar? star = UserStarRepository.FirstOrDefault(x => x.TestId == testId && x.UserId.Equals(userId));
-            if (star == null)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public IEnumerable<UserStar> GetTestStars(int testId)
-            => UserStarRepository.GetWhere(x => x.TestId == testId);
-
-        public async Task<int> GetTestStarsCount(int testId)
-            => await UserStarRepository.CountAsync(x => x.TestId == testId);
-
-        public IEnumerable<Attempt> GetUserAttempts(string userId, bool loadAnswers)
-        {
-            IEnumerable<Attempt> userAttempts =
-                AttemptRepository.GetWhere(x => !string.IsNullOrEmpty(x.UserId) && x.UserId.Equals(userId));
-            if (loadAnswers)
-            {
-                foreach (Attempt attempt in userAttempts)
-                {
-                    attempt.Answers = GetAttemptAnswers(attempt.Id);
-                }
-            }
-            return userAttempts;
-        }
-
+        #region TestStatistics
         public async Task<IEnumerable<TestStatistics>> GetUserTestsStatistics(string userId)
         {
             IEnumerable<Test> userTests = TestRepository.GetWhere(x => x.UserId.Equals(userId)).ToList();
@@ -95,17 +52,87 @@ namespace VZTest.Repository.Repository
             return testStatistics;
         }
 
-        public Test? GetTestById(int testId, bool loadAnswers)
+        public async Task<TestStatistics?> GetTestStatistics(int testId, string userId)
         {
             Test? test = TestRepository.FirstOrDefault(x => x.Id == testId);
             if (test == null)
             {
                 return null;
             }
-            test.Questions = GetTestQuestions(test.Id, loadAnswers);
-            return test;
+            return new TestStatistics()
+            {
+                Test = test,
+                QuestionCount = await GetTestQuestionCount(testId),
+                AttemptsCount = await GetTestAttemptsCount(testId),
+                StarsCount = await GetTestStarsCount(testId),
+                CurrectUserStarred = CheckUserLiked(testId, userId)
+            };
         }
 
+        private async Task<TestStatistics> GetTestStatistics(Test test, string userId)
+        {
+            return new TestStatistics()
+            {
+                Test = test,
+                QuestionCount = await GetTestQuestionCount(test.Id),
+                AttemptsCount = await GetTestAttemptsCount(test.Id),
+                StarsCount = await GetTestStarsCount(test.Id),
+                CurrectUserStarred = CheckUserLiked(test.Id, userId)
+            };
+        }
+        #endregion
+
+        #region Attemps
+        public IEnumerable<Attempt> GetUserTestAttempt(int testId, string userId)
+        {
+            return AttemptRepository.GetWhere(x => x.TestId == testId && x.UserId.Equals(userId));
+        }
+
+        public IEnumerable<Attempt> GetUserAttempts(string userId, bool loadAnswers)
+        {
+            IEnumerable<Attempt> userAttempts =
+                AttemptRepository.GetWhere(x => !string.IsNullOrEmpty(x.UserId) && x.UserId.Equals(userId));
+            if (loadAnswers)
+            {
+                foreach (Attempt attempt in userAttempts)
+                {
+                    attempt.Answers = GetAttemptAnswers(attempt.Id);
+                }
+            }
+            return userAttempts;
+        }
+
+        public Attempt? GetAttemptWithAnswers(int attemptId)
+        {
+            Attempt? attempt = AttemptRepository.FirstOrDefault(x => x.Id == attemptId);
+            if (attempt == null)
+            {
+                return null;
+            }
+            attempt.Answers = GetAttemptAnswers(attemptId);
+            return attempt;
+        }
+
+        public IEnumerable<Attempt> GetTestAttempts(int testId, bool loadAnswers)
+        {
+            IEnumerable<Attempt> testAttempts = AttemptRepository.GetWhere(x => x.TestId == testId);
+            if (loadAnswers)
+            {
+                foreach (Attempt attempt in testAttempts)
+                {
+                    attempt.Answers = GetAttemptAnswers(attempt.Id);
+                }
+            }
+            return testAttempts;
+        }
+
+        public async Task<int> GetTestAttemptsCount(int testId)
+        {
+            return await AttemptRepository.CountAsync(x => x.TestId == testId);
+        }
+        #endregion
+
+        #region Questions
         public IEnumerable<Question> GetTestQuestions(int testId, bool loadAnswers)
         {
             IEnumerable<Question> questions = QuestionRepository.GetWhere(x => x.TestId == testId).ToList();
@@ -131,25 +158,46 @@ namespace VZTest.Repository.Repository
             return questions;
         }
 
-        public IEnumerable<Attempt> GetTestAttempts(int testId, bool loadAnswers)
+        public async Task<int> GetTestQuestionCount(int testId)
         {
-            IEnumerable<Attempt> testAttempts = AttemptRepository.GetWhere(x => x.TestId == testId);
-            if (loadAnswers)
+            return await QuestionRepository.CountAsync(x => x.TestId == testId);
+        }
+        #endregion
+
+        #region UserStars
+        public bool RemoveUserStar(int testId, string userId)
+        {
+            UserStar? star = UserStarRepository.FirstOrDefault(x => x.TestId == testId && x.UserId.Equals(userId));
+            if (star == null)
             {
-                foreach (Attempt attempt in testAttempts)
-                {
-                    attempt.Answers = GetAttemptAnswers(attempt.Id);
-                }
+                return false;
             }
-            return testAttempts;
+            UserStarRepository.Remove(star);
+            return true;
         }
 
-        public IEnumerable<Option> GetQuestionOptions(int questionId)
-            => OptionRepository.GetWhere(x => x.QuestionId == questionId);
+        public bool CheckUserLiked(int testId, string userId)
+        {
+            UserStar? star = UserStarRepository.FirstOrDefault(x => x.TestId == testId && x.UserId.Equals(userId));
+            if (star == null)
+            {
+                return false;
+            }
+            return true;
+        }
 
-        public IEnumerable<Answer> GetAttemptAnswers(int attemptId)
-            => AnswerRepository.GetWhere(x => x.AttemptId == attemptId);
+        public IEnumerable<UserStar> GetTestStars(int testId)
+        {
+            return UserStarRepository.GetWhere(x => x.TestId == testId);
+        }
 
+        public async Task<int> GetTestStarsCount(int testId)
+        {
+            return await UserStarRepository.CountAsync(x => x.TestId == testId);
+        }
+        #endregion
+
+        #region Tests
         public async Task AddTest(Test value)
         {
             await TestRepository.AddAsync(value);
@@ -208,45 +256,42 @@ namespace VZTest.Repository.Repository
             }
         }
 
-        public CorrectAnswer? GetQuestionCorrectAnswer(int questionId)
-            => CorrectAnswerRepository.FirstOrDefault(x => x.QuestionId == questionId);
-
-        public async Task<int> GetTestAttemptsCount(int testId)
-            => await AttemptRepository.CountAsync(x => x.TestId == testId);
-
-        public async Task<int> GetTestQuestionCount(int testId)
-            => await QuestionRepository.CountAsync(x => x.TestId == testId);
-
-        public async Task<TestStatistics?> GetTestStatistics(int testId, string userId)
+        public Test? GetTestById(int testId, bool loadAnswers)
         {
             Test? test = TestRepository.FirstOrDefault(x => x.Id == testId);
             if (test == null)
             {
                 return null;
             }
-            return new TestStatistics()
-            {
-                Test = test,
-                QuestionCount = await GetTestQuestionCount(testId),
-                AttemptsCount = await GetTestAttemptsCount(testId),
-                StarsCount = await GetTestStarsCount(testId),
-                CurrectUserStarred = CheckUserLiked(testId, userId)
-            };
+            test.Questions = GetTestQuestions(test.Id, loadAnswers);
+            return test;
         }
+        #endregion
 
-        private async Task<TestStatistics> GetTestStatistics(Test test, string userId)
+        #region Options
+        public IEnumerable<Option> GetQuestionOptions(int questionId)
         {
-            return new TestStatistics()
-            {
-                Test = test,
-                QuestionCount = await GetTestQuestionCount(test.Id),
-                AttemptsCount = await GetTestAttemptsCount(test.Id),
-                StarsCount = await GetTestStarsCount(test.Id),
-                CurrectUserStarred = CheckUserLiked(test.Id, userId)
-            };
+            return OptionRepository.GetWhere(x => x.QuestionId == questionId);
         }
+        #endregion
 
-        public IEnumerable<Attempt> GetUserTestAttempt(int testId, string userId)
-            => AttemptRepository.GetWhere(x=>x.TestId == testId && x.UserId.Equals(userId));
+        #region Answers
+        public IEnumerable<Answer> GetAttemptAnswers(int attemptId)
+        {
+            return AnswerRepository.GetWhere(x => x.AttemptId == attemptId);
+        }
+        #endregion
+
+        #region CorrectAnswer
+        public CorrectAnswer? GetQuestionCorrectAnswer(int questionId)
+        {
+            return CorrectAnswerRepository.FirstOrDefault(x => x.QuestionId == questionId);
+        }
+        #endregion
+
+        public async Task SaveAsync()
+        {
+            await db.SaveChangesAsync();
+        }
     }
 }
