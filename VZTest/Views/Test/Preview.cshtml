@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using VZTest.Models.Test
 @inject SignInManager<IdentityUser> signInManager
-@model TestStatistics
+@model TestPriviewModel
 @{
     ViewData["Title"] = "Предпросмотр теста";
 }
@@ -14,12 +14,40 @@
 
 @if (Model == null)
 {
-    <h5>Здесь пока пусто</h5>
+    <h5>Доступ к опросу закрыт</h5>
     return;
 }
-<h1 class="text-center">Информация об опросе #@Model.Test.Id</h1>
+
+<h2><i class="bi bi-list-check"></i> Информация об опросе #@Model.Test.Id</h2>
+<hr>
 <span style="white-space: pre-line">Название: <b>@Model.Test.Title</b>
     Описание: <b>@Model.Test.Description</b>
 </span>
-<span style="white-space: pre-line">Был пройден пользователями платформы <b>@Model.AttemptsCount @WordHelp.Inflect(Model.AttemptsCount,"раз","раз","раза")</b></span>
-<hr />
+<span style="white-space: pre-line">Был пройден пользователями платформы <b>@Model.TotalAttempts @WordHelp.Inflect(Model.TotalAttempts,"раз","раз","раза")</b></span>
+<hr>
+@if (Model.UserAttempts.Count() > 0)
+{
+    <h5>Ваши попытки:</h5>
+    @foreach (Attempt attempt in Model.UserAttempts)
+    {
+        if (attempt.Active)
+        {
+            <a asp-controller="Test" asp-action="Attempt" asp-route-id="@attempt.Id">[Активная] Попытка от @attempt.TimeStarted.ToString("dd.MM.yyyy HH.mm.ss")</a>
+        }
+        else
+        {
+            <a asp-controller="Test" asp-action="Attempt" asp-route-id="@attempt.Id">[Завершена] Попытка от @attempt.TimeStarted.ToString("dd.MM.yyyy HH.mm.ss")</a>
+        }
+        <hr>
+    }
+}
+@if (Model.Test.MaxAttempts > Model.UserAttempts.Count())
+{
+    <form method="post">
+        <button class="btn btn-outline-primary" type="submit"><i class="bi bi-check2"></i> Пройти</button>
+    </form>
+}
+else
+{
+    <h5>Вы исчерпали все попытки в этом тесте</h5>
+}

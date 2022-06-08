@@ -26,20 +26,55 @@ namespace VZTest.Controllers
             {
                 return View(null);
             }
-            TestStatistics? foundTest = await unitOfWork.GetTestStatistics(id, userManager.GetUserId(User));
+            string userId = userManager.GetUserId(User);
+            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
             if (foundTest == null)
             {
                 return View(null);
             }
-            if (foundTest.Test.UserId != null && foundTest.Test.UserId.Equals(userManager.GetUserId(User)))
-            {
-                return View(foundTest);
-            }
-            if (foundTest.Test.PasswordHash != null && !foundTest.Test.PasswordHash.Equals(passwordHash))
+            if (foundTest.UserId.Equals(userId) && foundTest.PasswordHash != null && !foundTest.PasswordHash.Equals(passwordHash))
             {
                 return View(null);
             }
-            return View(foundTest);
+            TestPriviewModel model = new TestPriviewModel();
+            model.Test = foundTest;
+            model.TotalAttempts = await unitOfWork.GetTestAttemptsCount(id);
+            model.UserAttempts = unitOfWork.GetUserTestAttempt(id, userId);
+            return View(model);
+        }
+
+        [HttpPost]
+        [ActionName("Preview")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PreviewPost(int id, string passwordHash = "")
+        {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return View(null);
+            }
+            string userId = userManager.GetUserId(User);
+            TestStatistics? foundTest = await unitOfWork.GetTestStatistics(id, userId);
+            if (foundTest == null)
+            {
+                return View(null);
+            }
+            if (!foundTest.Test.UserId.Equals(userId) && foundTest.Test.PasswordHash != null && !foundTest.Test.PasswordHash.Equals(passwordHash))
+            {
+                return View(null);
+            }
+            IEnumerable<Attempt> userAttempts = unitOfWork.GetUserTestAttempt(id, userId);
+            if (foundTest.Test.MaxAttempts <= userAttempts.Count())
+            {
+                return View(null);
+            }
+            Attempt attempt = new Attempt();
+            attempt.UserId = userId;
+            attempt.TestId = id;
+            attempt.TimeStarted = DateTime.Now;
+            attempt.Active = true;
+            await unitOfWork.AttemptRepository.AddAsync(attempt);
+            await unitOfWork.SaveAsync();
+            return RedirectToAction("Attempt", new { id = attempt.Id });
         }
 
         public IActionResult Search()
@@ -80,7 +115,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(404); //not found
             }
-            if (!string.IsNullOrEmpty(foundTest.UserId) && foundTest.UserId.Equals(userManager.GetUserId(User)))
+            if (foundTest.UserId.Equals(userManager.GetUserId(User)))
             {
                 return StatusCode(403); //forbidden
             }
@@ -116,7 +151,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(404); //not found
             }
-            if (!string.IsNullOrEmpty(foundTest.UserId) && foundTest.UserId.Equals(userManager.GetUserId(User)))
+            if (foundTest.UserId.Equals(userManager.GetUserId(User)))
             {
                 foundTest.Opened = !opened;
                 unitOfWork.TestRepository.Update(foundTest);
@@ -139,7 +174,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(404);
             }
-            if (!string.IsNullOrEmpty(foundTest.UserId) && foundTest.UserId.Equals(userManager.GetUserId(User)))
+            if (foundTest.UserId.Equals(userManager.GetUserId(User)))
             {
                 unitOfWork.RemoveTest(id);
                 await unitOfWork.SaveAsync();

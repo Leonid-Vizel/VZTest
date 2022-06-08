@@ -75,7 +75,7 @@ namespace VZTest.Repository.Repository
 
         public async Task<IEnumerable<TestStatistics>> GetUserTestsStatistics(string userId)
         {
-            IEnumerable<Test> userTests = TestRepository.GetWhere(x => !string.IsNullOrEmpty(x.UserId) && x.UserId.Equals(userId)).ToList();
+            IEnumerable<Test> userTests = TestRepository.GetWhere(x => x.UserId.Equals(userId)).ToList();
             List<TestStatistics> userTestStatistics = new List<TestStatistics>();
             foreach (Test test in userTests)
             {
@@ -245,5 +245,8 @@ namespace VZTest.Repository.Repository
                 CurrectUserStarred = CheckUserLiked(test.Id, userId)
             };
         }
+
+        public IEnumerable<Attempt> GetUserTestAttempt(int testId, string userId)
+            => AttemptRepository.GetWhere(x=>x.TestId == testId && x.UserId.Equals(userId));
     }
 }

@@ -23,6 +23,7 @@ namespace VZTest.Repository.IRepository
         IEnumerable<Answer> GetAttemptAnswers(int attemptId);
         Task<int> GetTestAttemptsCount(int testId);
         Task<int> GetTestQuestionCount(int testId);
+        IEnumerable<Attempt> GetUserTestAttempt(int testId, string userId);
         Task<TestStatistics?> GetTestStatistics(int testId, string userId);
 
         bool RemoveUserStar(int testId, string userId);
