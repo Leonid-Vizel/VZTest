@@ -23,5 +23,6 @@ namespace VZTest.Data
         public DbSet<CorrectIntAnswer> CorrectIntAnswers { get; set; }
         public DbSet<CorrectDoubleAnswer> CorrectDoubleAnswers { get; set; }
         public DbSet<CorrectDateAnswer> CorrectDateAnswers { get; set; }
+        public DbSet<CorrectCheckAnswer> CorrectCheckAnswers { get; set; }
     }
 }

@@ -1,0 +1,71 @@
+﻿@using VZTest.Models.Test
+@using VZTest.Models.Test.CorrectAnswers
+@model AttemptModel
+@{
+    ViewData["Title"] = "Простотр попытки";
+}
+
+<h1 class="text-center">@Model.Test.Title</h1>
+<hr>
+<div class="row container">
+    @for (int i = 0; i < Model.Test.Questions.Count; i++)
+    {
+        Question question = Model.Test.Questions[i];
+        <h3 class="mt-2">
+            Вопрос #@(question.Number + 1)
+            @if (Model.Attempt.Answers[i].Correct)
+            {
+                <span style="color: #50c878;">(@question.Balls @WordHelp.Inflect((int)question.Balls, "баллов", "балл", "балл"))</span>
+            }
+            else
+            {
+                <span style="color: #DC143C;">>(0 баллов)</span>
+            }
+        </h3>
+        <h6>
+            <span class="text-muted">Задание: </span>
+            @question.Title
+        </h6>
+        @switch (question.Type)
+        {
+            case QuestionType.Text:
+                <textarea disabled>@Model.Attempt.Answers[i].TextAnswer</textarea>
+                break;
+            case QuestionType.Date:
+                <input asp-for="Attempt.Answers[i].DateAnswer" type="date" class="form-control" disabled />
+                break;
+            case QuestionType.Int:
+                <input asp-for="Attempt.Answers[i].IntAnswer" class="form-control" disabled />
+                break;
+            case QuestionType.Double:
+                <input asp-for="Attempt.Answers[i].DoubleAnswer" class="form-control" disabled />
+                break;
+            case QuestionType.Radio:
+                @foreach (Option option in question.Options)
+                {
+                    <div class="form-check">
+                        <input asp-for="Attempt.Answers[i].RadioAnswer" class="form-check-input" type="radio" value="@option.Id" disabled>
+                        <label class="form-check-label">@option.Title</label>
+                    </div>
+                }
+                break;
+            case QuestionType.Check:
+                @foreach (Option option in question.Options)
+                {
+                    <div class="form-check">
+                        <input asp-for="Attempt.Answers[i].CheckAnswer" class="form-check-input" type="checkbox" value="@option.Id" disabled>
+                        <label class="form-check-label">@option.Title</label>
+                    </div>
+                }
+                break;
+        }
+        @if (Model.Attempt.Answers[i].Correct)
+        {
+            <h6 style="color: #50c878;">Правильно!</h6>
+        }
+        else
+        {
+            <h6 style="color: #DC143C;">Неправильно!</h6>
+        }
+    }
+</div>

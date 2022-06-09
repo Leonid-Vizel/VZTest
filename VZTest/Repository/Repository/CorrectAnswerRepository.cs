@@ -14,18 +14,6 @@ namespace VZTest.Repository.Repository
             this.db = db;
         }
 
-        public IEnumerable<CorrectDateAnswer> GetDateAnswers()
-            => db.CorrectDateAnswers;
-
-        public IEnumerable<CorrectDoubleAnswer> GetDoubleAnswers()
-            => db.CorrectDoubleAnswers;
-
-        public IEnumerable<CorrectIntAnswer> GetIntAnswers()
-            => db.CorrectIntAnswers;
-
-        public IEnumerable<CorrectTextAnswer> GetTextAnswers()
-            => db.CorrectTextAnswers;
-
         public async Task SaveAsync()
             => await db.SaveChangesAsync();
 

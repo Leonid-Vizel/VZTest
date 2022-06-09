@@ -19,6 +19,7 @@ namespace VZTest.Repository.IRepository
         IEnumerable<Attempt> GetUserTestAttempt(int testId, string userId);
         Attempt? GetAttemptWithAnswers(int attemptId);
         Task<int> GetTestAttemptsCount(int testId);
+        Attempt? GetCheckedAttempt(int attemptId);
         #endregion
 
         #region TestStatistics

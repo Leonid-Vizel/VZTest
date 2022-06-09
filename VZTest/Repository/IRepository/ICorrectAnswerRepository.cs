@@ -7,9 +7,5 @@ namespace VZTest.Repository.IRepository
     {
         void Update(CorrectAnswer value);
         Task SaveAsync();
-        IEnumerable<CorrectDateAnswer> GetDateAnswers();
-        IEnumerable<CorrectIntAnswer> GetIntAnswers();
-        IEnumerable<CorrectDoubleAnswer> GetDoubleAnswers();
-        IEnumerable<CorrectTextAnswer> GetTextAnswers();
     }
 }

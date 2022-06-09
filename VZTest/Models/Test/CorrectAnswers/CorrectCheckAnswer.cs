@@ -1,18 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace VZTest.Models.Test
+namespace VZTest.Models.Test.CorrectAnswers
 {
-    public class Answer
+    public class CorrectCheckAnswer : CorrectAnswer
     {
-        [Key]
-        public int Id { get; set; }
-        public int AttemptId { get; set; }
-        public int QuestionId { get; set; }
-        #region Check
         [NotMapped]
-        public int[] CheckAnswer
+        public int[] Correct
         {
             get
             {
@@ -31,7 +25,7 @@ namespace VZTest.Models.Test
                     return;
                 }
                 StringBuilder builder = new StringBuilder();
-                foreach(int integer in value)
+                foreach (int integer in value)
                 {
                     builder.Append($"{integer},");
                 }
@@ -40,14 +34,5 @@ namespace VZTest.Models.Test
             }
         }
         public string? CheckAnswerString { get; set; }
-        #endregion
-        public DateTime? DateAnswer { get; set; }
-        public double? DoubleAnswer { get; set; }
-        public string? TextAnswer { get; set; }
-        public int? RadioAnswer { get; set; }
-        public int? IntAnswer { get; set; }
-
-        [NotMapped]
-        public bool Correct { get; set; }
     }
 }

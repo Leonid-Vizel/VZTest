@@ -107,7 +107,32 @@ namespace VZTest.Controllers
 
         public IActionResult Results(int id)
         {
-            return null;
+            if (!signInManager.IsSignedIn(User))
+            {
+                return View(null); //Authorize
+            }
+            Attempt? attempt = unitOfWork.GetCheckedAttempt(id);
+            if (attempt == null)
+            {
+                return View(null); //NotFound
+            }
+            if (!attempt.UserId.Equals(userManager.GetUserId(User)))
+            {
+                return View(null); //Forbidden
+            }
+            if (attempt.Active)
+            {
+                return RedirectToAction("Attempt", new { Id = attempt.Id });
+            }
+            Test? test = unitOfWork.GetTestById(attempt.TestId, true);
+            if (test == null)
+            {
+                return View(null); //NotFound
+            }
+            AttemptModel attemptModel = new AttemptModel();
+            attemptModel.Attempt = attempt;
+            attemptModel.Test = test;
+            return View(attemptModel); //Ok
         }
 
         #endregion

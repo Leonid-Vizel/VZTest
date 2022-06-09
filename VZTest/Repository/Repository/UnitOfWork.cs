@@ -1,6 +1,7 @@
 ﻿using VZTest.Data;
 using VZTest.Models;
 using VZTest.Models.Test;
+using VZTest.Models.Test.CorrectAnswers;
 using VZTest.Repository.IRepository;
 
 namespace VZTest.Repository.Repository
@@ -129,6 +130,20 @@ namespace VZTest.Repository.Repository
         public async Task<int> GetTestAttemptsCount(int testId)
         {
             return await AttemptRepository.CountAsync(x => x.TestId == testId);
+        }
+
+        public Attempt? GetCheckedAttempt(int attemptId)
+        {
+            Attempt? attempt = GetAttemptWithAnswers(attemptId);
+            if (attempt == null)
+            {
+                return null;
+            }
+            foreach (Answer answer in attempt.Answers)
+            {
+                answer.Correct = CheckAnswerCorrect(answer);
+            }
+            return attempt;
         }
         #endregion
 
@@ -263,7 +278,7 @@ namespace VZTest.Repository.Repository
             {
                 return null;
             }
-            test.Questions = GetTestQuestions(test.Id, loadAnswers).OrderBy(x=>x.Number).ToList();
+            test.Questions = GetTestQuestions(test.Id, loadAnswers).OrderBy(x => x.Number).ToList();
             return test;
         }
         #endregion
@@ -279,6 +294,81 @@ namespace VZTest.Repository.Repository
         public IEnumerable<Answer> GetAttemptAnswers(int attemptId)
         {
             return AnswerRepository.GetWhere(x => x.AttemptId == attemptId);
+        }
+
+        private bool CheckAnswerCorrect(Answer answer)
+        {
+            Question? question = QuestionRepository.FirstOrDefault(x => x.Id == answer.QuestionId);
+            CorrectAnswer? correctAnswer = CorrectAnswerRepository.FirstOrDefault(x => x.QuestionId == answer.QuestionId);
+            if (question == null || correctAnswer == null)
+            {
+                return false;
+            }
+            switch (question.Type)
+            {
+                case QuestionType.Text:
+                    CorrectTextAnswer? correctTextAnswer = correctAnswer as CorrectTextAnswer;
+                    if (correctTextAnswer == null)
+                    {
+                        return false;
+                    }
+                    if (answer.TextAnswer == null)
+                    {
+                        return false;
+                    }
+                    return answer.TextAnswer.Equals(correctTextAnswer.Correct);
+                case QuestionType.Date:
+                    CorrectDateAnswer? correctDateAnswer = correctAnswer as CorrectDateAnswer;
+                    if (correctDateAnswer == null)
+                    {
+                        return false;
+                    }
+                    if (answer.DateAnswer == null)
+                    {
+                        return false;
+                    }
+                    return
+                        (answer.DateAnswer.Value.Year == correctDateAnswer.Correct.Year) &&
+                        (answer.DateAnswer.Value.Month == correctDateAnswer.Correct.Month) &&
+                        (answer.DateAnswer.Value.Day == correctDateAnswer.Correct.Day);
+                case QuestionType.Int:
+                    CorrectIntAnswer? correctIntAnswer = correctAnswer as CorrectIntAnswer;
+                    if (correctIntAnswer == null)
+                    {
+                        return false;
+                    }
+                    if (answer.IntAnswer == null)
+                    {
+                        return false;
+                    }
+                    return answer.IntAnswer == correctIntAnswer.Correct;
+                case QuestionType.Double:
+                    CorrectDoubleAnswer? correctDoubleAnswer = correctAnswer as CorrectDoubleAnswer;
+                    if (correctDoubleAnswer == null)
+                    {
+                        return false;
+                    }
+                    if (answer.DoubleAnswer == null)
+                    {
+                        return false;
+                    }
+                    return answer.DoubleAnswer == correctDoubleAnswer.Correct;
+                case QuestionType.Radio:
+                    CorrectIntAnswer? correctRadioAnswer = correctAnswer as CorrectIntAnswer;
+                    if (correctRadioAnswer == null)
+                    {
+                        return false;
+                    }
+                    if (answer.RadioAnswer == null)
+                    {
+                        return false;
+                    }
+                    return answer.RadioAnswer == correctRadioAnswer.Correct;
+                case QuestionType.Check:
+                    return false;
+                default:
+                    return false;
+            }
         }
         #endregion
 
