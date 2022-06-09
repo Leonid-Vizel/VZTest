@@ -96,7 +96,7 @@ namespace VZTest.Repository.Repository
             {
                 foreach (Attempt attempt in userAttempts)
                 {
-                    attempt.Answers = GetAttemptAnswers(attempt.Id);
+                    attempt.Answers = GetAttemptAnswers(attempt.Id).ToList();
                 }
             }
             return userAttempts;
@@ -109,7 +109,7 @@ namespace VZTest.Repository.Repository
             {
                 return null;
             }
-            attempt.Answers = GetAttemptAnswers(attemptId);
+            attempt.Answers = GetAttemptAnswers(attemptId).ToList();
             return attempt;
         }
 
@@ -120,7 +120,7 @@ namespace VZTest.Repository.Repository
             {
                 foreach (Attempt attempt in testAttempts)
                 {
-                    attempt.Answers = GetAttemptAnswers(attempt.Id);
+                    attempt.Answers = GetAttemptAnswers(attempt.Id).ToList();
                 }
             }
             return testAttempts;
@@ -140,7 +140,7 @@ namespace VZTest.Repository.Repository
             {
                 foreach (Question question in questions)
                 {
-                    question.Options = GetQuestionOptions(question.Id);
+                    question.Options = GetQuestionOptions(question.Id).ToList();
                     question.CorrectAnswer = GetQuestionCorrectAnswer(question.Id);
                 }
             }
@@ -148,12 +148,12 @@ namespace VZTest.Repository.Repository
             {
                 foreach (Question question in questions)
                 {
-                    question.Options = GetQuestionOptions(question.Id);
+                    question.Options = GetQuestionOptions(question.Id).ToList();
                 }
             }
             foreach (Question question in questions)
             {
-                question.Options = GetQuestionOptions(question.Id);
+                question.Options = GetQuestionOptions(question.Id).ToList();
             }
             return questions;
         }
@@ -263,7 +263,7 @@ namespace VZTest.Repository.Repository
             {
                 return null;
             }
-            test.Questions = GetTestQuestions(test.Id, loadAnswers);
+            test.Questions = GetTestQuestions(test.Id, loadAnswers).OrderBy(x=>x.Number).ToList();
             return test;
         }
         #endregion

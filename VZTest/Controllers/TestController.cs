@@ -51,6 +51,56 @@ namespace VZTest.Controllers
             return View(attemptModel); //Ok
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Attempt(int id, AttemptModel model)
+        {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return View(null); //Authorize
+            }
+            Attempt? attempt = unitOfWork.AttemptRepository.FirstOrDefault(x => x.Id == id);
+            if (attempt == null)
+            {
+                return View(null); //NotFound
+            }
+            if (!attempt.UserId.Equals(userManager.GetUserId(User)))
+            {
+                return View(null); //Forbidden
+            }
+            if (!attempt.Active)
+            {
+                return RedirectToAction("Results", new { Id = attempt.Id });
+            }
+            Test? test = unitOfWork.GetTestById(attempt.TestId, true);
+            if (test == null)
+            {
+                return View(null); //NotFound
+            }
+            if (test.Questions.Count != model.Attempt.Answers.Count)
+            {
+                return View(null); //Error
+            }
+            List<Answer> AttemptAnswers = unitOfWork.GetAttemptAnswers(id).ToList();
+            for (int i = 0; i < model.Attempt.Answers.Count; i++)
+            {
+                Answer? foundAnswer = AttemptAnswers.FirstOrDefault(x => x.QuestionId == test.Questions[i].Id);
+                if (foundAnswer != null)
+                {
+                    foundAnswer.CheckAnswer = model.Attempt.Answers[i].CheckAnswer;
+                    foundAnswer.DateAnswer = model.Attempt.Answers[i].DateAnswer;
+                    foundAnswer.IntAnswer = model.Attempt.Answers[i].IntAnswer;
+                    foundAnswer.DoubleAnswer = model.Attempt.Answers[i].DoubleAnswer;
+                    foundAnswer.RadioAnswer = model.Attempt.Answers[i].RadioAnswer;
+                    foundAnswer.TextAnswer = model.Attempt.Answers[i].TextAnswer;
+                    unitOfWork.AnswerRepository.Update(foundAnswer);
+                }
+            }
+            attempt.Active = false;
+            unitOfWork.AttemptRepository.Update(attempt);
+            await unitOfWork.SaveAsync();
+            return RedirectToAction("Results", new { Id = attempt.Id });
+        }
         #endregion
 
         #region Results
@@ -129,7 +179,7 @@ namespace VZTest.Controllers
             await unitOfWork.AttemptRepository.AddAsync(attempt);
             await unitOfWork.SaveAsync();
             List<Answer> answers = new List<Answer>();
-            foreach(Question question in unitOfWork.GetTestQuestions(id,false))
+            foreach (Question question in unitOfWork.GetTestQuestions(id, false))
             {
                 Answer answer = new Answer();
                 answer.QuestionId = question.Id;

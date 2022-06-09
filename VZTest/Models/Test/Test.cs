@@ -20,6 +20,6 @@ namespace VZTest.Models.Test
         public string? PasswordHash { get; set; }
         public DateTime CreatedTime { get; set; }
         [NotMapped]
-        public IEnumerable<Question> Questions { get; set; }
+        public List<Question> Questions { get; set; }
     }
 }

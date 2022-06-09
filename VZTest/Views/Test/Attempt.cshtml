@@ -5,29 +5,59 @@
 }
 
 <h1 class="text-center">@Model.Test.Title</h1>
+<hr>
 <form method="post">
     <div class="row container">
-        @foreach (Question question in Model.Test.Questions)
+        @for (int i = 0; i < Model.Test.Questions.Count; i++)
         {
-            <b>Вопрос #@question.Number: @question.Title</b>
+            Question question = Model.Test.Questions[i];
+            <h3 class="mt-2">
+                Вопрос #@(question.Number + 1)
+                <span class="text-muted">(@question.Balls @WordHelp.Inflect((int)question.Balls, "баллов", "балл", "балл"))</span>
+            </h3>
+            <h6>
+                <span class="text-muted">Задание: </span>
+                @question.Title
+            </h6>
             @switch (question.Type)
             {
                 case QuestionType.Text:
+                    @Html.TextAreaFor(m => m.Attempt.Answers[i].TextAnswer)
+                    ;
                     break;
                 case QuestionType.Date:
-                    break;
-                case QuestionType.Radio:
-                    break;
-                case QuestionType.Check:
+                    <input asp-for="Attempt.Answers[i].DateAnswer" type="date" class="form-control" />
                     break;
                 case QuestionType.Int:
+                    <input asp-for="Attempt.Answers[i].IntAnswer" class="form-control" />
                     break;
                 case QuestionType.Double:
+                    <input asp-for="Attempt.Answers[i].DoubleAnswer" class="form-control" />
+                    break;
+                case QuestionType.Radio:
+                    @foreach (Option option in question.Options)
+                    {
+                        <div class="form-check">
+                            <input asp-for="Attempt.Answers[i].RadioAnswer" class="form-check-input" type="radio" value="@option.Id">
+                            <label class="form-check-label">@option.Title</label>
+                        </div>
+                    }
+                    break;
+                case QuestionType.Check:
+                    @foreach (Option option in question.Options)
+                    {
+                        <div class="form-check">
+                            <input asp-for="Attempt.Answers[i].CheckAnswer" class="form-check-input" type="checkbox" value="@option.Id">
+                            <label class="form-check-label">@option.Title</label>
+                        </div>
+                    }
                     break;
             }
         }
     </div>
     <div class="container mt-3">
-        <button type="submit" class="btn btn-outline-primary"><i class="bi bi-send-fill"></i> Отправить</button>
+        <div class="text-end">
+            <button type="submit" class="btn btn-outline-primary mx-4"><i class="bi bi-send-fill"></i> Завершить</button>
+        </div>
     </div>
 </form>

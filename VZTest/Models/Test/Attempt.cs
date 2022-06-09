@@ -12,6 +12,6 @@ namespace VZTest.Models.Test
         public DateTime TimeStarted { get; set; }
         public string UserId { get; set; }
         [NotMapped]
-        public IEnumerable<Answer> Answers { get; set; }
+        public List<Answer> Answers { get; set; }
     }
 }
