@@ -11,45 +11,20 @@
     <h5>Войдите в свой аккаунт!</h5>
     return;
 }
-
 @if (Model == null || Model.Forbidden)
 {
     <h5>Доступ к опросу закрыт!</h5>
     return;
 }
-
 @if (Model.NotFound)
 {
     <h5>Такой тест не найден!</h5>
     return;
 }
 
-<script>
-    function StarToggle(id)
-    {
-        var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
-        var starred = document.getElementById("star-toggle-"+id) == null;
-        $.ajax({
-                type: "POST",
-                url: "/Test/StarToggle/",
-                data: {id: id, starred: starred, __RequestVerificationToken: verificationValue },
-                success: function(data)
-                {
-                    if (starred)
-                    {
-                        var element = document.getElementById("unstar-toggle-"+id);
-                        element.innerHTML = "<small>" + data + " <i class=\"bi bi-star\"></i></small>";
-                        element.setAttribute('id', "star-toggle-"+id);
-                    }
-                    else
-                    {
-                        var element = document.getElementById("star-toggle-"+id);
-                        element.innerHTML = "<small>" + data + " <i class=\"bi bi-star-fill\"></i></small>";
-                        element.setAttribute('id', "unstar-toggle-"+id);
-                    }
-                }});
-    }
-</script>
+<partial name = "_AjaxPartial"></partial>
+<partial name = "_SweetAlertsPartial"></partial>
+<partial name = "_StarScriptPartial"></partial>
 
 <style>
 h2 {

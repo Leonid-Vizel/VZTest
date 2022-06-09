@@ -77,7 +77,7 @@ namespace VZTest.Controllers
                 model.NotFound = true;
                 return View(model);
             }
-            if (foundTest.UserId.Equals(userId) && foundTest.PasswordHash != null && !foundTest.PasswordHash.Equals(passwordHash))
+            if (!foundTest.UserId.Equals(userId) && foundTest.PasswordHash != null && !foundTest.PasswordHash.Equals(passwordHash))
             {
                 model.Forbidden = true;
                 return View(model);
@@ -251,7 +251,7 @@ namespace VZTest.Controllers
             {
                 return Content("Closed");
             }
-            if (foundTest.PasswordHash == null)
+            if (foundTest.PasswordHash == null || foundTest.UserId.Equals(userManager.GetUserId(User)))
             {
                 return Content("Redirect");
             }
