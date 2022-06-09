@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using VZTest.Models;
 using VZTest.Models.Test;
-using VZTest.Models.Test.Answers;
 using VZTest.Models.Test.CorrectAnswers;
 
 namespace VZTest.Data
@@ -19,19 +18,6 @@ namespace VZTest.Data
         public DbSet<Answer> Answers { get; set; }
         public DbSet<CorrectAnswer> CorrectAnswers { get; set; }
         public DbSet<UserStar> UserStars { get; set; }
-        //Implementing Table Per Hierarchy (TPH) EF Inheritance Pattern for Answer
-        public DbSet<DateAnswer> DateAnswers { get; set; }
-        public DbSet<IntAnswer> IntAnswers { get; set; }
-        public DbSet<DoubleAnswer> DoubleAnswers { get; set; }
-        public DbSet<TextAnswer> TextAnswers { get; set; }
-        public DbSet<RadioAnswer> RadioAnswers { get; set; }
-        public DbSet<CheckAnswer> CheckAnswers { get; set; }
-        public DbSet<DateAnswerOptional> DateAnswersOptional { get; set; }
-        public DbSet<IntAnswerOptional> IntAnswersOptional { get; set; }
-        public DbSet<DoubleAnswerOptional> DoubleAnswersOptional { get; set; }
-        public DbSet<TextAnswerOptional> TextAnswersOptional { get; set; }
-        public DbSet<RadioAnswerOptional> RadioAnswersOptional { get; set; }
-        public DbSet<CheckAnswerOptional> CheckAnswersOptional { get; set; }
         //TPH for CorrectAnswer
         public DbSet<CorrectTextAnswer> CorrectTextAnswers { get; set; }
         public DbSet<CorrectIntAnswer> CorrectIntAnswers { get; set; }

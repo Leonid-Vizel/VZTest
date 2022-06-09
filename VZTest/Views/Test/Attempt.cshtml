@@ -1,5 +1,33 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using VZTest.Models.Test
+@model AttemptModel
 @{
+    ViewData["Title"] = "Прохождение теста";
 }
+
+<h1 class="text-center">@Model.Test.Title</h1>
+<form method="post">
+    <div class="row container">
+        @foreach (Question question in Model.Test.Questions)
+        {
+            <b>Вопрос #@question.Number: @question.Title</b>
+            @switch (question.Type)
+            {
+                case QuestionType.Text:
+                    break;
+                case QuestionType.Date:
+                    break;
+                case QuestionType.Radio:
+                    break;
+                case QuestionType.Check:
+                    break;
+                case QuestionType.Int:
+                    break;
+                case QuestionType.Double:
+                    break;
+            }
+        }
+    </div>
+    <div class="container mt-3">
+        <button type="submit" class="btn btn-outline-primary"><i class="bi bi-send-fill"></i> Отправить</button>
+    </div>
+</form>

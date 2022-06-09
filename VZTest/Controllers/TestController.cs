@@ -36,7 +36,7 @@ namespace VZTest.Controllers
             {
                 return View(null); //Forbidden
             }
-            if (attempt.Active)
+            if (!attempt.Active)
             {
                 return RedirectToAction("Results", new { Id = attempt.Id });
             }
@@ -118,12 +118,25 @@ namespace VZTest.Controllers
             {
                 return RedirectToAction("Preview");
             }
-            Attempt attempt = new Attempt();
-            attempt.UserId = userId;
-            attempt.TestId = id;
-            attempt.TimeStarted = DateTime.Now;
-            attempt.Active = true;
+
+            Attempt attempt = new Attempt()
+            {
+                UserId = userId,
+                TestId = id,
+                TimeStarted = DateTime.Now,
+                Active = true
+            };
             await unitOfWork.AttemptRepository.AddAsync(attempt);
+            await unitOfWork.SaveAsync();
+            List<Answer> answers = new List<Answer>();
+            foreach(Question question in unitOfWork.GetTestQuestions(id,false))
+            {
+                Answer answer = new Answer();
+                answer.QuestionId = question.Id;
+                answer.AttemptId = attempt.Id;
+                answers.Add(answer);
+            }
+            await unitOfWork.AnswerRepository.AddRangeAsync(answers);
             await unitOfWork.SaveAsync();
             return RedirectToAction("Attempt", new { id = attempt.Id });
         }
