@@ -28,13 +28,16 @@ namespace VZTest.Controllers
                 return View(null); //Authorize
             }
             Attempt? attempt = unitOfWork.GetAttemptWithAnswers(id);
+            AttemptModel attemptModel = new AttemptModel();
             if (attempt == null)
             {
-                return View(null); //NotFound
+                attemptModel.NotFound = true;
+                return View(attemptModel);
             }
             if (!attempt.UserId.Equals(userManager.GetUserId(User)))
             {
-                return View(null); //Forbidden
+                attemptModel.Forbidden = true;
+                return View(attemptModel);
             }
             if (!attempt.Active)
             {
@@ -43,9 +46,9 @@ namespace VZTest.Controllers
             Test? test = unitOfWork.GetTestById(attempt.TestId, false);
             if (test == null)
             {
-                return View(null); //NotFound
+                attemptModel.NotFound = true;
+                return View(attemptModel);
             }
-            AttemptModel attemptModel = new AttemptModel();
             attemptModel.Attempt = attempt;
             attemptModel.Test = test;
             return View(attemptModel); //Ok
@@ -62,11 +65,15 @@ namespace VZTest.Controllers
             Attempt? attempt = unitOfWork.AttemptRepository.FirstOrDefault(x => x.Id == id);
             if (attempt == null)
             {
-                return View(null); //NotFound
+                AttemptModel attemptModel = new AttemptModel();
+                attemptModel.NotFound = true;
+                return View(attemptModel);
             }
             if (!attempt.UserId.Equals(userManager.GetUserId(User)))
             {
-                return View(null); //Forbidden
+                AttemptModel attemptModel = new AttemptModel();
+                attemptModel.Forbidden = true;
+                return View(attemptModel);
             }
             if (!attempt.Active)
             {
@@ -75,7 +82,9 @@ namespace VZTest.Controllers
             Test? test = unitOfWork.GetTestById(attempt.TestId, true);
             if (test == null)
             {
-                return View(null); //NotFound
+                AttemptModel attemptModel = new AttemptModel();
+                attemptModel.NotFound = true;
+                return View(attemptModel);
             }
             if (test.Questions.Count != model.Attempt.Answers.Count)
             {
@@ -111,14 +120,17 @@ namespace VZTest.Controllers
             {
                 return View(null); //Authorize
             }
+            AttemptModel attemptModel = new AttemptModel();
             Attempt? attempt = unitOfWork.GetCheckedAttempt(id);
             if (attempt == null)
             {
-                return View(null); //NotFound
+                attemptModel.NotFound = true;
+                return View(attemptModel);
             }
             if (!attempt.UserId.Equals(userManager.GetUserId(User)))
             {
-                return View(null); //Forbidden
+                attemptModel.Forbidden = true;
+                return View(attemptModel);
             }
             if (attempt.Active)
             {
@@ -127,9 +139,9 @@ namespace VZTest.Controllers
             Test? test = unitOfWork.GetTestById(attempt.TestId, true);
             if (test == null)
             {
-                return View(null); //NotFound
+                attemptModel.NotFound = true;
+                return View(attemptModel);
             }
-            AttemptModel attemptModel = new AttemptModel();
             attemptModel.Attempt = attempt;
             attemptModel.Test = test;
             return View(attemptModel); //Ok

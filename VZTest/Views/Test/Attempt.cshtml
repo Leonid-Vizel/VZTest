@@ -1,7 +1,33 @@
-﻿@using VZTest.Models.Test
+﻿@using Microsoft.AspNetCore.Identity
+@using VZTest.Models.Test
+@inject SignInManager<IdentityUser> signInManager
 @model AttemptModel
 @{
     ViewData["Title"] = "Прохождение теста";
+}
+
+@if (!signInManager.IsSignedIn(User))
+{
+    <h5>Войдите в свой аккаунт</h5>
+    return;
+}
+
+@if (Model == null)
+{
+    <h5>Ошибка</h5>
+    return;
+}
+
+@if (Model.Forbidden)
+{
+    <h5>Доступ ограничен</h5>
+    return;
+}
+
+@if (Model.NotFound)
+{
+    <h5>Попытка не найдена</h5>
+    return;
 }
 
 <h1 class="text-center">@Model.Test.Title</h1>

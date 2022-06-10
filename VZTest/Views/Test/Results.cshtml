@@ -1,13 +1,44 @@
-﻿@using VZTest.Models.Test
+﻿@using Microsoft.AspNetCore.Identity
+@using VZTest.Models.Test
+@inject SignInManager<IdentityUser> signInManager
 @using VZTest.Models.Test.CorrectAnswers
 @model AttemptModel
 @{
     ViewData["Title"] = "Простотр попытки";
-    int percent = (int)((Model.Attempt.Balls / Model.Attempt.MaxBalls) * 100);
+    int percent = 0;
+    if (Model.Attempt != null)
+    {
+        percent = (int)((Model.Attempt.Balls / Model.Attempt.MaxBalls) * 100);
+    }
 }
 <link rel="stylesheet" href="~/css/PercentCircle.css">
 <h2><i class="bi bi-eye-fill"></i> Просмотр попытки</h2>
 <hr>
+
+@if (!signInManager.IsSignedIn(User))
+{
+    <h5>Войдите в свой аккаунт</h5>
+    return;
+}
+
+@if (Model == null)
+{
+    <h5>Ошибка</h5>
+    return;
+}
+
+@if (Model.Forbidden)
+{
+    <h5>Доступ ограничен</h5>
+    return;
+}
+
+@if (Model.NotFound)
+{
+    <h5>Попытка не найдена</h5>
+    return;
+}
+
 <h5>Тест: @Model.Test.Title</h5>
 <h5>Попытка от @Model.Attempt.TimeStarted</h5>
 <hr>
