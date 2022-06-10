@@ -12,7 +12,7 @@ namespace VZTest.Models.Test
         public int QuestionId { get; set; }
         #region Check
         [NotMapped]
-        public int[] CheckAnswer
+        public int[]? CheckAnswer
         {
             get
             {
@@ -25,7 +25,7 @@ namespace VZTest.Models.Test
             }
             set
             {
-                if (value.Length == 0)
+                if (value == null ||value.Length == 0)
                 {
                     CheckAnswerString = null;
                     return;

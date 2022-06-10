@@ -17,5 +17,7 @@ namespace VZTest.Models.Test
         public double Balls { get; set; }
         [NotMapped]
         public double MaxBalls { get; set; }
+        [NotMapped]
+        public int CorrectAnswers { get; set; }
     }
 }

@@ -120,30 +120,34 @@ namespace VZTest.Controllers
             {
                 return View(null); //Authorize
             }
+            string userId = userManager.GetUserId(User);
             AttemptModel attemptModel = new AttemptModel();
-            Attempt? attempt = unitOfWork.GetCheckedAttempt(id);
-            if (attempt == null)
+            Attempt? foundAttempt = unitOfWork.GetCheckedAttempt(id);
+            if (foundAttempt == null)
             {
                 attemptModel.NotFound = true;
                 return View(attemptModel);
             }
-            if (!attempt.UserId.Equals(userManager.GetUserId(User)))
-            {
-                attemptModel.Forbidden = true;
-                return View(attemptModel);
-            }
-            if (attempt.Active)
-            {
-                return RedirectToAction("Attempt", new { Id = attempt.Id });
-            }
-            Test? test = unitOfWork.GetTestById(attempt.TestId, true);
-            if (test == null)
+            Test? foundTest = unitOfWork.GetTestById(foundAttempt.TestId, true);
+            if (foundTest == null)
             {
                 attemptModel.NotFound = true;
                 return View(attemptModel);
             }
-            attemptModel.Attempt = attempt;
-            attemptModel.Test = test;
+            if (!foundAttempt.UserId.Equals(userId))
+            {
+                if (!foundTest.UserId.Equals(userId))
+                {
+                    attemptModel.Forbidden = true;
+                    return View(attemptModel);
+                }
+            }
+            if (foundAttempt.Active && foundAttempt.UserId.Equals(userId))
+            {
+                return RedirectToAction("Attempt", new { Id = foundAttempt.Id });
+            }
+            attemptModel.Attempt = foundAttempt;
+            attemptModel.Test = foundTest;
             return View(attemptModel); //Ok
         }
 
@@ -389,9 +393,44 @@ namespace VZTest.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SaveAttemptAnswer(int attemptId, int questionId, object value)
+        public async Task<IActionResult> SaveAttemptAnswer(int attemptId, int questionId, object value)
         {
-            return null;
+            Answer? foundAnswer = unitOfWork.AnswerRepository.FirstOrDefault(x => x.AttemptId == attemptId && x.QuestionId == questionId);
+            Question? foundQuestion = unitOfWork.QuestionRepository.FirstOrDefault(x => x.Id == questionId);
+            if (foundAnswer == null || foundQuestion == null)
+            {
+                return StatusCode(404);
+            }
+            if (value == null)
+            {
+                foundAnswer.DoubleAnswer = null;
+                foundAnswer.TextAnswer = null;
+                foundAnswer.IntAnswer = null;
+                foundAnswer.RadioAnswer = null;
+                foundAnswer.CheckAnswer = null;
+                foundAnswer.DateAnswer = null;
+            }
+            else
+            {
+                switch (foundQuestion.Type)
+                {
+                    case QuestionType.Text:
+                        break;
+                    case QuestionType.Int:
+                        break;
+                    case QuestionType.Double:
+                        break;
+                    case QuestionType.Date:
+                        break;
+                    case QuestionType.Radio:
+                        break;
+                    case QuestionType.Check:
+                        break;
+                }
+            }
+            unitOfWork.AnswerRepository.Update(foundAnswer);
+            await unitOfWork.SaveAsync();
+            return Ok();
         }
         #endregion
     }

@@ -145,6 +145,10 @@ namespace VZTest.Repository.Repository
                 double balls = CheckAnswerCorrect(answer);
                 attempt.Balls += balls;
                 answer.Correct = CheckAnswerCorrect(answer) > 0;
+                if (answer.Correct)
+                {
+                    attempt.CorrectAnswers++;
+                }
             }
             return attempt;
         }
