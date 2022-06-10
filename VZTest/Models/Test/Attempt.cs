@@ -13,5 +13,9 @@ namespace VZTest.Models.Test
         public string UserId { get; set; }
         [NotMapped]
         public List<Answer> Answers { get; set; }
+        [NotMapped]
+        public double Balls { get; set; }
+        [NotMapped]
+        public double MaxBalls { get; set; }
     }
 }

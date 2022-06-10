@@ -42,6 +42,7 @@ namespace VZTest.Repository.IRepository
 
         #region Tests
         Test? GetTestById(int testId, bool loadAnswers);
+        double GetTestTotalBalls(int testId);
         void RemoveTest(int testId);
         Task AddTest(Test value);
         #endregion

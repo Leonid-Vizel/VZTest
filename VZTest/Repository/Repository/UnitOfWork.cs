@@ -139,9 +139,12 @@ namespace VZTest.Repository.Repository
             {
                 return null;
             }
+            attempt.MaxBalls = GetTestTotalBalls(attempt.TestId);
             foreach (Answer answer in attempt.Answers)
             {
-                answer.Correct = CheckAnswerCorrect(answer);
+                double balls = CheckAnswerCorrect(answer);
+                attempt.Balls += balls;
+                answer.Correct = CheckAnswerCorrect(answer) > 0;
             }
             return attempt;
         }
@@ -176,6 +179,11 @@ namespace VZTest.Repository.Repository
         public async Task<int> GetTestQuestionCount(int testId)
         {
             return await QuestionRepository.CountAsync(x => x.TestId == testId);
+        }
+
+        public double GetTestTotalBalls(int testId)
+        {
+            return QuestionRepository.GetWhere(x => x.TestId == testId).Sum(x => x.Balls);
         }
         #endregion
 
@@ -296,13 +304,13 @@ namespace VZTest.Repository.Repository
             return AnswerRepository.GetWhere(x => x.AttemptId == attemptId);
         }
 
-        private bool CheckAnswerCorrect(Answer answer)
+        private double CheckAnswerCorrect(Answer answer)
         {
             Question? question = QuestionRepository.FirstOrDefault(x => x.Id == answer.QuestionId);
             CorrectAnswer? correctAnswer = CorrectAnswerRepository.FirstOrDefault(x => x.QuestionId == answer.QuestionId);
             if (question == null || correctAnswer == null)
             {
-                return false;
+                return 0;
             }
             switch (question.Type)
             {
@@ -310,64 +318,98 @@ namespace VZTest.Repository.Repository
                     CorrectTextAnswer? correctTextAnswer = correctAnswer as CorrectTextAnswer;
                     if (correctTextAnswer == null)
                     {
-                        return false;
+                        return 0;
                     }
                     if (answer.TextAnswer == null)
                     {
-                        return false;
+                        return 0;
                     }
-                    return answer.TextAnswer.Equals(correctTextAnswer.Correct);
+                    if (answer.TextAnswer.Equals(correctTextAnswer.Correct))
+                    {
+                        return question.Balls;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
                 case QuestionType.Date:
                     CorrectDateAnswer? correctDateAnswer = correctAnswer as CorrectDateAnswer;
                     if (correctDateAnswer == null)
                     {
-                        return false;
+                        return 0;
                     }
                     if (answer.DateAnswer == null)
                     {
-                        return false;
+                        return 0;
                     }
-                    return
-                        (answer.DateAnswer.Value.Year == correctDateAnswer.Correct.Year) &&
-                        (answer.DateAnswer.Value.Month == correctDateAnswer.Correct.Month) &&
-                        (answer.DateAnswer.Value.Day == correctDateAnswer.Correct.Day);
+                    if ((answer.DateAnswer.Value.Year == correctDateAnswer.Correct.Year) &&
+                    (answer.DateAnswer.Value.Month == correctDateAnswer.Correct.Month) &&
+                    (answer.DateAnswer.Value.Day == correctDateAnswer.Correct.Day))
+                    {
+                        return question.Balls;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
                 case QuestionType.Int:
                     CorrectIntAnswer? correctIntAnswer = correctAnswer as CorrectIntAnswer;
                     if (correctIntAnswer == null)
                     {
-                        return false;
+                        return 0;
                     }
                     if (answer.IntAnswer == null)
                     {
-                        return false;
+                        return 0;
                     }
-                    return answer.IntAnswer == correctIntAnswer.Correct;
+                    if (answer.IntAnswer == correctIntAnswer.Correct)
+                    {
+                        return question.Balls;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
                 case QuestionType.Double:
                     CorrectDoubleAnswer? correctDoubleAnswer = correctAnswer as CorrectDoubleAnswer;
                     if (correctDoubleAnswer == null)
                     {
-                        return false;
+                        return 0;
                     }
                     if (answer.DoubleAnswer == null)
                     {
-                        return false;
+                        return 0;
                     }
-                    return answer.DoubleAnswer == correctDoubleAnswer.Correct;
+                    if (answer.DoubleAnswer == correctDoubleAnswer.Correct)
+                    {
+                        return question.Balls;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
                 case QuestionType.Radio:
                     CorrectIntAnswer? correctRadioAnswer = correctAnswer as CorrectIntAnswer;
                     if (correctRadioAnswer == null)
                     {
-                        return false;
+                        return 0;
                     }
                     if (answer.RadioAnswer == null)
                     {
-                        return false;
+                        return 0;
                     }
-                    return answer.RadioAnswer == correctRadioAnswer.Correct;
+                    if (answer.RadioAnswer == correctRadioAnswer.Correct)
+                    {
+                        return question.Balls;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
                 case QuestionType.Check:
-                    return false;
+                    return 0;
                 default:
-                    return false;
+                    return 0;
             }
         }
         #endregion
