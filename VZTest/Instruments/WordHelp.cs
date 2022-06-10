@@ -16,25 +16,22 @@
             {
                 return str1;
             }
-            else
+            switch (number % 10)
             {
-                switch (number % 10)
-                {
-                    case 1:
-                        return str2;
-                    case 2:
-                    case 3:
-                    case 4:
-                        return str3;
-                    case 5:
-                    case 6:
-                    case 7:
-                    case 8:
-                    case 9:
-                        return str1;
-                    default:
-                        return str1;
-                }
+                case 1:
+                    return str2;
+                case 2:
+                case 3:
+                case 4:
+                    return str3;
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                    return str1;
+                default:
+                    return str1;
             }
         }
     }

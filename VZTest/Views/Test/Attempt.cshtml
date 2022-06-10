@@ -30,6 +30,30 @@
     return;
 }
 
+<script>
+    function KeyPress(e)
+    {
+        switch (e.key)
+        {
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+            case ',':
+            break;
+            default:
+                e.preventDefault();
+            break;
+        }
+    }
+</script>
+
 <h1 class="text-center">@Model.Test.Title</h1>
 <hr>
 <form method="post">
@@ -58,7 +82,7 @@
                     <input asp-for="Attempt.Answers[i].IntAnswer" class="form-control" />
                     break;
                 case QuestionType.Double:
-                    <input asp-for="Attempt.Answers[i].DoubleAnswer" class="form-control" />
+                    <input asp-for="Attempt.Answers[i].DoubleAnswer" onkeypress="KeyPress(event);" class="form-control" />
                     break;
                 case QuestionType.Radio:
                     @foreach (Option option in question.Options)
