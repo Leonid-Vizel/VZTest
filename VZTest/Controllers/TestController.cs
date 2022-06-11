@@ -155,6 +155,34 @@ namespace VZTest.Controllers
 
         #endregion
 
+        #region Results
+
+        public IActionResult Results(int id)
+        {
+            TestResultsModel model = new TestResultsModel();
+            if (!signInManager.IsSignedIn(User))
+            {
+                return View(null); //Authorize
+            }
+            string userId = userManager.GetUserId(User);
+            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            if (foundTest == null)
+            {
+                model.NotFound = true;
+                return View(model);
+            }
+            if (!foundTest.UserId.Equals(userId))
+            {
+                model.Forbidden = true;
+                return View(model);
+            }
+            model.Test = foundTest;
+            model.Attempts = unitOfWork.GetTestAttempts(id, true);
+            return View(model);
+        }
+
+        #endregion
+
         #region Preview
         public async Task<IActionResult> Preview(int id, string passwordHash = "")
         {

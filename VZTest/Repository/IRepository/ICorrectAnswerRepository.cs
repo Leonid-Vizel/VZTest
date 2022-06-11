@@ -1,5 +1,4 @@
 ﻿using VZTest.Models.Test;
-using VZTest.Models.Test.CorrectAnswers;
 
 namespace VZTest.Repository.IRepository
 {

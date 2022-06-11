@@ -116,7 +116,7 @@ namespace VZTest.Repository.Repository
 
         public IEnumerable<Attempt> GetTestAttempts(int testId, bool loadAnswers)
         {
-            IEnumerable<Attempt> testAttempts = AttemptRepository.GetWhere(x => x.TestId == testId);
+            List<Attempt> testAttempts = AttemptRepository.GetWhere(x => x.TestId == testId).ToList();
             if (loadAnswers)
             {
                 foreach (Attempt attempt in testAttempts)
@@ -417,6 +417,10 @@ namespace VZTest.Repository.Repository
         {
             return CorrectAnswerRepository.FirstOrDefault(x => x.QuestionId == questionId);
         }
+        #endregion
+
+        #region Users
+
         #endregion
 
         public async Task SaveAsync()

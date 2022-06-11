@@ -6,6 +6,15 @@
     ViewData["Title"] = "Ваши тесты";
 }
 
+<h2><i class="bi bi-list-stars"></i> @ViewData["Title"]</h2>
+<hr id="top-separator">
+
+@if (!signInManager.IsSignedIn(User))
+{
+    <h5>Войдите в свой аккаунт</h5>
+    return;
+}
+
 <partial name = "_AjaxPartial"></partial>
 <partial name = "_SweetAlertsPartial"></partial>
 
@@ -151,15 +160,6 @@
     }
 </script>
 
-<h2><i class="bi bi-list-stars"></i> @ViewData["Title"]</h2>
-<hr id="top-separator">
-
-@if (!signInManager.IsSignedIn(User))
-{
-    <h5>Войдите в свой аккаунт</h5>
-    return;
-}
-
 @if (Model != null && Model.Count() > 0)
 {
     @foreach (TestStatistics test in Model)
@@ -185,7 +185,7 @@
             </div>
             <div class="text-end">
                 <form>
-                    <button class="btn btn-outline-success" type="submit"><i class="bi bi-file-earmark-text"></i> Результаты</button> @*Доработать*@
+                    <a asp-controller = "Test" asp-action = "Results" asp-route-id = "@test.Test.Id" class="btn btn-outline-success" ><i class="bi bi-file-earmark-text"></i> Результаты</a>
                     <a class="btn btn-outline-warning" asp-controller="Test" asp-action="Edit" asp-route-Id="@test.Test.Id"><i class="bi bi-pencil"></i> Редактировать</a>
                     @if (test.Test.Opened)
                     {
