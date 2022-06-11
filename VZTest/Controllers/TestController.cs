@@ -395,6 +395,10 @@ namespace VZTest.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveAttemptAnswer(int attemptId, int questionId, object value)
         {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return StatusCode(401);
+            }
             Answer? foundAnswer = unitOfWork.AnswerRepository.FirstOrDefault(x => x.AttemptId == attemptId && x.QuestionId == questionId);
             Question? foundQuestion = unitOfWork.QuestionRepository.FirstOrDefault(x => x.Id == questionId);
             if (foundAnswer == null || foundQuestion == null)
@@ -431,6 +435,27 @@ namespace VZTest.Controllers
             unitOfWork.AnswerRepository.Update(foundAnswer);
             await unitOfWork.SaveAsync();
             return Ok();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CheckActiveAttemps(int id)
+        {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return StatusCode(401);
+            }
+            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            if (foundTest == null)
+            {
+                return StatusCode(404);
+            }
+            List<Attempt> attemps = unitOfWork.GetUserTestAttempt(id,userManager.GetUserId(User)).ToList();
+            if (attemps.Any(x=>x.Active))
+            {
+                return Content("Active");
+            }
+            return Content("Redirect");
         }
         #endregion
     }

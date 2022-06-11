@@ -30,28 +30,55 @@
     return;
 }
 
+<partial name = "_SweetAlertsPartial"></partial>
+
 <script>
-    function KeyPress(e)
-    {
-        switch (e.key)
+        function KeyPress(e)
         {
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-            case ',':
-            break;
-            default:
-                e.preventDefault();
-            break;
+            switch (e.key)
+            {
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                case ',':
+                break;
+                default:
+                    e.preventDefault();
+                break;
+            }
         }
-    }
+
+        var flag = true;
+
+        function AskEnd(e)
+        {
+            if (!flag)
+            {
+                return;
+            }
+            e.preventDefault();
+            swal({
+                title: "Вы уверены?",
+                text: "После завершения попытки вы больше не сможете редактировать свои ответы!",
+                icon: "warning",
+                buttons: true
+                })
+                .then((end) =>
+                {
+                    if (end)
+                    {
+                        flag = false;
+                        document.getElementById('main-button').click();
+                    }
+                });
+        }
 </script>
 
 <h1 class="text-center">@Model.Test.Title</h1>
@@ -107,7 +134,7 @@
     </div>
     <div class="container mt-3">
         <div class="text-end">
-            <button type="submit" class="btn btn-outline-primary mx-4"><i class="bi bi-send-fill"></i> Завершить</button>
+            <button id = "main-button" type="submit" class="btn btn-outline-primary mx-4" onclick = "AskEnd(event);"><i class="bi bi-send-fill"></i> Завершить</button>
         </div>
     </div>
 </form>
