@@ -46,8 +46,6 @@ namespace VZTest.Models.Test
         public string? TextAnswer { get; set; }
         public int? RadioAnswer { get; set; }
         public int? IntAnswer { get; set; }
-
-        [NotMapped]
         public bool Correct { get; set; }
     }
 }

@@ -41,7 +41,7 @@ namespace VZTest.Controllers
             }
             if (!attempt.Active)
             {
-                return RedirectToAction("Results", new { Id = attempt.Id });
+                return RedirectToAction("Result", new { Id = attempt.Id });
             }
             Test? test = unitOfWork.GetTestById(attempt.TestId, false);
             if (test == null)
@@ -77,7 +77,7 @@ namespace VZTest.Controllers
             }
             if (!attempt.Active)
             {
-                return RedirectToAction("Results", new { Id = attempt.Id });
+                return RedirectToAction("Result", new { Id = attempt.Id });
             }
             Test? test = unitOfWork.GetTestById(attempt.TestId, true);
             if (test == null)
@@ -105,16 +105,18 @@ namespace VZTest.Controllers
                     unitOfWork.AnswerRepository.Update(foundAnswer);
                 }
             }
+            attempt.Answers = AttemptAnswers;
             attempt.Active = false;
+            unitOfWork.CheckAttempt(attempt);
             unitOfWork.AttemptRepository.Update(attempt);
             await unitOfWork.SaveAsync();
-            return RedirectToAction("Results", new { Id = attempt.Id });
+            return RedirectToAction("Result", new { Id = attempt.Id });
         }
         #endregion
 
-        #region Results
+        #region Result
 
-        public IActionResult Results(int id)
+        public IActionResult Result(int id)
         {
             if (!signInManager.IsSignedIn(User))
             {
@@ -122,7 +124,7 @@ namespace VZTest.Controllers
             }
             string userId = userManager.GetUserId(User);
             AttemptModel attemptModel = new AttemptModel();
-            Attempt? foundAttempt = unitOfWork.GetCheckedAttempt(id);
+            Attempt? foundAttempt = unitOfWork.GetAttemptWithAnswers(id);
             if (foundAttempt == null)
             {
                 attemptModel.NotFound = true;
@@ -177,7 +179,7 @@ namespace VZTest.Controllers
             model.StarsCount = await unitOfWork.GetTestStarsCount(id);
             model.Test = foundTest;
             model.TotalAttempts = await unitOfWork.GetTestAttemptsCount(id);
-            model.UserAttempts = unitOfWork.GetUserTestCheckedAttempts(id, userId);
+            model.UserAttempts = unitOfWork.GetUserTestAttempts(id, userId);
             return View(model);
         }
 

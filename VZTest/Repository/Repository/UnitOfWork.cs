@@ -132,18 +132,7 @@ namespace VZTest.Repository.Repository
             return await AttemptRepository.CountAsync(x => x.TestId == testId);
         }
 
-        public IEnumerable<Attempt> GetUserTestCheckedAttempts(int testId, string userId)
-        {
-            IEnumerable<Attempt> attempts = AttemptRepository.GetWhere(x => x.TestId == testId && x.UserId.Equals(userId)).ToList();
-            foreach(Attempt attempt in attempts)
-            {
-                attempt.Answers = GetAttemptAnswers(attempt.Id).ToList();
-                CheckAttempt(attempt);
-            }
-            return attempts;
-        }
-
-        private void CheckAttempt(Attempt attempt)
+        public void CheckAttempt(Attempt attempt)
         {
             attempt.MaxBalls = GetTestTotalBalls(attempt.TestId);
             foreach (Answer answer in attempt.Answers)
@@ -156,27 +145,6 @@ namespace VZTest.Repository.Repository
                     attempt.CorrectAnswers++;
                 }
             }
-        }
-
-        public Attempt? GetCheckedAttempt(int attemptId)
-        {
-            Attempt? attempt = GetAttemptWithAnswers(attemptId);
-            if (attempt == null)
-            {
-                return null;
-            }
-            attempt.MaxBalls = GetTestTotalBalls(attempt.TestId);
-            foreach (Answer answer in attempt.Answers)
-            {
-                double balls = CheckAnswerCorrect(answer);
-                attempt.Balls += balls;
-                answer.Correct = CheckAnswerCorrect(answer) > 0;
-                if (answer.Correct)
-                {
-                    attempt.CorrectAnswers++;
-                }
-            }
-            return attempt;
         }
         #endregion
 

@@ -11,13 +11,10 @@ namespace VZTest.Models.Test
         public bool Active { get; set; }
         public DateTime TimeStarted { get; set; }
         public string UserId { get; set; }
-        [NotMapped]
-        public List<Answer> Answers { get; set; }
-        [NotMapped]
+        public int CorrectAnswers { get; set; }
         public double Balls { get; set; }
-        [NotMapped]
         public double MaxBalls { get; set; }
         [NotMapped]
-        public int CorrectAnswers { get; set; }
+        public List<Answer> Answers { get; set; }
     }
 }

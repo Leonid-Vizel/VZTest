@@ -30,55 +30,55 @@
     return;
 }
 
-<partial name = "_SweetAlertsPartial"></partial>
+<partial name="_SweetAlertsPartial"></partial>
 
 <script>
-        function KeyPress(e)
+    function KeyPress(e)
+    {
+        switch (e.key)
         {
-            switch (e.key)
-            {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                case ',':
-                break;
-                default:
-                    e.preventDefault();
-                break;
-            }
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+            case ',':
+            break;
+            default:
+                e.preventDefault();
+            break;
         }
+    }
 
-        var flag = true;
+    var flag = true;
 
-        function AskEnd(e)
+    function AskEnd(e)
+    {
+        if (!flag)
         {
-            if (!flag)
+            return;
+        }
+        e.preventDefault();
+        swal({
+            title: "Вы уверены?",
+            text: "После завершения попытки вы больше не сможете редактировать свои ответы!",
+            icon: "warning",
+            buttons: true
+            })
+            .then((end) =>
             {
-                return;
-            }
-            e.preventDefault();
-            swal({
-                title: "Вы уверены?",
-                text: "После завершения попытки вы больше не сможете редактировать свои ответы!",
-                icon: "warning",
-                buttons: true
-                })
-                .then((end) =>
+                if (end)
                 {
-                    if (end)
-                    {
-                        flag = false;
-                        document.getElementById('main-button').click();
-                    }
-                });
-        }
+                    flag = false;
+                    document.getElementById('main-button').click();
+                }
+            });
+    }
 </script>
 
 <h1 class="text-center">@Model.Test.Title</h1>
@@ -112,10 +112,19 @@
                     <input asp-for="Attempt.Answers[i].DoubleAnswer" onkeypress="KeyPress(event);" class="form-control" />
                     break;
                 case QuestionType.Radio:
-                    @foreach (Option option in question.Options)
+                    bool first = true;
+                    foreach (Option option in question.Options)
                     {
                         <div class="form-check">
-                            <input asp-for="Attempt.Answers[i].RadioAnswer" class="form-check-input" type="radio" value="@option.Id">
+                            @if (first)
+                            {
+                                first = false;
+                                <input asp-for="Attempt.Answers[i].RadioAnswer" class="form-check-input" type="radio" value="@option.Id" checked>
+                            }
+                            else
+                            {
+                                <input asp-for="Attempt.Answers[i].RadioAnswer" class="form-check-input" type="radio" value="@option.Id">
+                            }
                             <label class="form-check-label">@option.Title</label>
                         </div>
                     }
@@ -134,7 +143,7 @@
     </div>
     <div class="container mt-3">
         <div class="text-end">
-            <button id = "main-button" type="submit" class="btn btn-outline-primary mx-4" onclick = "AskEnd(event);"><i class="bi bi-send-fill"></i> Завершить</button>
+            <button id="main-button" type="submit" class="btn btn-outline-primary mx-4" onclick="AskEnd(event);"><i class="bi bi-send-fill"></i> Завершить</button>
         </div>
     </div>
 </form>
