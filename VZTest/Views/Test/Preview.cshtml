@@ -22,59 +22,65 @@
     return;
 }
 
-<partial name = "_AjaxPartial"></partial>
-<partial name = "_SweetAlertsPartial"></partial>
-<partial name = "_StarScriptPartial"></partial>
+<link rel="stylesheet" href="~/css/PercentCircle.css">
+<partial name="_AjaxPartial"></partial>
+<partial name="_SweetAlertsPartial"></partial>
+<partial name="_StarScriptPartial"></partial>
 
 <style>
-h2 {
-  display:inline-block;
-  float:left;
-}
+    h2 {
+        display: inline-block;
+        float: left;
+    }
+    .center{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 </style>
 
 <script>
-var flag = true;
+    var flag = true;
 
-function CheckActive(e,id)
-{
-    if (!flag)
+    function CheckActive(e,id)
     {
-        return;
-    }
-    e.preventDefault();
-    var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
-    $.ajax({
-        type: "POST",
-        url: "/Test/CheckActiveAttemps/",
-        data: { id: id, __RequestVerificationToken: verificationValue },
-        error: function (error) {
-            switch (error.status) {
-                case 401:
-                swal("Авторизуйтесь!", "Для того, чтобы пройти тес надо авторизоваться", "error");
-                break;
-                case 404:
-                swal("Элемент не найден!", "Попробуйте снова.", "error");
-                break;
-            }
-        },
-        success: function (data) {
-            switch (data) {
-                case 'Active':
-                swal("Ошибка!", "У Вас уже есть активные попытки в этом тесте!", "error");
-                break;
-                case 'Redirect':
-                flag = false;
-                document.getElementById('main-button').click();
-                break;
-            }
+        if (!flag)
+        {
+            return;
         }
-    });
-}
+        e.preventDefault();
+        var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+        $.ajax({
+            type: "POST",
+            url: "/Test/CheckActiveAttemps/",
+            data: { id: id, __RequestVerificationToken: verificationValue },
+            error: function (error) {
+                switch (error.status) {
+                    case 401:
+                    swal("Авторизуйтесь!", "Для того, чтобы пройти тес надо авторизоваться", "error");
+                    break;
+                    case 404:
+                    swal("Элемент не найден!", "Попробуйте снова.", "error");
+                    break;
+                }
+            },
+            success: function (data) {
+                switch (data) {
+                    case 'Active':
+                    swal("Ошибка!", "У Вас уже есть активные попытки в этом тесте!", "error");
+                    break;
+                    case 'Redirect':
+                    flag = false;
+                    document.getElementById('main-button').click();
+                    break;
+                }
+            }
+        });
+    }
 </script>
 
 <h2><i class="bi bi-list-check"></i> Информация об опросе #@Model.Test.Id</h2>
-<div class="pull-left">  
+<div class="pull-left">
     @if (Model.Liked)
     {
         <a id="unstar-toggle-@Model.Test.Id" class="btn btn-outline-success mx-3" onclick="StarToggle(@Model.Test.Id);"><small>@Model.StarsCount <i class="bi bi-star-fill"></i></small></a>
@@ -85,7 +91,8 @@ function CheckActive(e,id)
     }
 </div>
 <hr>
-<span style="white-space: pre-line">Название: <b>@Model.Test.Title</b>
+<span style="white-space: pre-line">
+    Название: <b>@Model.Test.Title</b>
     Описание: <b>@Model.Test.Description</b>
     Максимальное количество попыток: <b>@Model.Test.MaxAttempts</b>
 </span>
@@ -96,13 +103,54 @@ function CheckActive(e,id)
     <h5>Ваши попытки:</h5>
     @foreach (Attempt attempt in Model.UserAttempts)
     {
-        if (attempt.Active)
+        @if (attempt.Active)
         {
-            <a asp-controller="Test" asp-action="Attempt" asp-route-id="@attempt.Id">[Активная] Попытка от @attempt.TimeStarted.ToString("dd.MM.yyyy HH:mm:ss")</a>
+            <div class="flex-wrapper">
+                <div class="single-chart-sm">
+                    <svg viewBox="0 0 36 36" class="circular-chart green">
+                        <path class="circle-bg"
+                  d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="circle"
+                  stroke-dasharray="0, 100"
+                  d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <text x="18" y="20.35" class="percentage">0 / @attempt.MaxBalls</text>
+                    </svg>
+                </div>
+                <div class = "center">
+                    <h5>
+                        <a asp-controller="Test" asp-action="Attempt" asp-route-id="@attempt.Id">АКТИВНАЯ попытка от @attempt.TimeStarted.ToString("dd.MM.yyyy HH:mm:ss")</a>
+                    </h5>
+                </div>
+            </div>
         }
         else
         {
-            <a asp-controller="Test" asp-action="Attempt" asp-route-id="@attempt.Id">[Завершена] Попытка от @attempt.TimeStarted.ToString("dd.MM.yyyy HH:mm:ss")</a>
+            int percent = (int)((attempt.Balls / attempt.MaxBalls) * 100);
+            <div class="flex-wrapper">
+                <div class="single-chart-sm">
+                    <svg viewBox="0 0 36 36" class="circular-chart green">
+                        <path class="circle-bg"
+                  d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="circle"
+                  stroke-dasharray="@percent, 100"
+                  d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <text x="18" y="20.35" class="percentage">@attempt.Balls / @attempt.MaxBalls</text>
+                    </svg>
+                </div>
+                <div class = "center">
+                    <h5>
+                        <a asp-controller="Test" asp-action="Attempt" asp-route-id="@attempt.Id">Попытка от @attempt.TimeStarted.ToString("dd.MM.yyyy HH:mm:ss")</a>
+                    </h5>
+                </div>
+            </div>
         }
         <hr>
     }
@@ -110,7 +158,7 @@ function CheckActive(e,id)
 @if (Model.Test.MaxAttempts > Model.UserAttempts.Count())
 {
     <form method="post">
-        <button id = "main-button" class="btn btn-outline-primary" onclick = "CheckActive(event, @Model.Test.Id);" type="submit"><i class="bi bi-check2"></i> Пройти</button>
+        <button id="main-button" class="btn btn-outline-primary" onclick="CheckActive(event, @Model.Test.Id);" type="submit"><i class="bi bi-check2"></i> Пройти</button>
     </form>
 }
 else

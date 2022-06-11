@@ -177,7 +177,7 @@ namespace VZTest.Controllers
             model.StarsCount = await unitOfWork.GetTestStarsCount(id);
             model.Test = foundTest;
             model.TotalAttempts = await unitOfWork.GetTestAttemptsCount(id);
-            model.UserAttempts = unitOfWork.GetUserTestAttempt(id, userId);
+            model.UserAttempts = unitOfWork.GetUserTestCheckedAttempts(id, userId);
             return View(model);
         }
 
@@ -204,7 +204,7 @@ namespace VZTest.Controllers
                 model.Forbidden = true;
                 return View(model);
             }
-            IEnumerable<Attempt> userAttempts = unitOfWork.GetUserTestAttempt(id, userId);
+            IEnumerable<Attempt> userAttempts = unitOfWork.GetUserTestAttempts(id, userId);
             if (foundTest.Test.MaxAttempts <= userAttempts.Count())
             {
                 return RedirectToAction("Preview");
@@ -450,7 +450,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(404);
             }
-            List<Attempt> attemps = unitOfWork.GetUserTestAttempt(id,userManager.GetUserId(User)).ToList();
+            List<Attempt> attemps = unitOfWork.GetUserTestAttempts(id,userManager.GetUserId(User)).ToList();
             if (attemps.Any(x=>x.Active))
             {
                 return Content("Active");

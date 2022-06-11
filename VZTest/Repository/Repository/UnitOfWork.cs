@@ -84,7 +84,7 @@ namespace VZTest.Repository.Repository
         #endregion
 
         #region Attemps
-        public IEnumerable<Attempt> GetUserTestAttempt(int testId, string userId)
+        public IEnumerable<Attempt> GetUserTestAttempts(int testId, string userId)
         {
             return AttemptRepository.GetWhere(x => x.TestId == testId && x.UserId.Equals(userId));
         }
@@ -130,6 +130,32 @@ namespace VZTest.Repository.Repository
         public async Task<int> GetTestAttemptsCount(int testId)
         {
             return await AttemptRepository.CountAsync(x => x.TestId == testId);
+        }
+
+        public IEnumerable<Attempt> GetUserTestCheckedAttempts(int testId, string userId)
+        {
+            IEnumerable<Attempt> attempts = AttemptRepository.GetWhere(x => x.TestId == testId && x.UserId.Equals(userId)).ToList();
+            foreach(Attempt attempt in attempts)
+            {
+                attempt.Answers = GetAttemptAnswers(attempt.Id).ToList();
+                CheckAttempt(attempt);
+            }
+            return attempts;
+        }
+
+        private void CheckAttempt(Attempt attempt)
+        {
+            attempt.MaxBalls = GetTestTotalBalls(attempt.TestId);
+            foreach (Answer answer in attempt.Answers)
+            {
+                double balls = CheckAnswerCorrect(answer);
+                attempt.Balls += balls;
+                answer.Correct = CheckAnswerCorrect(answer) > 0;
+                if (answer.Correct)
+                {
+                    attempt.CorrectAnswers++;
+                }
+            }
         }
 
         public Attempt? GetCheckedAttempt(int attemptId)

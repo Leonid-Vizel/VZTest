@@ -3,6 +3,11 @@
     flex-flow: row nowrap;
 }
 
+.single-chart-sm {
+    width: 10%;
+    justify-content: space-around;
+}
+
 .single-chart {
     width: 20%;
     justify-content: space-around;
