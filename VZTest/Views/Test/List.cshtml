@@ -6,16 +6,9 @@
     ViewData["Title"] = "Публичные тесты";
 }
 
-<partial name = "_AjaxPartial"></partial>
-<partial name = "_SweetAlertsPartial"></partial>
-<partial name = "_StarScriptPartial"></partial>
-
-<h2><i class="bi bi-list-check"></i> @ViewData["Title"]</h2>
-<hr>
-
 @if (!signInManager.IsSignedIn(User))
 {
-    <h5>Войдите в свой аккаунт</h5>
+    <partial name="_AuthorisePartial"></partial>
     return;
 }
 
@@ -24,6 +17,14 @@
     <h5>Здесь пока пусто</h5>
     return;
 }
+
+<partial name = "_AjaxPartial"></partial>
+<partial name = "_SweetAlertsPartial"></partial>
+<partial name = "_StarScriptPartial"></partial>
+
+<h2><i class="bi bi-list-check"></i> @ViewData["Title"]</h2>
+<hr>
+
 <form></form> @*FOR VALIDATION TOKEN*@
 <div class="list-group">
     @foreach (TestStatistics testStat in Model)

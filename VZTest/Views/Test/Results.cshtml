@@ -9,7 +9,7 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <h5>Войдите в свой аккаунт</h5>
+    <partial name="_AuthorisePartial"></partial>
     return;
 }
 

@@ -4,17 +4,17 @@
     ViewData["Title"] = "Поиск";
 }
 
+@if (!signInManager.IsSignedIn(User))
+{
+    <partial name="_AuthorisePartial"></partial>
+    return;
+}
+
 <partial name = "_AjaxPartial"></partial>
 <partial name = "_SweetAlertsPartial"></partial>
 
 <h2><i class="bi bi-search"></i> @ViewData["Title"]</h2>
 <hr>
-
-@if (!signInManager.IsSignedIn(User))
-{
-    <h5 class="text-center">Войдите в аккаунт</h5>
-    return;
-}
 
 <script>
 
