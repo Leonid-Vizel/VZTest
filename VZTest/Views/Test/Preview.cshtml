@@ -13,7 +13,7 @@
 }
 @if (Model == null || Model.Forbidden)
 {
-    <h5>Доступ к опросу закрыт!</h5>
+    <partial name = "_ForbiddenPartial"></partial>
     return;
 }
 @if (Model.NotFound)

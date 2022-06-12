@@ -27,7 +27,7 @@
 
 @if (Model.Forbidden)
 {
-    <h5>Доступ ограничен</h5>
+    <partial name = "_ForbiddenPartial"></partial>
     return;
 }
 
