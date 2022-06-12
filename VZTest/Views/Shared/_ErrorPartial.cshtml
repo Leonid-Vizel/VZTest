@@ -1,1 +1,19 @@
-﻿
+﻿<style>
+    .mainbox {
+        display: flex;
+        margin: auto;
+        height: 600px;
+        width: 600px;
+        position: relative;
+        flex-direction: column;
+        justify-content: center;
+    }
+</style>
+
+
+<div class="mainbox text-center">
+    <h1>Упс...</h1>
+    <h4>Кажется, у нас произошла неопознанная ошибка</h4>
+    <h5>Предлагаем Вам отправиться на <a asp-controller="Home" asp-action="Index">Главную</a>!</h5>
+    <h7 class = "text-muted">(Если Вы здесь после прохождения теста, то хватит копаться в коде 😈😈😈)</h7>
+</div>
