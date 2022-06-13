@@ -80,7 +80,7 @@
     {
         Question question = Model.Test.Questions[i];
         <h3 class="mt-2">
-            Вопрос #@(question.Number + 1)
+            Вопрос #@(i + 1)
             @if (Model.Attempt.Answers[i].Correct)
             {
                 <span style="color: #50c878;">(@question.Balls @WordHelp.Inflect((int)question.Balls, "баллов", "балл", "балл"))</span>

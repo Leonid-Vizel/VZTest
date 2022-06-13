@@ -18,6 +18,7 @@ namespace VZTest.Models.Test
         public bool Public { get; set; }
         public string? PasswordHash { get; set; }
         public DateTime CreatedTime { get; set; }
+        public bool Shuffle { get; set; }
         [NotMapped]
         public List<Question> Questions { get; set; }
     }

@@ -97,7 +97,7 @@ namespace VZTest.Repository.Repository
             {
                 foreach (Attempt attempt in userAttempts)
                 {
-                    attempt.Answers = GetAttemptAnswers(attempt.Id).ToList();
+                    attempt.Answers = GetAttemptAnswers(attempt).ToList();
                 }
             }
             return userAttempts;
@@ -110,7 +110,7 @@ namespace VZTest.Repository.Repository
             {
                 return null;
             }
-            attempt.Answers = GetAttemptAnswers(attemptId).ToList();
+            attempt.Answers = GetAttemptAnswers(attempt).ToList();
             return attempt;
         }
 
@@ -121,7 +121,7 @@ namespace VZTest.Repository.Repository
             {
                 foreach (Attempt attempt in testAttempts)
                 {
-                    attempt.Answers = GetAttemptAnswers(attempt.Id).ToList();
+                    attempt.Answers = GetAttemptAnswers(attempt).ToList();
                 }
             }
             return testAttempts;
@@ -139,7 +139,7 @@ namespace VZTest.Repository.Repository
             {
                 double balls = CheckAnswerCorrect(answer);
                 attempt.Balls += balls;
-                answer.Correct = CheckAnswerCorrect(answer) > 0;
+                answer.Correct = balls > 0;
                 if (answer.Correct)
                 {
                     attempt.CorrectAnswers++;
@@ -284,7 +284,7 @@ namespace VZTest.Repository.Repository
             {
                 return null;
             }
-            test.Questions = GetTestQuestions(test.Id, loadAnswers).OrderBy(x => x.Number).ToList();
+            test.Questions = GetTestQuestions(test.Id, loadAnswers).ToList();
             return test;
         }
         #endregion
@@ -297,9 +297,19 @@ namespace VZTest.Repository.Repository
         #endregion
 
         #region Answers
-        public IEnumerable<Answer> GetAttemptAnswers(int attemptId)
+        public IEnumerable<Answer> GetAttemptAnswers(Attempt attempt)
         {
-            return AnswerRepository.GetWhere(x => x.AttemptId == attemptId);
+            IEnumerable<int> questionIds = attempt.QuestionSequence.Select(x => int.Parse(x));
+            List<Answer> answers = new List<Answer>();
+            foreach(int questionId in questionIds)
+            {
+                Answer? answer = AnswerRepository.FirstOrDefault(x => x.QuestionId == questionId && x.AttemptId == attempt.Id);
+                if (answer != null)
+                {
+                    answers.Add(answer);
+                }
+            }
+            return answers;
         }
 
         private double CheckAnswerCorrect(Answer answer)

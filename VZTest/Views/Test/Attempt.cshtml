@@ -89,7 +89,7 @@
         {
             Question question = Model.Test.Questions[i];
             <h3 class="mt-2">
-                Вопрос #@(question.Number + 1)
+                Вопрос #@(i + 1)
                 <span class="text-muted">(@question.Balls @WordHelp.Inflect((int)question.Balls, "баллов", "балл", "балл"))</span>
             </h3>
             <h6>
@@ -99,8 +99,7 @@
             @switch (question.Type)
             {
                 case QuestionType.Text:
-                    @Html.TextAreaFor(m => m.Attempt.Answers[i].TextAnswer)
-                    ;
+                    @Html.TextAreaFor(m => m.Attempt.Answers[i].TextAnswer);
                     break;
                 case QuestionType.Date:
                     <input asp-for="Attempt.Answers[i].DateAnswer" type="date" class="form-control" />

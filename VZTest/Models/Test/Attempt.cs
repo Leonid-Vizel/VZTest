@@ -14,7 +14,19 @@ namespace VZTest.Models.Test
         public int CorrectAnswers { get; set; }
         public double Balls { get; set; }
         public double MaxBalls { get; set; }
+        public string Sequence
+        {
+            get => string.Join('-', QuestionSequence);
+            set => QuestionSequence = value.Split('-');
+        }
         [NotMapped]
         public List<Answer> Answers { get; set; }
+        [NotMapped]
+        public string[] QuestionSequence { get; set; }
+
+        public Attempt()
+        {
+            QuestionSequence = new string[0];
+        }
     }
 }

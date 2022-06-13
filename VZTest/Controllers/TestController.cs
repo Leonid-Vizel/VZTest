@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using VZTest.Instruments;
 using VZTest.Models;
 using VZTest.Models.Test;
 using VZTest.Repository.IRepository;
@@ -51,6 +52,7 @@ namespace VZTest.Controllers
             }
             attemptModel.Attempt = attempt;
             attemptModel.Test = test;
+            attemptModel.AlignQuestions();
             return View(attemptModel); //Ok
         }
 
@@ -90,10 +92,10 @@ namespace VZTest.Controllers
             {
                 return View(null); //Error
             }
-            List<Answer> AttemptAnswers = unitOfWork.GetAttemptAnswers(id).ToList();
+            List<Answer> AttemptAnswers = unitOfWork.GetAttemptAnswers(attempt).ToList();
             for (int i = 0; i < model.Attempt.Answers.Count; i++)
             {
-                Answer? foundAnswer = AttemptAnswers.FirstOrDefault(x => x.QuestionId == test.Questions[i].Id);
+                Answer? foundAnswer = AttemptAnswers.FirstOrDefault(x => x.QuestionId == AttemptAnswers[i].QuestionId);
                 if (foundAnswer != null)
                 {
                     foundAnswer.CheckAnswer = model.Attempt.Answers[i].CheckAnswer;
@@ -150,6 +152,7 @@ namespace VZTest.Controllers
             }
             attemptModel.Attempt = foundAttempt;
             attemptModel.Test = foundTest;
+            attemptModel.AlignQuestions();
             return View(attemptModel); //Ok
         }
 
@@ -239,18 +242,23 @@ namespace VZTest.Controllers
             {
                 return RedirectToAction("Preview");
             }
-
+            List<Question> questions = unitOfWork.GetTestQuestions(id, false).ToList();
+            if (foundTest.Test.Shuffle)
+            {
+                Shuffler.Shuffle(questions);
+            }
             Attempt attempt = new Attempt()
             {
                 UserId = userId,
                 TestId = id,
                 TimeStarted = DateTime.Now,
-                Active = true
+                Active = true,
+                Sequence = string.Join('-', questions.Select(x=>x.Id))
             };
             await unitOfWork.AttemptRepository.AddAsync(attempt);
             await unitOfWork.SaveAsync();
             List<Answer> answers = new List<Answer>();
-            foreach (Question question in unitOfWork.GetTestQuestions(id, false))
+            foreach (Question question in questions)
             {
                 Answer answer = new Answer();
                 answer.QuestionId = question.Id;
