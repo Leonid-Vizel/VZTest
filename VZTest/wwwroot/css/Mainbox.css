@@ -1,0 +1,9 @@
+﻿.mainbox {
+    display: flex;
+    margin: auto;
+    height: 600px;
+    width: 600px;
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+}
