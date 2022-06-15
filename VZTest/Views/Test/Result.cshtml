@@ -114,7 +114,14 @@
             @foreach (Option option in question.Options)
             {
                 <div class="form-check">
-                    <input asp-for="Attempt.Answers[i].CheckAnswer" class="form-check-input" type="checkbox" value="@option.Id" disabled>
+                    @if (Model.Attempt.Answers[i].CheckAnswers.Contains(option.Id))
+                    {
+                        <input class="form-check-input" type="checkbox" value="@option.Id" disabled checked>
+                    }
+                    else
+                    {
+                        <input class="form-check-input" type="checkbox" value="@option.Id" disabled>
+                    }
                     <label class="form-check-label">@option.Title</label>
                 </div>
             }

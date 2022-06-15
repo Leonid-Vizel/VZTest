@@ -12,11 +12,11 @@ namespace VZTest.Models.Test
         public int QuestionId { get; set; }
         #region Check
         [NotMapped]
-        public int[]? CheckAnswer
+        public int[] CheckAnswers
         {
             get
             {
-                if (CheckAnswerString == null)
+                if (string.IsNullOrEmpty(CheckAnswerString))
                 {
                     return new int[0] { };
                 }
@@ -25,13 +25,13 @@ namespace VZTest.Models.Test
             }
             set
             {
-                if (value == null ||value.Length == 0)
+                if (value == null || value.Length == 0)
                 {
                     CheckAnswerString = null;
                     return;
                 }
                 StringBuilder builder = new StringBuilder();
-                foreach(int integer in value)
+                foreach (int integer in value)
                 {
                     builder.Append($"{integer},");
                 }

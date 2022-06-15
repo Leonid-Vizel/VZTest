@@ -169,7 +169,7 @@
                 @foreach (Option option in question.Options)
                 {
                     <div class="form-check">
-                        <input asp-for="Attempt.Answers[i].CheckAnswer" class="form-check-input" type="checkbox" value="@option.Id">
+                        <input name="Attempt.Answers[@i].CheckAnswers" class="form-check-input" type="checkbox" value="@option.Id">
                         <label class="form-check-label">@option.Title</label>
                     </div>
                 }

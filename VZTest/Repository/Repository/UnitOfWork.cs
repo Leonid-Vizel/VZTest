@@ -301,7 +301,7 @@ namespace VZTest.Repository.Repository
         {
             IEnumerable<int> questionIds = attempt.QuestionSequence.Select(x => int.Parse(x));
             List<Answer> answers = new List<Answer>();
-            foreach(int questionId in questionIds)
+            foreach (int questionId in questionIds)
             {
                 Answer? answer = AnswerRepository.FirstOrDefault(x => x.QuestionId == questionId && x.AttemptId == attempt.Id);
                 if (answer != null)
@@ -415,7 +415,25 @@ namespace VZTest.Repository.Repository
                         return 0;
                     }
                 case QuestionType.Check:
-                    return 0;
+                    CorrectCheckAnswer? correctCheckAnswer = correctAnswer as CorrectCheckAnswer;
+                    if (correctCheckAnswer == null)
+                    {
+                        return 0;
+                    }
+                    if (correctCheckAnswer.Correct.Length != 0 && answer.CheckAnswers.Length == 0)
+                    {
+                        return 0;
+                    }
+                    double part = question.Balls / correctCheckAnswer.Correct.Length;
+                    double balls = question.Balls;
+                    foreach (int answerId in correctCheckAnswer.Correct)
+                    {
+                        if (!answer.CheckAnswers.Contains(answerId))
+                        {
+                            balls -= part;
+                        }
+                    }
+                    return balls;
                 default:
                     return 0;
             }

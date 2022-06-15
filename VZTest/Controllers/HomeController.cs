@@ -61,22 +61,41 @@ namespace VZTest.Controllers
             option3.Title = "АПЧИХБА";
             question5.Options = new List<Option>() { option1, option2, option3 };
 
+            Question question6 = new Question();
+            question6.Title = "Выберите Z O V";
+            question6.Balls = 1.5;
+            question6.Type = QuestionType.Radio;
+            Option option4 = new Option();
+            option4.Title = "Z";
+            Option option5 = new Option();
+            option5.Title = "O";
+            Option option6 = new Option();
+            option6.Title = "V";
+            Option option7 = new Option();
+            option7.Title = "X";
+            question6.Options = new List<Option>() { option4, option5, option6, option7 };
+
             Test test = new Test();
-            test.Title = "Второй тест";
+            test.Title = "Тест тестов для теста";
             test.CreatedTime = DateTime.Now;
             test.UserId = "";
-            test.Description = "Описание крутого опроса";
+            test.Description = "Да, да, я";
             test.Opened = true;
             test.Public = true;
             test.Shuffle = true;
-            test.MaxAttempts = 3;
-            test.Questions = new List<Question>() { question1, question2, question3, question4, question5 };
+            test.MaxAttempts = 5;
+            test.Questions = new List<Question>() { question1, question2, question3, question4, question5, question6 };
             //await unitOfWork.AddTest(test);
             //await unitOfWork.SaveAsync();
             //CorrectIntAnswer answer5 = new CorrectIntAnswer();
             //answer5.QuestionId = question5.Id;
             //answer5.Correct = option2.Id;
+
+            //CorrectCheckAnswer answer6 = new CorrectCheckAnswer();
+            //answer6.QuestionId = question6.Id;
+            //answer6.Correct = new int[] { option4.Id, option5.Id, option6.Id, option7.Id };
             //await unitOfWork.CorrectAnswerRepository.AddAsync(answer5);
+            //await unitOfWork.CorrectAnswerRepository.AddAsync(answer6);
             //await unitOfWork.SaveAsync();
             return View();
         }

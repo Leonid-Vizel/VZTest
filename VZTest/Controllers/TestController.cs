@@ -99,7 +99,7 @@ namespace VZTest.Controllers
                 Answer? foundAnswer = AttemptAnswers.FirstOrDefault(x => x.QuestionId == AttemptAnswers[i].QuestionId);
                 if (foundAnswer != null)
                 {
-                    foundAnswer.CheckAnswer = model.Attempt.Answers[i].CheckAnswer;
+                    foundAnswer.CheckAnswers = model.Attempt.Answers[i].CheckAnswers;
                     foundAnswer.DateAnswer = model.Attempt.Answers[i].DateAnswer;
                     foundAnswer.IntAnswer = model.Attempt.Answers[i].IntAnswer;
                     foundAnswer.DoubleAnswer = model.Attempt.Answers[i].DoubleAnswer;
@@ -461,7 +461,7 @@ namespace VZTest.Controllers
                 foundAnswer.TextAnswer = "";
                 foundAnswer.IntAnswer = null;
                 foundAnswer.RadioAnswer = null;
-                foundAnswer.CheckAnswer = null;
+                foundAnswer.CheckAnswers = null;
                 foundAnswer.DateAnswer = null;
             }
             else
