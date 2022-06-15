@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using VZTest.Instruments;
 using VZTest.Models;
 using VZTest.Models.Test;
@@ -271,11 +272,14 @@ namespace VZTest.Controllers
         }
         #endregion
 
+        #region Search
         public IActionResult Search()
         {
             return View();
         }
+        #endregion
 
+        #region List
         public async Task<IActionResult> List()
         {
             if (!signInManager.IsSignedIn(User))
@@ -284,7 +288,9 @@ namespace VZTest.Controllers
             }
             return View(await unitOfWork.GetPublicTestsStatistics(userManager.GetUserId(User)));
         }
+        #endregion
 
+        #region MyTests
         public async Task<IActionResult> MyTests()
         {
             if (!signInManager.IsSignedIn(User))
@@ -293,6 +299,7 @@ namespace VZTest.Controllers
             }
             return View(await unitOfWork.GetUserTestsStatistics(userManager.GetUserId(User)));
         }
+        #endregion
 
         #region Ajax Methods
         [HttpPost]
@@ -431,22 +438,27 @@ namespace VZTest.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveAttemptAnswer(int attemptId, int questionId, object value)
+        public async Task<IActionResult> SaveAttemptAnswer(int attemptId, int questionId, string value)
         {
             if (!signInManager.IsSignedIn(User))
             {
                 return StatusCode(401);
             }
+            Attempt? attempt = unitOfWork.AttemptRepository.FirstOrDefault(x => x.Id == attemptId);
             Answer? foundAnswer = unitOfWork.AnswerRepository.FirstOrDefault(x => x.AttemptId == attemptId && x.QuestionId == questionId);
             Question? foundQuestion = unitOfWork.QuestionRepository.FirstOrDefault(x => x.Id == questionId);
-            if (foundAnswer == null || foundQuestion == null)
+            if (foundAnswer == null || foundQuestion == null || attempt == null)
             {
                 return StatusCode(404);
             }
-            if (value == null)
+            if (!attempt.UserId.Equals(userManager.GetUserId(User)))
+            {
+                return StatusCode(403);
+            }
+            if (value == null || value == "")
             {
                 foundAnswer.DoubleAnswer = null;
-                foundAnswer.TextAnswer = null;
+                foundAnswer.TextAnswer = "";
                 foundAnswer.IntAnswer = null;
                 foundAnswer.RadioAnswer = null;
                 foundAnswer.CheckAnswer = null;
@@ -457,14 +469,44 @@ namespace VZTest.Controllers
                 switch (foundQuestion.Type)
                 {
                     case QuestionType.Text:
+                        foundAnswer.TextAnswer = value;
                         break;
                     case QuestionType.Int:
+                        if (!int.TryParse(value, out int intResult))
+                        {
+                            return StatusCode(400);
+                        }
+                        foundAnswer.IntAnswer = intResult;
                         break;
                     case QuestionType.Double:
+                        if (!double.TryParse(value, out double doubleResult))
+                        {
+                            return StatusCode(400);
+                        }
+                        foundAnswer.DoubleAnswer = doubleResult;
                         break;
                     case QuestionType.Date:
+                        if (!DateTime.TryParse(value, out DateTime dateResult))
+                        {
+                            return StatusCode(400);
+                        }
+                        foundAnswer.DateAnswer = dateResult;
                         break;
                     case QuestionType.Radio:
+                        if (!int.TryParse(value, out int radioResult))
+                        {
+                            return StatusCode(400);
+                        }
+                        Option? foundOption = unitOfWork.OptionRepository.FirstOrDefault(x=>x.Id == radioResult);
+                        if (foundOption == null)
+                        {
+                            return StatusCode(404);
+                        }
+                        if (foundOption.QuestionId != questionId)
+                        {
+                            return StatusCode(400);
+                        }
+                        foundAnswer.RadioAnswer = radioResult;
                         break;
                     case QuestionType.Check:
                         break;

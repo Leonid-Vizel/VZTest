@@ -20,129 +20,167 @@
 
 @if (Model.Forbidden)
 {
-    <partial name = "_ForbiddenPartial"></partial>
+    <partial name="_ForbiddenPartial"></partial>
     return;
 }
 
 @if (Model.NotFound)
 {
-    <partial name = "_NotFoundPartial"></partial>
+    <partial name="_NotFoundPartial"></partial>
     return;
 }
 
 <partial name="_SweetAlertsPartial"></partial>
-
+<partial name="_AjaxPartial"></partial>
+<script src="~/js/FloatInputLimit.js"></script>
 <script>
-    function KeyPress(e)
-    {
-        switch (e.key)
-        {
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-            case ',':
-            break;
-            default:
-                e.preventDefault();
-            break;
-        }
-    }
+        var flag = true;
 
-    var flag = true;
-
-    function AskEnd(e)
-    {
-        if (!flag)
+        function AskEnd(e)
         {
-            return;
-        }
-        e.preventDefault();
-        swal({
-            title: "Вы уверены?",
-            text: "После завершения попытки вы больше не сможете редактировать свои ответы!",
-            icon: "warning",
-            buttons: true
-            })
-            .then((end) =>
+            if (!flag)
             {
-                if (end)
+                return;
+            }
+            e.preventDefault();
+            swal({
+                title: "Вы уверены?",
+                text: "После завершения попытки вы больше не сможете редактировать свои ответы!",
+                icon: "warning",
+                buttons: true
+                })
+                .then((end) =>
                 {
-                    flag = false;
-                    document.getElementById('main-button').click();
-                }
-            });
+                    if (end)
+                    {
+                        flag = false;
+                        document.getElementById('main-button').click();
+                    }
+                });
+        }
+
+        function ProcessErrors(error) {
+        switch (error.status) {
+            case 403:
+                swal("Недоступно!", "У Вас нет доступа к этому действию!", "error");
+                break;
+            case 404:
+                swal("Элемент не найден!", "Перезагрузите страницу и попробуйте снова.", "error");
+                break;
+            case 401:
+                swal("Авторизуйтесь!", "Для того, чтобы отметить тест надо войти в аккаунт.", "error");
+                break;
+            default:
+                swal("Неизвестная ошибка " + error.status, "Обратитесь к службу поддержки.", "error");
+                break;
+        }
     }
+
+        function OnSaveClick(attemptId, questionId, value)
+        {
+            var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+            $.ajax({
+                            type: "POST",
+                            url: "/Test/SaveAttemptAnswer/",
+                            data: { attemptId: attemptId, questionId: questionId, value:value, __RequestVerificationToken: verificationValue },
+                            error: function (error) {
+                                ProcessErrors(error);
+                            }
+                        });
+        }
+
+        function GetRadioValue(groupName)
+        {
+            return document.querySelector('input[name="'+groupName+'"]:checked').value;
+        }
+
+        function GetInputValue(inputId)
+        {
+            return document.getElementById(inputId).value;
+        }
+
+        function GetCheckValue(groupName)
+        {
+
+        }
+
+        function SaveAll()
+        {
+            var elements = document.getElementsByName('save-button');
+            for (var i = 0; i < elements.length; i++)
+            {
+                elements[i].click();
+            }
+        }
 </script>
 
 <h1 class="text-center">@Model.Test.Title</h1>
 <hr>
 <form method="post">
-    <div class="row container">
-        @for (int i = 0; i < Model.Test.Questions.Count; i++)
+    @for (int i = 0; i < Model.Test.Questions.Count; i++)
+    {
+        Question question = Model.Test.Questions[i];
+        <h3 class="mt-2">
+            Вопрос #@(i + 1)
+            <span class="text-muted">(@question.Balls @WordHelp.Inflect((int)question.Balls, "баллов", "балл", "балл"))</span>
+        </h3>
+        <h6>
+            <span class="text-muted">Задание: </span>
+            @question.Title
+        </h6>
+        @switch (question.Type)
         {
-            Question question = Model.Test.Questions[i];
-            <h3 class="mt-2">
-                Вопрос #@(i + 1)
-                <span class="text-muted">(@question.Balls @WordHelp.Inflect((int)question.Balls, "баллов", "балл", "балл"))</span>
-            </h3>
-            <h6>
-                <span class="text-muted">Задание: </span>
-                @question.Title
-            </h6>
-            @switch (question.Type)
-            {
-                case QuestionType.Text:
-                    @Html.TextAreaFor(m => m.Attempt.Answers[i].TextAnswer);
-                    break;
-                case QuestionType.Date:
-                    <input asp-for="Attempt.Answers[i].DateAnswer" type="date" class="form-control" />
-                    break;
-                case QuestionType.Int:
-                    <input asp-for="Attempt.Answers[i].IntAnswer" class="form-control" />
-                    break;
-                case QuestionType.Double:
-                    <input asp-for="Attempt.Answers[i].DoubleAnswer" onkeypress="KeyPress(event);" class="form-control" />
-                    break;
-                case QuestionType.Radio:
-                    bool first = true;
-                    foreach (Option option in question.Options)
-                    {
-                        <div class="form-check">
-                            @if (first)
-                            {
-                                first = false;
-                                <input asp-for="Attempt.Answers[i].RadioAnswer" class="form-check-input" type="radio" value="@option.Id" checked>
-                            }
-                            else
-                            {
-                                <input asp-for="Attempt.Answers[i].RadioAnswer" class="form-check-input" type="radio" value="@option.Id">
-                            }
-                            <label class="form-check-label">@option.Title</label>
-                        </div>
-                    }
-                    break;
-                case QuestionType.Check:
-                    @foreach (Option option in question.Options)
-                    {
-                        <div class="form-check">
-                            <input asp-for="Attempt.Answers[i].CheckAnswer" class="form-check-input" type="checkbox" value="@option.Id">
-                            <label class="form-check-label">@option.Title</label>
-                        </div>
-                    }
-                    break;
-            }
+            case QuestionType.Text:
+                @Html.TextAreaFor(m => m.Attempt.Answers[i].TextAnswer, new {style = "width: 100%;", @class = "form-control"})
+                <a class="btn btn-primary mt-2" name="save-button" onclick="OnSaveClick(@Model.Attempt.Id,@question.Id,GetInputValue('Attempt_Answers_' + @i + '__TextAnswer'))"><i class="bi bi-save"></i> Сохранить</a>
+                break;
+            case QuestionType.Date:
+                <input asp-for="Attempt.Answers[i].DateAnswer" type="date" class="form-control" />
+                <a class="btn btn-primary mt-2" name="save-button" onclick="OnSaveClick(@Model.Attempt.Id,@question.Id,GetInputValue('Attempt_Answers_' + @i + '__DateAnswer'))"><i class="bi bi-save"></i> Сохранить</a>
+                break;
+            case QuestionType.Int:
+                <input asp-for="Attempt.Answers[i].IntAnswer" class="form-control" />
+                <a class="btn btn-primary mt-2" name="save-button" onclick="OnSaveClick(@Model.Attempt.Id,@question.Id,GetInputValue('Attempt_Answers_' + @i + '__IntAnswer'))"><i class="bi bi-save"></i> Сохранить</a>
+                break;
+            case QuestionType.Double:
+                <input asp-for="Attempt.Answers[i].DoubleAnswer" onkeypress="KeyPress(event);" class="form-control" />
+                <a class="btn btn-primary mt-2" name="save-button" onclick="OnSaveClick(@Model.Attempt.Id,@question.Id,GetInputValue('Attempt_Answers_' + @i + '__DoubleAnswer'))"><i class="bi bi-save"></i> Сохранить</a>
+                break;
+            case QuestionType.Radio:
+                bool first = true;
+                foreach (Option option in question.Options)
+                {
+                    <div class="form-check">
+                        @if (first)
+                        {
+                            first = false;
+                            <input asp-for="Attempt.Answers[i].RadioAnswer" class="form-check-input" type="radio" value="@option.Id" checked>
+                        }
+                        else
+                        {
+                            <input asp-for="Attempt.Answers[i].RadioAnswer" class="form-check-input" type="radio" value="@option.Id">
+                        }
+                        <label class="form-check-label">@option.Title</label>
+                    </div>
+                }
+                <a class="btn btn-primary mt-2" name="save-button" onclick="OnSaveClick(@Model.Attempt.Id,@question.Id,GetRadioValue('Attempt.Answers[' + @i + '].RadioAnswer'))"><i class="bi bi-save"></i> Сохранить</a>
+                break;
+            case QuestionType.Check:
+                @foreach (Option option in question.Options)
+                {
+                    <div class="form-check">
+                        <input asp-for="Attempt.Answers[i].CheckAnswer" class="form-check-input" type="checkbox" value="@option.Id">
+                        <label class="form-check-label">@option.Title</label>
+                    </div>
+                }
+                @*<a class="btn btn-primary mt-2" onclick="OnSaveClick(@Model.Attempt.Id,@question.Id,'')">Сохранить</a>*@
+                break;
         }
-    </div>
+    }
     <div class="container mt-3">
         <div class="text-end">
-            <button id="main-button" type="submit" class="btn btn-outline-primary mx-4" onclick="AskEnd(event);"><i class="bi bi-send-fill"></i> Завершить</button>
+            <a class="btn btn-primary" onclick="SaveAll();"><i class="bi bi-save"></i> Сохранить все</a>
+            <button id="main-button" type="submit" class="btn btn-outline-primary" onclick="AskEnd(event);"><i class="bi bi-send-fill"></i> Завершить</button>
         </div>
     </div>
 </form>
