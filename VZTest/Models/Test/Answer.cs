@@ -21,7 +21,12 @@ namespace VZTest.Models.Test
                     return new int[0] { };
                 }
                 string[] tab = CheckAnswerString.Split(',');
-                return new int[] { int.Parse(tab[0]), int.Parse(tab[1]) };
+                int[] result = new int[tab.Length];
+                for (int i = 0; i < tab.Length; i++)
+                {
+                    result[i] = int.Parse(tab[i]);
+                }
+                return result;
             }
             set
             {
@@ -46,6 +51,6 @@ namespace VZTest.Models.Test
         public string? TextAnswer { get; set; }
         public int? RadioAnswer { get; set; }
         public int? IntAnswer { get; set; }
-        public bool Correct { get; set; }
+        public double Balls { get; set; }
     }
 }

@@ -12,7 +12,6 @@ namespace VZTest.Models.Test
         public DateTime TimeStarted { get; set; }
         public string UserId { get; set; }
         public int CorrectAnswers { get; set; }
-        public double Balls { get; set; }
         public double MaxBalls { get; set; }
         public string Sequence
         {
@@ -21,6 +20,8 @@ namespace VZTest.Models.Test
         }
         [NotMapped]
         public List<Answer> Answers { get; set; }
+        [NotMapped]
+        public double Balls => Answers.Sum(x => x.Balls);
         [NotMapped]
         public string[] QuestionSequence { get; set; }
 

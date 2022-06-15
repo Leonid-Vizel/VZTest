@@ -86,7 +86,12 @@ namespace VZTest.Repository.Repository
         #region Attemps
         public IEnumerable<Attempt> GetUserTestAttempts(int testId, string userId)
         {
-            return AttemptRepository.GetWhere(x => x.TestId == testId && x.UserId.Equals(userId));
+            List<Attempt> attempts = AttemptRepository.GetWhere(x => x.TestId == testId && x.UserId.Equals(userId)).ToList();
+            foreach(Attempt attempt in attempts)
+            {
+                attempt.Answers = GetAttemptAnswers(attempt).ToList();
+            }
+            return attempts;
         }
 
         public IEnumerable<Attempt> GetUserAttempts(string userId, bool loadAnswers)
@@ -137,10 +142,8 @@ namespace VZTest.Repository.Repository
             attempt.MaxBalls = GetTestTotalBalls(attempt.TestId);
             foreach (Answer answer in attempt.Answers)
             {
-                double balls = CheckAnswerCorrect(answer);
-                attempt.Balls += balls;
-                answer.Correct = balls > 0;
-                if (answer.Correct)
+                answer.Balls = CheckAnswerCorrect(answer);
+                if (answer.Balls > 0)
                 {
                     attempt.CorrectAnswers++;
                 }
@@ -424,16 +427,34 @@ namespace VZTest.Repository.Repository
                     {
                         return 0;
                     }
-                    double part = question.Balls / correctCheckAnswer.Correct.Length;
-                    double balls = question.Balls;
+                    int incorrectCount = 0;
+                    foreach(int answerId in answer.CheckAnswers)
+                    {
+                        if (!correctCheckAnswer.Correct.Contains(answerId))
+                        {
+                            incorrectCount++;
+                        }
+                    }
                     foreach (int answerId in correctCheckAnswer.Correct)
                     {
                         if (!answer.CheckAnswers.Contains(answerId))
                         {
-                            balls -= part;
+                            incorrectCount++;
                         }
                     }
-                    return balls;
+                    if (incorrectCount == 0)
+                    {
+                        return question.Balls;
+                    }
+                    else if (incorrectCount == 1)
+                    {
+                        double part = question.Balls / correctCheckAnswer.Correct.Length;
+                        return question.Balls - part;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
                 default:
                     return 0;
             }

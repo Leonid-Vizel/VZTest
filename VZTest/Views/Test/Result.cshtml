@@ -74,9 +74,13 @@
     Question question = Model.Test.Questions[i];
     <h3 class="mt-2">
         Вопрос #@(i + 1)
-        @if (Model.Attempt.Answers[i].Correct)
+        @if (Model.Attempt.Answers[i].Balls == question.Balls)
         {
             <span style="color: #50c878;">(@question.Balls @WordHelp.Inflect((int)question.Balls, "баллов", "балл", "балл"))</span>
+        }
+        else if (Model.Attempt.Answers[i].Balls != 0)
+        {
+            <span style="color: #ff6800;">(@question.Balls @WordHelp.Inflect((int)question.Balls, "баллов", "балл", "балл"))</span>
         }
         else
         {
@@ -127,9 +131,13 @@
             }
             break;
     }
-    @if (Model.Attempt.Answers[i].Correct)
+    @if (Model.Attempt.Answers[i].Balls == question.Balls)
     {
         <h6 style="color: #50c878;">Правильно!</h6>
+    }
+    else if (Model.Attempt.Answers[i].Balls != 0)
+    {
+        <h6 style="color: #ff6800;">Частично правильно!</h6>
     }
     else
     {

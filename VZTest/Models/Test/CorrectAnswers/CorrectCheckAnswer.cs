@@ -15,7 +15,12 @@ namespace VZTest.Models.Test.CorrectAnswers
                     return new int[0] { };
                 }
                 string[] tab = CheckAnswerString.Split(',');
-                return new int[] { int.Parse(tab[0]), int.Parse(tab[1]) };
+                int[] result = new int[tab.Length];
+                for (int i = 0; i < tab.Length; i++)
+                {
+                    result[i] = int.Parse(tab[i]);
+                }
+                return result;
             }
             set
             {
