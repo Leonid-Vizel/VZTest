@@ -149,6 +149,29 @@ namespace VZTest.Repository.Repository
                 }
             }
         }
+
+        public void RemoveAttempt(int attemptId)
+        {
+            Attempt? attempt = GetAttemptWithAnswers(attemptId);
+            if (attempt == null)
+            {
+                return;
+            }
+            foreach(Answer answer in attempt.Answers)
+            {
+                AnswerRepository.Remove(answer);
+            }
+            AttemptRepository.Remove(attempt);
+        }
+
+        public void RemoveAttempt(Attempt attempt)
+        {
+            foreach (Answer answer in attempt.Answers)
+            {
+                AnswerRepository.Remove(answer);
+            }
+            AttemptRepository.Remove(attempt);
+        }
         #endregion
 
         #region Questions
@@ -257,7 +280,10 @@ namespace VZTest.Repository.Repository
             foreach (Question question in test.Questions)
             {
                 QuestionRepository.Remove(question);
-                CorrectAnswerRepository.Remove(question.CorrectAnswer);
+                if (question.CorrectAnswer != null)
+                {
+                    CorrectAnswerRepository.Remove(question.CorrectAnswer);
+                }
                 foreach (Option option in question.Options)
                 {
                     OptionRepository.Remove(option);
@@ -266,11 +292,7 @@ namespace VZTest.Repository.Repository
             IEnumerable<Attempt> attempts = GetTestAttempts(test.Id, true);
             foreach (Attempt attempt in attempts)
             {
-                AttemptRepository.Remove(attempt);
-                foreach (Answer answer in attempt.Answers)
-                {
-                    AnswerRepository.Remove(answer);
-                }
+                RemoveAttempt(attempt);
             }
 
             IEnumerable<UserStar> stars = GetTestStars(test.Id);
@@ -448,8 +470,7 @@ namespace VZTest.Repository.Repository
                     }
                     else if (incorrectCount == 1)
                     {
-                        double part = question.Balls / correctCheckAnswer.Correct.Length;
-                        return question.Balls - part;
+                        return question.Balls/2;
                     }
                     else
                     {

@@ -20,6 +20,8 @@ namespace VZTest.Repository.IRepository
         Attempt? GetAttemptWithAnswers(int attemptId);
         Task<int> GetTestAttemptsCount(int testId);
         void CheckAttempt(Attempt attempt);
+        void RemoveAttempt(int attemptId);
+        void RemoveAttempt(Attempt attempt);
         #endregion
 
         #region TestStatistics

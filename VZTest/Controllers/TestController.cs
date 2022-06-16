@@ -65,7 +65,7 @@ namespace VZTest.Controllers
             {
                 return View(null); //Authorize
             }
-            Attempt? attempt = unitOfWork.AttemptRepository.FirstOrDefault(x => x.Id == id);
+            Attempt? attempt = unitOfWork.GetAttemptWithAnswers(id);
             if (attempt == null)
             {
                 AttemptModel attemptModel = new AttemptModel();
@@ -89,8 +89,6 @@ namespace VZTest.Controllers
                 attemptModel.NotFound = true;
                 return View(attemptModel);
             }
-            List<Answer> AttemptAnswers = unitOfWork.GetAttemptAnswers(attempt).ToList();
-            attempt.Answers = AttemptAnswers;
             attempt.Active = false;
             unitOfWork.CheckAttempt(attempt);
             unitOfWork.AttemptRepository.Update(attempt);
@@ -433,7 +431,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(404);
             }
-            if (!attempt.UserId.Equals(userManager.GetUserId(User)))
+            if (!attempt.Active || !attempt.UserId.Equals(userManager.GetUserId(User)))
             {
                 return StatusCode(403);
             }
@@ -443,7 +441,7 @@ namespace VZTest.Controllers
                 foundAnswer.TextAnswer = "";
                 foundAnswer.IntAnswer = null;
                 foundAnswer.RadioAnswer = null;
-                foundAnswer.CheckAnswers = null;
+                foundAnswer.CheckAnswers = new int[0];
                 foundAnswer.DateAnswer = null;
             }
             else
