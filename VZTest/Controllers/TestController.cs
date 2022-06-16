@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using VZTest.Instruments;
 using VZTest.Models;
 using VZTest.Models.Test;
@@ -59,7 +58,8 @@ namespace VZTest.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Attempt(int id, AttemptModel model)
+        [ActionName("Attempt")]
+        public async Task<IActionResult> AttemptPost(int id)
         {
             if (!signInManager.IsSignedIn(User))
             {
@@ -89,25 +89,7 @@ namespace VZTest.Controllers
                 attemptModel.NotFound = true;
                 return View(attemptModel);
             }
-            if (test.Questions.Count != model.Attempt.Answers.Count)
-            {
-                return View(null); //Error
-            }
             List<Answer> AttemptAnswers = unitOfWork.GetAttemptAnswers(attempt).ToList();
-            for (int i = 0; i < model.Attempt.Answers.Count; i++)
-            {
-                Answer? foundAnswer = AttemptAnswers.FirstOrDefault(x => x.QuestionId == AttemptAnswers[i].QuestionId);
-                if (foundAnswer != null)
-                {
-                    foundAnswer.CheckAnswers = model.Attempt.Answers[i].CheckAnswers;
-                    foundAnswer.DateAnswer = model.Attempt.Answers[i].DateAnswer;
-                    foundAnswer.IntAnswer = model.Attempt.Answers[i].IntAnswer;
-                    foundAnswer.DoubleAnswer = model.Attempt.Answers[i].DoubleAnswer;
-                    foundAnswer.RadioAnswer = model.Attempt.Answers[i].RadioAnswer;
-                    foundAnswer.TextAnswer = model.Attempt.Answers[i].TextAnswer;
-                    unitOfWork.AnswerRepository.Update(foundAnswer);
-                }
-            }
             attempt.Answers = AttemptAnswers;
             attempt.Active = false;
             unitOfWork.CheckAttempt(attempt);
@@ -254,7 +236,7 @@ namespace VZTest.Controllers
                 TestId = id,
                 TimeStarted = DateTime.Now,
                 Active = true,
-                Sequence = string.Join('-', questions.Select(x=>x.Id))
+                Sequence = string.Join('-', questions.Select(x => x.Id))
             };
             await unitOfWork.AttemptRepository.AddAsync(attempt);
             await unitOfWork.SaveAsync();
@@ -497,18 +479,29 @@ namespace VZTest.Controllers
                         {
                             return StatusCode(400);
                         }
-                        Option? foundOption = unitOfWork.OptionRepository.FirstOrDefault(x=>x.Id == radioResult);
+                        Option? foundOption = unitOfWork.OptionRepository.FirstOrDefault(x => x.Id == radioResult && x.QuestionId == questionId);
                         if (foundOption == null)
                         {
                             return StatusCode(404);
                         }
-                        if (foundOption.QuestionId != questionId)
-                        {
-                            return StatusCode(400);
-                        }
                         foundAnswer.RadioAnswer = radioResult;
                         break;
                     case QuestionType.Check:
+                        string[] splitted = value.Split(',');
+                        int[] optionIds = new int[splitted.Length];
+                        for (int i = 0; i < splitted.Length; i++)
+                        {
+                            if (!int.TryParse(splitted[i],out optionIds[i]))
+                            {
+                                return StatusCode(400);
+                            }
+                            Option? checkOption = unitOfWork.OptionRepository.FirstOrDefault(x => x.Id == optionIds[i] && x.QuestionId == questionId);
+                            if (checkOption == null)
+                            {
+                                return StatusCode(404);
+                            }
+                        }
+                        foundAnswer.CheckAnswers = optionIds;
                         break;
                 }
             }
@@ -530,8 +523,8 @@ namespace VZTest.Controllers
             {
                 return StatusCode(404);
             }
-            List<Attempt> attemps = unitOfWork.GetUserTestAttempts(id,userManager.GetUserId(User)).ToList();
-            if (attemps.Any(x=>x.Active))
+            List<Attempt> attemps = unitOfWork.GetUserTestAttempts(id, userManager.GetUserId(User)).ToList();
+            if (attemps.Any(x => x.Active))
             {
                 return Content("Active");
             }
