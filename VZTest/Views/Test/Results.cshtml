@@ -32,7 +32,7 @@
 }
 
 <h2><i class="bi bi-list-check"></i> Результаты теста '@Model.Test.Title'</h2>
-<hr>
+<hr id = "top-separator">
 
 @if (Model.Attempts.Count() == 0)
 {
@@ -40,6 +40,10 @@
     return;
 }
 
+<partial name="_AjaxPartial"></partial>
+<partial name="_SweetAlertsPartial"></partial>
+<script src = "~/js/DeleteAttemptScript.js"></script>
+<script src="~/js/ProcessErrorsScript.js"></script>
 <link rel="stylesheet" href="~/css/CenterFlex.css">
 <link rel="stylesheet" href="~/css/PercentCircle.css">
 
@@ -49,7 +53,7 @@
     {
         int percent = (int)((attempt.Balls / attempt.MaxBalls) * 100);
         IdentityUser user = await userManager.FindByIdAsync(attempt.UserId);
-        <div class="flex-wrapper">
+        <div class="flex-wrapper" id = "circle-@attempt.Id">
             <div class="single-chart-sm">
                 <svg viewBox="0 0 36 36" class="circular-chart green">
                     <path class="circle-bg"
@@ -70,7 +74,12 @@
                 </h5>
                 <h5>Пользователь: @user.UserName</h5>
             </div>
+            <div class="center px-3">
+                <h5>
+                    <a class = "btn btn-outline-danger" onclick = "DeleteAttempt(@attempt.Id);">Удалить</a>
+                </h5>
+            </div>
         </div>
     }
-    <hr>
+    <hr id = "separator-@attempt.Id" name = "separator">
 }
