@@ -528,6 +528,33 @@ namespace VZTest.Controllers
             }
             return Content("Redirect");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAttempt(int id)
+        {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return StatusCode(401);
+            }
+            Attempt? foundAttempt = unitOfWork.AttemptRepository.FirstOrDefault(x => x.Id == id);
+            if (foundAttempt == null)
+            {
+                return StatusCode(404);
+            }
+            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == foundAttempt.TestId);
+            if (foundTest == null)
+            {
+                return StatusCode(404);
+            }
+            if (!foundTest.UserId.Equals(userManager.GetUserId(User)))
+            {
+                return StatusCode(403);
+            }
+            unitOfWork.RemoveAttempt(foundAttempt);
+            await unitOfWork.SaveAsync();
+            return Ok();
+        }
         #endregion
     }
 }

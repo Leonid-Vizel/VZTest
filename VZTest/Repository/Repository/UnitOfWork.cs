@@ -89,7 +89,7 @@ namespace VZTest.Repository.Repository
             List<Attempt> attempts = AttemptRepository.GetWhere(x => x.TestId == testId && x.UserId.Equals(userId)).ToList();
             foreach(Attempt attempt in attempts)
             {
-                attempt.Answers = GetAttemptAnswers(attempt).ToList();
+                GetAttemptAnswers(attempt);
             }
             return attempts;
         }
@@ -102,7 +102,7 @@ namespace VZTest.Repository.Repository
             {
                 foreach (Attempt attempt in userAttempts)
                 {
-                    attempt.Answers = GetAttemptAnswers(attempt).ToList();
+                    GetAttemptAnswers(attempt);
                 }
             }
             return userAttempts;
@@ -115,7 +115,7 @@ namespace VZTest.Repository.Repository
             {
                 return null;
             }
-            attempt.Answers = GetAttemptAnswers(attempt).ToList();
+            GetAttemptAnswers(attempt);
             return attempt;
         }
 
@@ -126,7 +126,7 @@ namespace VZTest.Repository.Repository
             {
                 foreach (Attempt attempt in testAttempts)
                 {
-                    attempt.Answers = GetAttemptAnswers(attempt).ToList();
+                    GetAttemptAnswers(attempt);
                 }
             }
             return testAttempts;
@@ -166,6 +166,10 @@ namespace VZTest.Repository.Repository
 
         public void RemoveAttempt(Attempt attempt)
         {
+            if (attempt.Answers == null)
+            {
+                GetAttemptAnswers(attempt);
+            }
             foreach (Answer answer in attempt.Answers)
             {
                 AnswerRepository.Remove(answer);
@@ -322,19 +326,18 @@ namespace VZTest.Repository.Repository
         #endregion
 
         #region Answers
-        public IEnumerable<Answer> GetAttemptAnswers(Attempt attempt)
+        public void GetAttemptAnswers(Attempt attempt)
         {
             IEnumerable<int> questionIds = attempt.QuestionSequence.Select(x => int.Parse(x));
-            List<Answer> answers = new List<Answer>();
+            attempt.Answers = new List<Answer>();
             foreach (int questionId in questionIds)
             {
                 Answer? answer = AnswerRepository.FirstOrDefault(x => x.QuestionId == questionId && x.AttemptId == attempt.Id);
                 if (answer != null)
                 {
-                    answers.Add(answer);
+                    attempt.Answers.Add(answer);
                 }
             }
-            return answers;
         }
 
         private double CheckAnswerCorrect(Answer answer)

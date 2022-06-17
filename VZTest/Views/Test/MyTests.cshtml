@@ -12,60 +12,64 @@
     return;
 }
 
+@if (Model == null)
+{
+    <partial name="_ErrorPartial"></partial>
+    return;
+}
+
 <h2><i class="bi bi-list-stars"></i> @ViewData["Title"]</h2>
 <hr id="top-separator">
 
-<partial name = "_AjaxPartial"></partial>
-<partial name = "_SweetAlertsPartial"></partial>
-
-<script src = "~/js/ClipboardScript.js"></script>
-<script src = "~/js/DeleteScript.js"></script>
-<script src = "~/js/OpenToggleScript.js"></script>
-<script src = "~/js/ProcessErrorsScript.js"></script>
-
-@if (Model != null && Model.Count() > 0)
+@if (Model == null || Model.Count() == 0)
 {
-    @foreach (TestStatistics test in Model)
-    {
-        <div class="container" id="test-container-@test.Test.Id" name="test-container">
-            <h5><a class="link" asp-controller="Test" asp-action="Preview" asp-route-Id="@test.Test.Id">@test.Test.Title</a></h5>
-            <div class="row col-15">
-                <div class="col-3">
-                    <h6>Номер: #@test.Test.Id <a class="btn btn-outline-primary btn-sm" onclick="SetClipboard(@test.Test.Id)"><i id="copyIcon" class="bi bi-clipboard-check"></i></a></h6>
-                </div>
-                <div class="col-3">
-                    <h6>Создано: @test.Test.CreatedTime.ToString("dd.MM.yyyy")</h6>
-                </div>
-                <div class="col-3">
-                    <h6>Вопросов: @test.QuestionCount</h6>
-                </div>
-                <div class="col-3">
-                    <h6>Пройдено: @test.AttemptsCount @WordHelp.Inflect(test.AttemptsCount,"раз","раз","раза")</h6>
-                </div>
-                <div class="col-3">
-                    <h6>Звезды: @test.StarsCount</h6>
-                </div>
+    <h5>Здесь пока ничего нет, но надеемся, что скоро появится ;)</h5>
+    return;
+}
+
+<partial name="_AjaxPartial"></partial>
+<partial name="_SweetAlertsPartial"></partial>
+<script src="~/js/ClipboardScript.js"></script>
+<script src="~/js/DeleteScript.js"></script>
+<script src="~/js/OpenToggleScript.js"></script>
+<script src="~/js/ProcessErrorsScript.js"></script>
+
+@foreach (TestStatistics test in Model)
+{
+    <div class="container" id="test-container-@test.Test.Id" name="test-container">
+        <h5><a class="link" asp-controller="Test" asp-action="Preview" asp-route-Id="@test.Test.Id">@test.Test.Title</a></h5>
+        <div class="row col-15">
+            <div class="col-3">
+                <h6>Номер: #@test.Test.Id <a class="btn btn-outline-primary btn-sm" onclick="SetClipboard(@test.Test.Id)"><i id="copyIcon" class="bi bi-clipboard-check"></i></a></h6>
             </div>
-            <div class="text-end">
-                <form>
-                    <a asp-controller = "Test" asp-action = "Results" asp-route-id = "@test.Test.Id" class="btn btn-outline-success" ><i class="bi bi-file-earmark-text"></i> Результаты</a>
-                    <a class="btn btn-outline-warning" asp-controller="Test" asp-action="Edit" asp-route-Id="@test.Test.Id"><i class="bi bi-pencil"></i> Редактировать</a>
-                    @if (test.Test.Opened)
-                    {
-                        <a id="Close-@test.Test.Id" class="btn btn-outline-warning" onclick="OpenToggle(@test.Test.Id);"><i class="bi bi-door-closed"></i> Закрыть</a>
-                    }
-                    else
-                    {
-                        <a id="Open-@test.Test.Id" class="btn btn-outline-success" onclick="OpenToggle(@test.Test.Id);"><i class="bi bi-door-open"></i> Открыть</a>
-                    }
-                    <a class="btn btn-outline-danger" onclick="Delete(@test.Test.Id);"><i class="bi bi-trash"></i> Удалить</a>
-                </form>
+            <div class="col-3">
+                <h6>Создано: @test.Test.CreatedTime.ToString("dd.MM.yyyy")</h6>
+            </div>
+            <div class="col-3">
+                <h6>Вопросов: @test.QuestionCount</h6>
+            </div>
+            <div class="col-3">
+                <h6>Пройдено: @test.AttemptsCount @WordHelp.Inflect(test.AttemptsCount,"раз","раз","раза")</h6>
+            </div>
+            <div class="col-3">
+                <h6>Звезды: @test.StarsCount</h6>
             </div>
         </div>
-        <hr id="test-separator-@test.Test.Id">
-    }
-}
-else
-{
-    <h5>Вы пока не создали ни одного теста.</h5>
+        <div class="text-end">
+            <form>
+                <a asp-controller="Test" asp-action="Results" asp-route-id="@test.Test.Id" class="btn btn-outline-success"><i class="bi bi-file-earmark-text"></i> Результаты</a>
+                <a class="btn btn-outline-warning" asp-controller="Test" asp-action="Edit" asp-route-Id="@test.Test.Id"><i class="bi bi-pencil"></i> Редактировать</a>
+                @if (test.Test.Opened)
+                {
+                    <a id="Close-@test.Test.Id" class="btn btn-outline-warning" onclick="OpenToggle(@test.Test.Id);"><i class="bi bi-door-closed"></i> Закрыть</a>
+                }
+                else
+                {
+                    <a id="Open-@test.Test.Id" class="btn btn-outline-success" onclick="OpenToggle(@test.Test.Id);"><i class="bi bi-door-open"></i> Открыть</a>
+                }
+                <a class="btn btn-outline-danger" onclick="Delete(@test.Test.Id);"><i class="bi bi-trash"></i> Удалить</a>
+            </form>
+        </div>
+    </div>
+    <hr id="test-separator-@test.Test.Id">
 }

@@ -54,7 +54,7 @@ namespace VZTest.Repository.IRepository
         #endregion
 
         #region Answers
-        IEnumerable<Answer> GetAttemptAnswers(Attempt attempt);
+        void GetAttemptAnswers(Attempt attempt);
         #endregion
 
         #region CorrectAnswer

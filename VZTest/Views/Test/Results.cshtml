@@ -31,17 +31,24 @@
     return;
 }
 
-<link rel="stylesheet" href="~/css/CenterFlex.css">
-<link rel="stylesheet" href="~/css/PercentCircle.css">
-
 <h2><i class="bi bi-list-check"></i> Результаты теста '@Model.Test.Title'</h2>
 <hr>
+
+@if (Model.Attempts.Count() == 0)
+{
+    <h5>Здесь пока ничего нет, но надеемся, что скоро появится ;)</h5>
+    return;
+}
+
+<link rel="stylesheet" href="~/css/CenterFlex.css">
+<link rel="stylesheet" href="~/css/PercentCircle.css">
 
 @foreach (Attempt attempt in Model.Attempts)
 {
     @if (!attempt.Active)
     {
         int percent = (int)((attempt.Balls / attempt.MaxBalls) * 100);
+        IdentityUser user = await userManager.FindByIdAsync(attempt.UserId);
         <div class="flex-wrapper">
             <div class="single-chart-sm">
                 <svg viewBox="0 0 36 36" class="circular-chart green">
@@ -61,9 +68,6 @@
                 <h5>
                     <a asp-controller="Test" asp-action="Attempt" asp-route-id="@attempt.Id">Попытка от @attempt.TimeStarted.ToString("dd.MM.yyyy HH:mm:ss")</a>
                 </h5>
-                @{
-                    IdentityUser user = await userManager.FindByIdAsync(attempt.UserId);
-                }
                 <h5>Пользователь: @user.UserName</h5>
             </div>
         </div>
