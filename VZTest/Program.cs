@@ -10,8 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages().AddMvcOptions(options =>
 {
-    options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(
-        _ => "Неверное значение");
+    options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(_ => "Неверное значение");
+    options.ModelBindingMessageProvider.SetValueMustBeANumberAccessor(_ => "Неверное значение");
+    options.ModelBindingMessageProvider.SetValueIsInvalidAccessor(_ => "Неверное значение");
 });
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

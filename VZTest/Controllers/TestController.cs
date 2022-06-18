@@ -28,6 +28,21 @@ namespace VZTest.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(TestCreateModel model)
+        {
+            Test test = new Test();
+            test.Title = model.Title;
+            test.Description = model.Description;
+            test.CreatedTime = DateTime.Now;
+            test.UserId = userManager.GetUserId(User);
+            test.Opened = false;
+            test.Public = false;
+            test.MaxAttempts = model.MaxAttempts;
+            return View();
+        }
+
         #endregion
 
         #region Attempt

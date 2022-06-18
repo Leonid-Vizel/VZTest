@@ -6,20 +6,23 @@ namespace VZTest.Models
 {
     public class TestCreateModel
     {
-        [Required(ErrorMessage = "Добавьте название теста")]
-        [DisplayName("Название теста")]
+        [Required(ErrorMessage = "Укажите название теста!")]
+        [DisplayName("Название")]
         public string Title { get; set; }
-        [Required(ErrorMessage = "Добавьте описание теста")]
-        [DisplayName("Описание теста")]
+        [Required(ErrorMessage = "Укажите описание теста!")]
+        [DisplayName("Описание")]
         public string? Description { get; set; }
         public string? ImageName { get; set; }
-        [Required(ErrorMessage = "Добавьте изображение для теста")]
         public IFormFile? ImageFile { get; set; }
-        [Required(ErrorMessage = "Максимальное количество попыток")]
+        [Range(1,100,ErrorMessage = "Максимальное количество попыток должно быть в пределах от 1 до 100")]
+        [Required(ErrorMessage = "Максимальное количество попыток должно быть указано")]
+        [RegularExpression(@"[0-9]*$", ErrorMessage = "Some message if value entered isn't number")]
+        [DisplayName("Максимальное количество попыток")]
         public int MaxAttempts { get; set; }
-        [DisplayName("Перемешивать")]
+        [DisplayName("Перемешивать порядок вопросов")]
         public bool Shuffle { get; set; }
         [DisplayName("Пароль")]
+        [DataType(DataType.Password)]
         public string? Password { get; set; }
         public List<Question> Questions { get; set; }
     }

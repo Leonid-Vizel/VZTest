@@ -12,24 +12,48 @@
     return;
 }
 
+@section Scripts
+{
 <partial name="_ValidationScriptsPartial" />
+}
+
+<script src = "~/js/SetNumberValidationScript.js"></script>
 
 <h2><i class="bi bi-list-stars"></i> @ViewData["Title"]</h2>
 <hr>
 
-<form>
-    <div class="container">
-        <div class="row">
-            <label asp-for="Title"></label>
-            <input asp-for="Title" class="form-control"/>
-            <span asp-validation-for="Title" class="text-danger"></span>
-        </div>
+<form method="post">
+    <div>
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
     </div>
-    <div class="container">
-        <div class="row">
-            <label asp-for="Description"></label>
-            @Html.TextAreaFor(x=>x.Description, new {@class = "form-control"})
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
+
+    <div>
+        <label asp-for="Description"></label>
+        @Html.TextAreaFor(x=>x.Description, new {@class = "form-control"})
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
+
+    <hr>
+    <h2><i class="bi bi-gear"></i> Настройки</h2>
+
+    <div>
+        <label asp-for="Password"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="MaxAttempts"></label>
+        <input asp-for="MaxAttempts" class="form-control" />
+        <span asp-validation-for="MaxAttempts" class="text-danger"></span>
+    </div>
+
+    <div class="form-check">
+        <input asp-for="Shuffle" class="form-check-input" type="checkbox" id="anonBox" onchange="CheckAnonimOneOff()">
+        <label asp-for="Shuffle" class="form-check-label"></label>
+    </div>
+    <hr>
+    <button class="btn btn-outline-primary" type="submit"><i class="bi bi-send-fill"></i> Отправить</button>
 </form>
