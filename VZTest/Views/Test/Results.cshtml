@@ -9,25 +9,25 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial"></partial>
+    <partial name="_AuthorisePartial"/>
     return;
 }
 
 @if (Model == null)
 {
-    <partial name="_ErrorPartial"></partial>
+    <partial name="_ErrorPartial"/>
     return;
 }
 
 @if (Model.NotFound)
 {
-    <partial name = "_NotFoundPartial"></partial>
+    <partial name = "_NotFoundPartial"/>
     return;
 }
 
 @if (Model.Forbidden)
 {
-    <partial name = "_ForbiddenPartial"></partial>
+    <partial name = "_ForbiddenPartial"/>
     return;
 }
 
@@ -40,8 +40,8 @@
     return;
 }
 
-<partial name="_AjaxPartial"></partial>
-<partial name="_SweetAlertsPartial"></partial>
+<partial name="_AjaxPartial"/>
+<partial name="_SweetAlertsPartial"/>
 <script src = "~/js/DeleteAttemptScript.js"></script>
 <script src="~/js/ProcessErrorsScript.js"></script>
 <link rel="stylesheet" href="~/css/CenterFlex.css">

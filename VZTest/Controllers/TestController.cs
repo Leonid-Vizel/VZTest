@@ -21,6 +21,15 @@ namespace VZTest.Controllers
             this.userManager = userManager;
         }
 
+        #region Create
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        #endregion
+
         #region Attempt
         public IActionResult Attempt(int id)
         {
@@ -334,6 +343,29 @@ namespace VZTest.Controllers
             if (foundTest.UserId.Equals(userManager.GetUserId(User)))
             {
                 foundTest.Opened = !opened;
+                unitOfWork.TestRepository.Update(foundTest);
+                await unitOfWork.SaveAsync();
+                return Ok();
+            }
+            return StatusCode(403); //forbidden
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PublicToggle(int id, bool isPublic)
+        {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return StatusCode(401); //unauthorised
+            }
+            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            if (foundTest == null)
+            {
+                return StatusCode(404); //not found
+            }
+            if (foundTest.UserId.Equals(userManager.GetUserId(User)))
+            {
+                foundTest.Public = !isPublic;
                 unitOfWork.TestRepository.Update(foundTest);
                 await unitOfWork.SaveAsync();
                 return Ok();

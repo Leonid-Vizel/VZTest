@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using VZTest.Models.Test
+@model TestCreateModel
+@inject SignInManager<IdentityUser> signInManager
+@{
+    ViewData["Title"] = "Создание теста";
+}
+
+@if (!signInManager.IsSignedIn(User))
+{
+    <partial name="_AuthorisePartial" />
+    return;
+}
+
+<partial name="_ValidationScriptsPartial" />
+
+<h2><i class="bi bi-list-stars"></i> @ViewData["Title"]</h2>
+<hr>
+
+<form>
+    <div class="container">
+        <div class="row">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" class="form-control"/>
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <label asp-for="Description"></label>
+            @Html.TextAreaFor(x=>x.Description, new {@class = "form-control"})
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+    </div>
+</form>

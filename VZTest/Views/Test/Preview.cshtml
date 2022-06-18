@@ -8,25 +8,25 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial"></partial>
+    <partial name="_AuthorisePartial"/>
     return;
 }
 @if (Model == null || Model.Forbidden)
 {
-    <partial name = "_ForbiddenPartial"></partial>
+    <partial name = "_ForbiddenPartial"/>
     return;
 }
 @if (Model.NotFound)
 {
-    <partial name = "_NotFoundPartial"></partial>
+    <partial name = "_NotFoundPartial"/>
     return;
 }
 
 <link rel="stylesheet" href="~/css/PercentCircle.css">
 <link rel="stylesheet" href="~/css/CenterFlex.css">
-<partial name="_AjaxPartial"></partial>
-<partial name="_SweetAlertsPartial"></partial>
-<partial name="_StarScriptPartial"></partial>
+<partial name="_AjaxPartial"/>
+<partial name="_SweetAlertsPartial"/>
+<partial name="_StarScriptPartial"/>
 
 <style>
     h2 {

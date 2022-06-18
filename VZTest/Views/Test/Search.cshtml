@@ -6,12 +6,12 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial"></partial>
+    <partial name="_AuthorisePartial"/>
     return;
 }
 
-<partial name="_AjaxPartial"></partial>
-<partial name="_SweetAlertsPartial"></partial>
+<partial name="_AjaxPartial"/>
+<partial name="_SweetAlertsPartial"/>
 <link rel="stylesheet" href="~/css/Mainbox.css">
 <script src = "~/js/SearchScript.js"></script>
 

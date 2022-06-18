@@ -8,13 +8,13 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial"></partial>
+    <partial name="_AuthorisePartial"/>
     return;
 }
 
 @if (Model == null)
 {
-    <partial name="_ErrorPartial"></partial>
+    <partial name="_ErrorPartial"/>
     return;
 }
 
@@ -27,11 +27,12 @@
     return;
 }
 
-<partial name="_AjaxPartial"></partial>
-<partial name="_SweetAlertsPartial"></partial>
+<partial name="_AjaxPartial"/>
+<partial name="_SweetAlertsPartial"/>
 <script src="~/js/ClipboardScript.js"></script>
 <script src="~/js/DeleteScript.js"></script>
 <script src="~/js/OpenToggleScript.js"></script>
+<script src="~/js/PublicToggleScript.js"></script>
 <script src="~/js/ProcessErrorsScript.js"></script>
 
 @foreach (TestStatistics test in Model)
@@ -66,6 +67,14 @@
                 else
                 {
                     <a id="Open-@test.Test.Id" class="btn btn-outline-success" onclick="OpenToggle(@test.Test.Id);"><i class="bi bi-door-open"></i> Открыть</a>
+                }
+                @if (test.Test.Public)
+                {
+                    <a id="Private-@test.Test.Id" class="btn btn-outline-warning" onclick="PublicToggle(@test.Test.Id);"><i class="bi bi-door-closed"></i> Приватизировать</a>
+                }
+                else
+                {
+                    <a id="Public-@test.Test.Id" class="btn btn-outline-success" onclick="PublicToggle(@test.Test.Id);"><i class="bi bi-door-open"></i> Опубликовать</a>
                 }
                 <a class="btn btn-outline-danger" onclick="Delete(@test.Test.Id);"><i class="bi bi-trash"></i> Удалить</a>
             </form>

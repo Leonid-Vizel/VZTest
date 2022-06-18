@@ -8,30 +8,30 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial"></partial>
+    <partial name="_AuthorisePartial"/>
     return;
 }
 
 @if (Model == null)
 {
-    <partial name="_ErrorPartial"></partial>
+    <partial name="_ErrorPartial"/>
     return;
 }
 
 @if (Model.Forbidden)
 {
-    <partial name="_ForbiddenPartial"></partial>
+    <partial name="_ForbiddenPartial"/>
     return;
 }
 
 @if (Model.NotFound)
 {
-    <partial name="_NotFoundPartial"></partial>
+    <partial name="_NotFoundPartial"/>
     return;
 }
 
-<partial name="_SweetAlertsPartial"></partial>
-<partial name="_AjaxPartial"></partial>
+<partial name="_SweetAlertsPartial"/>
+<partial name="_AjaxPartial"/>
 @if (Model.Test.Questions.Any(x => x.Type == QuestionType.Double))
 {
     <script src="~/js/FloatInputLimit.js"></script>
