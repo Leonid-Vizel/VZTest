@@ -12,18 +12,50 @@
     return;
 }
 
-@section Scripts
-{
+@section Scripts {
 <partial name="_ValidationScriptsPartial" />
 }
-
 <script src="~/js/SetNumberValidationScript.js"></script>
-
 <style>
     hr {
         margin: 0.5rem 0;
     }
 </style>
+
+<script id="QuestionBlock" type="text/html">
+    <h5 id = "questionHeader-{questionId}">Вопрос #{questionIdPlus}</h5>
+    <div class="input-group mb-3">
+        <input id = "Questions[{questionId}].Title" class="form-control" placeholder = "Название"/>
+        <div class="input-group-append">
+            <select class="form-select" id = "Questions[{questionId}].Type" onchange = "OnSelectAnswer({questionId})">
+                <option value="0" selected>Текст</option>
+                <option value="1">Радио-кнопки</option>
+                <option value="2">Флажки</option>
+                <option value="3">Целое число</option>
+                <option value="4">Дробное число</option>
+                <option value="5">Дата</option>
+            </select>
+        </div>
+        <div class="input-group-append">
+            <a class = "btn btn-outline-danger" id = 'btn-delete-{questionId}' onclick = "DeleteAndCheckQuestion({questionId})"><i class="bi bi-x-circle-fill"></i></a>
+        </div>
+    </div>
+</script>
+
+<script>
+    function AddQuestion()
+    {
+        var questionCount = document.getElementsByName('questionContainer').length;
+        var div = document.createElement('div');
+        div.setAttribute('class', 'container mt-3');
+        div.setAttribute('name', 'questionContainer');
+        div.setAttribute('id', questionCount);
+        var elementAfter = document.getElementById('AddQuestionLine');
+        div.innerHTML = document.getElementById('QuestionBlock').innerHTML.replace(/{questionId}/g, questionCount).replace(/{questionIdPlus}/g, questionCount+1);
+        elementAfter.insertAdjacentElement('beforebegin', div);
+        div.scrollIntoView();
+    }
+</script>
 
 <h2><i class="bi bi-plus-circle"></i> @ViewData["Title"]</h2>
 <hr>
@@ -62,10 +94,13 @@
     </div>
     @if (Model?.Questions != null)
     {
-        <hr>
         //Loading already created ones
+        foreach (Question question in Model.Questions)
+        {
+            <hr>
+        }
     }
-    <hr id="addQuestionPoint">
+    <hr id="AddQuestionLine">
     <a class="btn btn-outline-info" id="addQuestionBtn" onclick="AddQuestion()"><i class="bi bi-plus-circle-dotted"></i> Добавить вопрос</a>
     <hr>
     <button class="btn btn-outline-primary" type="submit"><i class="bi bi-send-fill"></i> Отправить</button>

@@ -24,6 +24,6 @@ namespace VZTest.Models.Test
         Check,
         Int,
         Double,
-        Date,
+        Date
     }
 }
