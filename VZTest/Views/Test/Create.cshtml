@@ -44,7 +44,7 @@
     <div class = "px-3">
         <h5>Баллы за ответ:</h5>
         <input id = "Questions[{questionId}].Balls" type = "number" class="form-control" placeholder = "Баллы"/>
-        <h5>Правильный ответ:</h5>
+        <h5 id = "CorrectLabel-{questionId}">Правильный ответ:</h5>
         <input id = "Questions[{questionId}].Correct" type = "text" class="form-control" placeholder = "Ответ"/>
     </div>
 </script>
@@ -63,39 +63,110 @@
         div.scrollIntoView();
     }
 
+    function CheckCorrectInputCreated(id)
+    {
+        var correctInput = document.getElementById('Questions[' + id + '].Correct');
+        var correctLabel = document.getElementById('CorrectLabel-' + id);
+        var ballsInput = document.getElementById('Questions[' + id + '].Balls');
+        if (correctInput == null)
+        {
+            correctInput = document.createElement('input');
+            correctInput.setAttribute('class','form-control');
+            correctInput.setAttribute('placeholder','Ответ');
+            correctInput.setAttribute('id','Questions[' + id + '].Correct');
+            if (correctLabel != null)
+            {
+                correctLabel.insertAdjacentElement('afterend', correctInput);
+            }
+            else
+            {
+                ballsInput.insertAdjacentElement('afterend', correctInput);
+            }
+        }
+        if (correctLabel == null)
+        {
+            correctLabel = document.createElement('h5');
+            correctLabel.setAttribute('id','CorrectLabel-' + id);
+            correctLabel.innerHTML = 'Баллы за ответ:';
+            ballsInput.insertAdjacentElement('afterend', correctLabel);
+        }
+        return correctInput;
+    }
+
+    function DeleteCorrectInput(id)
+    {
+        var correctInput = document.getElementById('Questions[' + id + '].Correct');
+        var correctLabel = document.getElementById('CorrectLabel-' + id);
+        if (correctInput == null)
+        {
+            return;
+        }
+        correctInput.remove();
+        if (correctLabel == null)
+        {
+            return;
+        }
+        correctLabel.remove();
+    }
+
+    function AddRadioCreator(id)
+    {
+
+    }
+
+    function RemoveRadioCreator(id)
+    {
+
+    }
+
+    function AddCheckCreator(id)
+    {
+
+    }
+
+    function RemoveCheckCreator(id)
+    {
+
+    }
+
     function OnSelectAnswer(id)
     {
-        console.log(id);
-        var correctInput = document.getElementById('Questions[' + id + '].Correct');
+        var correctInput;
         var element = document.getElementById('Questions[' + id + '].Type');
-        console.log(element);
         if (element == null)
         {
             return;
         }
-        console.log(element.value);
         switch(element.value)
         {
             case '0':
+                correctInput = CheckCorrectInputCreated(id);
                 correctInput.value = null;
                 correctInput.removeAttribute('onkeypress');
                 correctInput.setAttribute('type', 'text');
                 break;
             case '1':
+                DeleteCorrectInput(id);
+                AddRadioCreator(id);
                 break;
             case '2':
+                DeleteCorrectInput(id);
+                AddCheckCreator(id);
                 break;
             case '3':
+                correctInput = CheckCorrectInputCreated(id);
                 correctInput.value = null;
                 correctInput.removeAttribute('onkeypress');
                 correctInput.setAttribute('type', 'number');
                 break;
             case '4':
+                correctInput = CheckCorrectInputCreated(id);
                 correctInput.value = null;
                 correctInput.setAttribute('onkeypress', 'KeyPress(event);');
                 correctInput.setAttribute('type', 'text');
                 break;
             case '5':
+                correctInput = CheckCorrectInputCreated(id);
                 correctInput.value = null;
                 correctInput.removeAttribute('onkeypress');
                 correctInput.setAttribute('type', 'date');
