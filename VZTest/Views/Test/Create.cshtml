@@ -15,6 +15,7 @@
 @section Scripts {
 <partial name="_ValidationScriptsPartial" />
 }
+<script src="~/js/FloatInputLimit.js"></script>
 <script src="~/js/SetNumberValidationScript.js"></script>
 <style>
     hr {
@@ -24,8 +25,8 @@
 
 <script id="QuestionBlock" type="text/html">
     <h5 id = "questionHeader-{questionId}">Вопрос #{questionIdPlus}</h5>
-    <div class="input-group mb-3">
-        <input id = "Questions[{questionId}].Title" class="form-control" placeholder = "Название"/>
+    <div class="input-group">
+        <input id = "Questions[{questionId}].Title" type = "text" class="form-control" placeholder = "Название"/>
         <div class="input-group-append">
             <select class="form-select" id = "Questions[{questionId}].Type" onchange = "OnSelectAnswer({questionId})">
                 <option value="0" selected>Текст</option>
@@ -39,6 +40,12 @@
         <div class="input-group-append">
             <a class = "btn btn-outline-danger" id = 'btn-delete-{questionId}' onclick = "DeleteAndCheckQuestion({questionId})"><i class="bi bi-x-circle-fill"></i></a>
         </div>
+    </div>
+    <div class = "px-3">
+        <h5>Баллы за ответ:</h5>
+        <input id = "Questions[{questionId}].Balls" type = "number" class="form-control" placeholder = "Баллы"/>
+        <h5>Правильный ответ:</h5>
+        <input id = "Questions[{questionId}].Correct" type = "text" class="form-control" placeholder = "Ответ"/>
     </div>
 </script>
 
@@ -54,6 +61,46 @@
         div.innerHTML = document.getElementById('QuestionBlock').innerHTML.replace(/{questionId}/g, questionCount).replace(/{questionIdPlus}/g, questionCount+1);
         elementAfter.insertAdjacentElement('beforebegin', div);
         div.scrollIntoView();
+    }
+
+    function OnSelectAnswer(id)
+    {
+        console.log(id);
+        var correctInput = document.getElementById('Questions[' + id + '].Correct');
+        var element = document.getElementById('Questions[' + id + '].Type');
+        console.log(element);
+        if (element == null)
+        {
+            return;
+        }
+        console.log(element.value);
+        switch(element.value)
+        {
+            case '0':
+                correctInput.value = null;
+                correctInput.removeAttribute('onkeypress');
+                correctInput.setAttribute('type', 'text');
+                break;
+            case '1':
+                break;
+            case '2':
+                break;
+            case '3':
+                correctInput.value = null;
+                correctInput.removeAttribute('onkeypress');
+                correctInput.setAttribute('type', 'number');
+                break;
+            case '4':
+                correctInput.value = null;
+                correctInput.setAttribute('onkeypress', 'KeyPress(event);');
+                correctInput.setAttribute('type', 'text');
+                break;
+            case '5':
+                correctInput.value = null;
+                correctInput.removeAttribute('onkeypress');
+                correctInput.setAttribute('type', 'date');
+                break;
+        }
     }
 </script>
 
@@ -95,7 +142,7 @@
     @if (Model?.Questions != null)
     {
         //Loading already created ones
-        foreach (Question question in Model.Questions)
+        foreach (QuestionBlueprint question in Model.Questions)
         {
             <hr>
         }

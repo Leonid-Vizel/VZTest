@@ -24,6 +24,18 @@ namespace VZTest.Models
         [DisplayName("Пароль")]
         [DataType(DataType.Password)]
         public string? Password { get; set; }
-        public List<Question> Questions { get; set; }
+        public List<QuestionBlueprint> Questions { get; set; }
+    }
+
+    public class QuestionBlueprint
+    {
+        public int Id { get; set; }
+        public int TestId { get; set; }
+        public string Title { get; set; }
+        public QuestionType Type { get; set; }
+        public string? ImageName { get; set; }
+        public double Balls { get; set; }
+        public List<Option> Options { get; set; }
+        public string Correct { get; set; }
     }
 }
