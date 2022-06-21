@@ -47,6 +47,31 @@
         <h5 id = "CorrectLabel-{questionId}">Правильный ответ:</h5>
         <input id = "Questions[{questionId}].Correct" type = "text" class="form-control" placeholder = "Ответ"/>
     </div>
+    <hr>
+</script>
+
+<script id="RadioOptionBlock" type="text/html">
+    <div class="input-group mb-3 px-3">
+        <div class="input-group-prepend">
+            <input id = "Questions[{questionId}].Correct" type = "radio" />
+        </div>
+        <input id = "Questions[{questionId}].Options[{optionId}].Text" class="form-control" placeholder = "Название опции"/>
+        <div class="input-group-append">
+            <a class = "btn btn-outline-danger" id = "delete-question-{questionId}-option-{optionId}" onclick = 'DeleteRadioOption({questionId},{optionId})'><i class="bi bi-x-circle-fill"></i></a>
+        </div>
+    </div>
+</script>
+
+<script id="CheckOptionBlock" type="text/html">
+    <div class="input-group mb-3 px-3">
+        <div class="input-group-prepend">
+            <input id = "Questions[{questionId}].Correct" type = "checkbox" />
+        </div>
+        <input id = "Questions[{questionId}].Options[{optionId}].Text" class="form-control" placeholder = "Название опции"/>
+        <div class="input-group-append">
+            <a class = "btn btn-outline-danger" id = "delete-question-{questionId}-option-{optionId}" onclick = 'DeleteCheckOption({questionId},{optionId})'><i class="bi bi-x-circle-fill"></i></a>
+        </div>
+    </div>
 </script>
 
 <script>
@@ -57,10 +82,30 @@
         div.setAttribute('class', 'container mt-3');
         div.setAttribute('name', 'questionContainer');
         div.setAttribute('id', questionCount);
-        var elementAfter = document.getElementById('AddQuestionLine');
+        var elementAfter = document.getElementById('addQuestionBtn');
         div.innerHTML = document.getElementById('QuestionBlock').innerHTML.replace(/{questionId}/g, questionCount).replace(/{questionIdPlus}/g, questionCount+1);
         elementAfter.insertAdjacentElement('beforebegin', div);
         div.scrollIntoView();
+    }
+
+    function AddRadioOption(questionId)
+    {
+
+    }
+
+    function DeleteRadioOption(questionId, optionId)
+    {
+
+    }
+
+    function AddCheckOption(questionId)
+    {
+
+    }
+
+    function DeleteCheckOption(questionId, optionId)
+    {
+
     }
 
     function CheckCorrectInputCreated(id)
@@ -109,24 +154,48 @@
         correctLabel.remove();
     }
 
-    function AddRadioCreator(id)
+    function AddRadioCreator(questionId)
     {
-
+        var creator = document.getElementById('Creator-' + questionId);
+        if (creator != null)
+        {
+            creator.setAttribute('onclick','AddRadioOption(id);');
+            return;
+        }
+        var button = document.createElement('a');
+        button.setAttribute('id','Creator-' + questionId);
+        button.setAttribute('class','btn btn-outline-info mt-2');
+        button.setAttribute('onclick','AddRadioOption(id);');
+        button.innerHTML = "<i class=\"bi bi-plus-circle\"></i> Добавить опцию";
+        var ballsInput = document.getElementById('Questions[' + questionId + '].Balls');
+        ballsInput.insertAdjacentElement('afterend', button);
     }
 
-    function RemoveRadioCreator(id)
+    function RemoveCreator(questionId)
     {
-
+        var creator = document.getElementById('Creator-' + questionId);
+        if (creator == null)
+        {
+            return;
+        }
+        creator.remove();
     }
 
-    function AddCheckCreator(id)
+    function AddCheckCreator(questionId)
     {
-
-    }
-
-    function RemoveCheckCreator(id)
-    {
-
+        var creator = document.getElementById('Creator-' + questionId);
+        if (creator != null)
+        {
+            creator.setAttribute('onclick','AddCheckOption(id);');
+            return;
+        }
+        var button = document.createElement('a');
+        button.setAttribute('id','Creator-' + questionId);
+        button.setAttribute('class','btn btn-outline-info mt-2');
+        button.setAttribute('onclick','AddCheckOption(id);');
+        button.innerHTML = "<i class=\"bi bi-plus-circle\"></i> Добавить опцию";
+        var ballsInput = document.getElementById('Questions[' + questionId + '].Balls');
+        ballsInput.insertAdjacentElement('afterend', button);
     }
 
     function OnSelectAnswer(id)
@@ -140,6 +209,7 @@
         switch(element.value)
         {
             case '0':
+                RemoveCreator(id);
                 correctInput = CheckCorrectInputCreated(id);
                 correctInput.value = null;
                 correctInput.removeAttribute('onkeypress');
@@ -154,18 +224,21 @@
                 AddCheckCreator(id);
                 break;
             case '3':
+                RemoveCreator(id);
                 correctInput = CheckCorrectInputCreated(id);
                 correctInput.value = null;
                 correctInput.removeAttribute('onkeypress');
                 correctInput.setAttribute('type', 'number');
                 break;
             case '4':
+                RemoveCreator(id);
                 correctInput = CheckCorrectInputCreated(id);
                 correctInput.value = null;
                 correctInput.setAttribute('onkeypress', 'KeyPress(event);');
                 correctInput.setAttribute('type', 'text');
                 break;
             case '5':
+                RemoveCreator(id);
                 correctInput = CheckCorrectInputCreated(id);
                 correctInput.value = null;
                 correctInput.removeAttribute('onkeypress');
@@ -210,6 +283,7 @@
         <input asp-for="Shuffle" class="form-check-input" type="checkbox" id="anonBox" onchange="CheckAnonimOneOff()">
         <label asp-for="Shuffle" class="form-check-label"></label>
     </div>
+    <hr>
     @if (Model?.Questions != null)
     {
         //Loading already created ones
@@ -218,8 +292,7 @@
             <hr>
         }
     }
-    <hr id="AddQuestionLine">
-    <a class="btn btn-outline-info" id="addQuestionBtn" onclick="AddQuestion()"><i class="bi bi-plus-circle-dotted"></i> Добавить вопрос</a>
+    <a class="btn btn-outline-info mt-2" id="addQuestionBtn" onclick="AddQuestion()"><i class="bi bi-plus-circle-dotted"></i> Добавить вопрос</a>
     <hr>
     <button class="btn btn-outline-primary" type="submit"><i class="bi bi-send-fill"></i> Отправить</button>
 </form>
