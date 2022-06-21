@@ -51,26 +51,22 @@
 </script>
 
 <script id="RadioOptionBlock" type="text/html">
-    <div class="input-group mb-3 px-3">
-        <div class="input-group-prepend">
-            <input id = "Questions[{questionId}].Correct" type = "radio" />
-        </div>
-        <input id = "Questions[{questionId}].Options[{optionId}].Text" class="form-control" placeholder = "Название опции"/>
-        <div class="input-group-append">
-            <a class = "btn btn-outline-danger" id = "delete-question-{questionId}-option-{optionId}" onclick = 'DeleteRadioOption({questionId},{optionId})'><i class="bi bi-x-circle-fill"></i></a>
-        </div>
+    <div class="input-group-prepend">
+        <input id = "Questions[{questionId}].Correct" class="form-check-input" type = "radio" />
+    </div>
+    <input id = "Questions[{questionId}].Options[{optionId}].Text" class="form-control" placeholder = "Название опции"/>
+    <div class="input-group-append">
+        <a class = "btn btn-outline-danger" id = "delete-question-{questionId}-option-{optionId}" onclick = 'DeleteRadioOption({questionId},{optionId})'><i class="bi bi-x-circle-fill"></i></a>
     </div>
 </script>
 
 <script id="CheckOptionBlock" type="text/html">
-    <div class="input-group mb-3 px-3">
-        <div class="input-group-prepend">
-            <input id = "Questions[{questionId}].Correct" type = "checkbox" />
-        </div>
-        <input id = "Questions[{questionId}].Options[{optionId}].Text" class="form-control" placeholder = "Название опции"/>
-        <div class="input-group-append">
-            <a class = "btn btn-outline-danger" id = "delete-question-{questionId}-option-{optionId}" onclick = 'DeleteCheckOption({questionId},{optionId})'><i class="bi bi-x-circle-fill"></i></a>
-        </div>
+    <div class="input-group-prepend">
+        <input id = "Questions[{questionId}].Correct" class="form-check-input" type = "checkbox" />
+    </div>
+    <input id = "Questions[{questionId}].Options[{optionId}].Text" class="form-control" placeholder = "Название опции"/>
+    <div class="input-group-append">
+        <a class = "btn btn-outline-danger" id = "delete-question-{questionId}-option-{optionId}" onclick = 'DeleteCheckOption({questionId},{optionId})'><i class="bi bi-x-circle-fill"></i></a>
     </div>
 </script>
 
@@ -88,9 +84,31 @@
         div.scrollIntoView();
     }
 
-    function AddRadioOption(questionId)
+    function DeleteQuestion()
     {
 
+    }
+
+    function RenameQuestion(pastId, newId)
+    {
+
+    }
+
+    function AddRadioOption(questionId)
+    {
+        var optionCount = document.getElementsByName('option-'+questionId).length;
+        var optionBlock = document.getElementById('RadioOptionBlock').innerHTML.replace(/{questionId}/g, questionId).replace(/{optionId}/g, optionCount);
+        var creatorButton = document.getElementById('Creator-' + questionId);
+        var optionDiv = document.createElement('div');
+        if (optionBlock == null || creatorButton == null || optionDiv == null)
+        {
+            return;
+        }
+        optionDiv.setAttribute('id','option-'+questionId+'-'+optionCount);
+        optionDiv.setAttribute('name','option-'+questionId);
+        optionDiv.setAttribute('class','input-group mb-3 px-3');
+        optionDiv.innerHTML = optionBlock;
+        creatorButton.insertAdjacentElement('BeforeBegin',optionDiv);
     }
 
     function DeleteRadioOption(questionId, optionId)
@@ -98,9 +116,30 @@
 
     }
 
+    function DeleteOptions(questionId)
+    {
+        var elements = document.getElementsByName('option-'+questionId);
+        while (elements.length > 0)
+        {
+            elements[0].remove();
+        }
+    }
+
     function AddCheckOption(questionId)
     {
-
+        var optionCount = document.getElementsByName('option-'+questionId).length;
+        var optionBlock = document.getElementById('CheckOptionBlock').innerHTML.replace(/{questionId}/g, questionId).replace(/{optionId}/g, optionCount);
+        var creatorButton = document.getElementById('Creator-' + questionId);
+        var optionDiv = document.createElement('div');
+        if (optionBlock == null || creatorButton == null || optionDiv == null)
+        {
+            return;
+        }
+        optionDiv.setAttribute('id','option-'+questionId+'-'+optionCount);
+        optionDiv.setAttribute('name','option-'+questionId);
+        optionDiv.setAttribute('class','input-group mb-3 px-3');
+        optionDiv.innerHTML = optionBlock;
+        creatorButton.insertAdjacentElement('BeforeBegin',optionDiv);
     }
 
     function DeleteCheckOption(questionId, optionId)
@@ -159,19 +198,19 @@
         var creator = document.getElementById('Creator-' + questionId);
         if (creator != null)
         {
-            creator.setAttribute('onclick','AddRadioOption(id);');
+            creator.setAttribute('onclick','AddRadioOption('+questionId+');');
             return;
         }
         var button = document.createElement('a');
         button.setAttribute('id','Creator-' + questionId);
         button.setAttribute('class','btn btn-outline-info mt-2');
-        button.setAttribute('onclick','AddRadioOption(id);');
+        button.setAttribute('onclick','AddRadioOption('+questionId+');');
         button.innerHTML = "<i class=\"bi bi-plus-circle\"></i> Добавить опцию";
         var ballsInput = document.getElementById('Questions[' + questionId + '].Balls');
         ballsInput.insertAdjacentElement('afterend', button);
     }
 
-    function RemoveCreator(questionId)
+    function DeleteCreator(questionId)
     {
         var creator = document.getElementById('Creator-' + questionId);
         if (creator == null)
@@ -186,13 +225,13 @@
         var creator = document.getElementById('Creator-' + questionId);
         if (creator != null)
         {
-            creator.setAttribute('onclick','AddCheckOption(id);');
+            creator.setAttribute('onclick','AddCheckOption('+questionId+');');
             return;
         }
         var button = document.createElement('a');
         button.setAttribute('id','Creator-' + questionId);
         button.setAttribute('class','btn btn-outline-info mt-2');
-        button.setAttribute('onclick','AddCheckOption(id);');
+        button.setAttribute('onclick','AddCheckOption('+questionId+');');
         button.innerHTML = "<i class=\"bi bi-plus-circle\"></i> Добавить опцию";
         var ballsInput = document.getElementById('Questions[' + questionId + '].Balls');
         ballsInput.insertAdjacentElement('afterend', button);
@@ -209,7 +248,8 @@
         switch(element.value)
         {
             case '0':
-                RemoveCreator(id);
+                DeleteOptions(id);
+                DeleteCreator(id);
                 correctInput = CheckCorrectInputCreated(id);
                 correctInput.value = null;
                 correctInput.removeAttribute('onkeypress');
@@ -224,21 +264,24 @@
                 AddCheckCreator(id);
                 break;
             case '3':
-                RemoveCreator(id);
+                DeleteOptions(id);
+                DeleteCreator(id);
                 correctInput = CheckCorrectInputCreated(id);
                 correctInput.value = null;
                 correctInput.removeAttribute('onkeypress');
                 correctInput.setAttribute('type', 'number');
                 break;
             case '4':
-                RemoveCreator(id);
+                DeleteOptions(id);
+                DeleteCreator(id);
                 correctInput = CheckCorrectInputCreated(id);
                 correctInput.value = null;
                 correctInput.setAttribute('onkeypress', 'KeyPress(event);');
                 correctInput.setAttribute('type', 'text');
                 break;
             case '5':
-                RemoveCreator(id);
+                DeleteOptions(id);
+                DeleteCreator(id);
                 correctInput = CheckCorrectInputCreated(id);
                 correctInput.value = null;
                 correctInput.removeAttribute('onkeypress');
