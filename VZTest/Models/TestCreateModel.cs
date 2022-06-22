@@ -7,10 +7,8 @@ namespace VZTest.Models
     public class TestCreateModel
     {
         [Required(ErrorMessage = "Укажите название теста!")]
-        [DisplayName("Название")]
         public string Title { get; set; }
         [Required(ErrorMessage = "Укажите описание теста!")]
-        [DisplayName("Описание")]
         public string? Description { get; set; }
         public string? ImageName { get; set; }
         public IFormFile? ImageFile { get; set; }
@@ -21,8 +19,6 @@ namespace VZTest.Models
         public int MaxAttempts { get; set; }
         [DisplayName("Перемешивать порядок вопросов")]
         public bool Shuffle { get; set; }
-        [DisplayName("Пароль")]
-        [DataType(DataType.Password)]
         public string? Password { get; set; }
         public List<QuestionBlueprint> Questions { get; set; }
     }

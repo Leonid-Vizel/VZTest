@@ -1,7 +1,7 @@
 ﻿function AddQuestion() {
     var questionCount = document.getElementsByName('QuestionContainer').length;
     var div = document.createElement('div');
-    div.setAttribute('class', 'container mt-3');
+    div.setAttribute('class', 'mt-3');
     div.setAttribute('name', 'QuestionContainer');
     div.setAttribute('id', questionCount);
     var elementAfter = document.getElementById('addQuestionBtn');
@@ -49,6 +49,7 @@ function ReindexQuestion(oldId, newId) {
     var correctInput = document.getElementById('Questions[' + oldId + '].Correct');
     while (correctInput != null) {
         correctInput.setAttribute('id', 'Questions[' + newId + '].Correct');
+        correctInput.setAttribute('name', 'Questions[' + newId + '].Correct');
         correctInput = document.getElementById('Questions[' + oldId + '].Correct');
     }
     var creator = document.getElementById('Creator-' + oldId);
@@ -69,9 +70,10 @@ function AddRadioOption(questionId) {
     }
     optionDiv.setAttribute('id', 'option-' + questionId + '-' + optionCount);
     optionDiv.setAttribute('name', 'option-' + questionId);
-    optionDiv.setAttribute('class', 'input-group mb-3 px-3');
+    optionDiv.setAttribute('class', 'input-group mt-2 ml-3');
     optionDiv.innerHTML = optionBlock;
     creatorButton.insertAdjacentElement('BeforeBegin', optionDiv);
+    optionDiv.scrollIntoView();
 }
 
 function AddCheckOption(questionId) {
@@ -84,9 +86,10 @@ function AddCheckOption(questionId) {
     }
     optionDiv.setAttribute('id', 'option-' + questionId + '-' + optionCount);
     optionDiv.setAttribute('name', 'option-' + questionId);
-    optionDiv.setAttribute('class', 'input-group mb-3 px-3');
+    optionDiv.setAttribute('class', 'input-group mt-2 ml-3 ');
     optionDiv.innerHTML = optionBlock;
     creatorButton.insertAdjacentElement('BeforeBegin', optionDiv);
+    optionDiv.scrollIntoView();
 }
 
 function DeleteOption(questionId, optionId) {
@@ -103,8 +106,8 @@ function ReindexOptions(questionId) {
     for (var i = 0; i < options.length; i++) {
         var option = options[i];
         var splitArray = option.id.split('-');
-        var oldId = splitArray[splitArray.length-1];
-        ReindexOption(questionId, oldId,i);
+        var oldId = splitArray[splitArray.length - 1];
+        ReindexOption(questionId, oldId, i);
         option.setAttribute('id', 'option-' + questionId + '-' + i);
     }
 }
@@ -220,6 +223,22 @@ function AddCheckCreator(questionId) {
     button.innerHTML = "<i class=\"bi bi-plus-circle\"></i> Добавить опцию";
     var ballsInput = document.getElementById('Questions[' + questionId + '].Balls');
     ballsInput.insertAdjacentElement('afterend', button);
+}
+
+function TransformCorrects(questionId, string) {
+    var elementArray = document.getElementsByName('Questions[' + questionId + '].Correct');
+    switch (string) {
+        case 'RadioToCheck':
+            for (var i = 0; i < elementArray.length; i++) {
+
+            }
+            break;
+        case 'CheckToRadio':
+            for (var i = 0; i < elementArray.length; i++) {
+
+            }
+            break;
+    }
 }
 
 function OnSelectAnswer(id) {

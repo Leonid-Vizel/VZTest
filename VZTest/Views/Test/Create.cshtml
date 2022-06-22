@@ -1,6 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using VZTest.Models.Test
-@model TestCreateModel
 @inject SignInManager<IdentityUser> signInManager
 @{
     ViewData["Title"] = "Создание теста";
@@ -12,16 +11,17 @@
     return;
 }
 
-@section Scripts {
-<partial name="_ValidationScriptsPartial" />
-}
-<partial name = "_CreateBlocksPartial"/>
+<partial name="_CreateBlocksPartial" />
 <script src="~/js/FloatInputLimit.js"></script>
-<script src="~/js/SetNumberValidationScript.js"></script>
-<script src = "~/js/CreateScripts.js"></script>
+<script src="~/js/CreateScripts.js"></script>
+
 <style>
     hr {
         margin: 0.5rem 0;
+    }
+
+    .ml-3 {
+        margin-left: 0.5rem !important;
     }
 </style>
 
@@ -30,35 +30,35 @@
 
 <form method="post">
     <div>
-        <label asp-for="Title"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+        <label for="Title">Название</label>
+        <input id="Title" type="text" class="form-control" />
+        <span id="Title-Errors" class="text-danger"></span>
     </div>
 
     <div>
-        <label asp-for="Description"></label>
-        @Html.TextAreaFor(x=>x.Description, new {@class = "form-control"})
-        <span asp-validation-for="Description" class="text-danger"></span>
+        <label for="Description">Описание:</label>
+        <textarea id="Description" class="form-control" />
+        <span id="Description-Errors" class="text-danger"></span>
     </div>
 
     <hr>
     <h2><i class="bi bi-gear"></i> Настройки</h2>
 
     <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
+        <label for="Password">Пароль:</label>
+        <input id="Password" type = "password" class="form-control" />
+        <span id="Password-Error" class="text-danger"></span>
     </div>
 
     <div>
-        <label asp-for="MaxAttempts"></label>
-        <input asp-for="MaxAttempts" class="form-control" />
-        <span asp-validation-for="MaxAttempts" class="text-danger"></span>
+        <label for="MaxAttempts">Пароль:</label>
+        <input id="MaxAttempts" type = "number" class="form-control" />
+        <span id="MaxAttempts-Error" class="text-danger"></span>
     </div>
 
     <div class="form-check">
-        <input asp-for="Shuffle" class="form-check-input" type="checkbox" id="anonBox" onchange="CheckAnonimOneOff()">
-        <label asp-for="Shuffle" class="form-check-label"></label>
+        <input id="Shuffle" class="form-check-input" type="checkbox">
+        <label for="Shuffle" class="form-check-label">Перемешивать порядок вопросов</label>
     </div>
     <hr>
     @if (Model?.Questions != null)
