@@ -1,0 +1,46 @@
+﻿<script id="QuestionBlock" type="text/html">
+    <h5 id = "QuestionHeader-{questionId}">Вопрос #{questionIdPlus}</h5>
+    <div class="input-group">
+        <input id = "Questions[{questionId}].Title" type = "text" class="form-control" placeholder = "Название"/>
+        <div class="input-group-append">
+            <select class="form-select" id = "Questions[{questionId}].Type" onchange = "OnSelectAnswer({questionId});">
+                <option value="0" selected>Текст</option>
+                <option value="1">Радио-кнопки</option>
+                <option value="2">Флажки</option>
+                <option value="3">Целое число</option>
+                <option value="4">Дробное число</option>
+                <option value="5">Дата</option>
+            </select>
+        </div>
+        <div class="input-group-append">
+            <a class = "btn btn-outline-danger" id = 'btn-delete-{questionId}' onclick = "DeleteQuestion({questionId});"><i class="bi bi-x-circle-fill"></i></a>
+        </div>
+    </div>
+    <div class = "px-3">
+        <h5>Баллы за ответ:</h5>
+        <input id = "Questions[{questionId}].Balls" type = "number" class="form-control" placeholder = "Баллы"/>
+        <h5 id = "CorrectLabel-{questionId}">Правильный ответ:</h5>
+        <input id = "Questions[{questionId}].Correct" type = "text" class="form-control" placeholder = "Ответ"/>
+    </div>
+    <hr>
+</script>
+
+<script id="RadioOptionBlock" type="text/html">
+    <div class="input-group-prepend">
+        <input id = "Questions[{questionId}].Correct" class="form-check-input" type = "radio" />
+    </div>
+    <input id = "Questions[{questionId}].Options[{optionId}].Text" class="form-control" placeholder = "Название опции"/>
+    <div class="input-group-append">
+        <a class = "btn btn-outline-danger" id = "delete-question-{questionId}-option-{optionId}" onclick = 'DeleteOption({questionId},{optionId})'><i class="bi bi-x-circle-fill"></i></a>
+    </div>
+</script>
+
+<script id="CheckOptionBlock" type="text/html">
+    <div class="input-group-prepend">
+        <input id = "Questions[{questionId}].Correct" class="form-check-input" type = "checkbox" />
+    </div>
+    <input id = "Questions[{questionId}].Options[{optionId}].Text" class="form-control" placeholder = "Название опции"/>
+    <div class="input-group-append">
+        <a class = "btn btn-outline-danger" id = "delete-question-{questionId}-option-{optionId}" onclick = 'DeleteOption({questionId},{optionId})'><i class="bi bi-x-circle-fill"></i></a>
+    </div>
+</script>
