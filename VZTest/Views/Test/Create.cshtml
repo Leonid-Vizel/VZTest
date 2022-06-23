@@ -12,6 +12,8 @@
 }
 
 <partial name="_CreateBlocksPartial" />
+<partial name = "_AjaxPartial"/>
+<partial name = "_SweetAlertsPartial"/>
 <script src="~/js/FloatInputLimit.js"></script>
 <script src="~/js/CreateScripts.js"></script>
 
@@ -47,13 +49,12 @@
     <div>
         <label for="Password">Пароль</label>
         <input id="Password" type = "password" class="form-control" />
-        <span id="Password-Error" class="text-danger"></span>
     </div>
 
     <div>
         <label for="MaxAttempts">Максимальное количество попыток</label>
         <input id="MaxAttempts" type = "number" class="form-control" />
-        <span id="MaxAttempts-Error" class="text-danger"></span>
+        <span id="MaxAttempts-Errors" class="text-danger"></span>
     </div>
 
     <div class="form-check">
@@ -61,15 +62,7 @@
         <label for="Shuffle" class="form-check-label">Перемешивать порядок вопросов</label>
     </div>
     <hr>
-    @if (Model?.Questions != null)
-    {
-        //Loading already created ones
-        foreach (QuestionBlueprint question in Model.Questions)
-        {
-            <hr>
-        }
-    }
     <a class="btn btn-outline-info mt-2" id="addQuestionBtn" onclick="AddQuestion()"><i class="bi bi-plus-circle-dotted"></i> Добавить вопрос</a>
     <hr>
-    <button class="btn btn-outline-primary" type="submit"><i class="bi bi-send-fill"></i> Отправить</button>
+    <a class="btn btn-outline-primary" onclick = "CheckAndSend()"><i class="bi bi-send-fill"></i> Отправить</a>
 </form>

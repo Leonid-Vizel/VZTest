@@ -149,15 +149,15 @@ function DeleteOptions(questionId) {
     }
 }
 
-function CheckCorrectInputCreated(id) {
-    var correctInput = document.getElementById('Questions[' + id + '].Correct');
-    var correctLabel = document.getElementById('CorrectLabel-' + id);
-    var ballsInput = document.getElementById('Questions[' + id + '].Balls');
+function CheckCorrectInputCreated(questionId) {
+    var correctInput = document.getElementById('Questions[' + questionId + '].Correct');
+    var correctLabel = document.getElementById('CorrectLabel-' + questionId);
+    var ballsInput = document.getElementById('Questions[' + questionId + '].Balls');
     if (correctInput == null) {
         correctInput = document.createElement('input');
         correctInput.setAttribute('class', 'form-control');
         correctInput.setAttribute('placeholder', 'Ответ');
-        correctInput.setAttribute('id', 'Questions[' + id + '].Correct');
+        correctInput.setAttribute('id', 'Questions[' + questionId + '].Correct');
         if (correctLabel != null) {
             correctLabel.insertAdjacentElement('afterend', correctInput);
         }
@@ -167,20 +167,20 @@ function CheckCorrectInputCreated(id) {
     }
     if (correctLabel == null) {
         correctLabel = document.createElement('h5');
-        correctLabel.setAttribute('id', 'CorrectLabel-' + id);
+        correctLabel.setAttribute('id', 'CorrectLabel-' + questionId);
         correctLabel.innerHTML = 'Баллы за ответ:';
         ballsInput.insertAdjacentElement('afterend', correctLabel);
     }
     return correctInput;
 }
 
-function DeleteCorrectInput(id) {
-    var correctArray = document.getElementsByName('Questions[' + id + '].Correct');
+function DeleteCorrectInput(questionId) {
+    var correctArray = document.getElementsByName('Questions[' + questionId + '].Correct');
     if (correctArray.length > 0) {
         return;
     }
-    var correctInput = document.getElementById('Questions[' + id + '].Correct');
-    var correctLabel = document.getElementById('CorrectLabel-' + id);
+    var correctInput = document.getElementById('Questions[' + questionId + '].Correct');
+    var correctLabel = document.getElementById('CorrectLabel-' + questionId);
     if (correctInput == null) {
         return;
     }
@@ -245,54 +245,114 @@ function TransformCorrects(questionId, string) {
     }
 }
 
-function OnSelectAnswer(id) {
+function OnSelectAnswer(questionId) {
     var correctInput;
-    var element = document.getElementById('Questions[' + id + '].Type');
+    var element = document.getElementById('Questions[' + questionId + '].Type');
     if (element == null) {
         return;
     }
     switch (element.value) {
         case '0':
-            DeleteOptions(id);
-            DeleteCreator(id);
-            correctInput = CheckCorrectInputCreated(id);
+            DeleteOptions(questionId);
+            DeleteCreator(questionId);
+            correctInput = CheckCorrectInputCreated(questionId);
             correctInput.value = null;
             correctInput.removeAttribute('onkeypress');
             correctInput.setAttribute('type', 'text');
             break;
         case '1':
-            DeleteCorrectInput(id);
-            TransformCorrects(id, "CheckToRadio");
-            AddRadioCreator(id);
+            DeleteCorrectInput(questionId);
+            TransformCorrects(questionId, "CheckToRadio");
+            AddRadioCreator(questionId);
             break;
         case '2':
-            DeleteCorrectInput(id);
-            TransformCorrects(id, "RadioToCheck");
-            AddCheckCreator(id);
+            DeleteCorrectInput(questionId);
+            TransformCorrects(questionId, "RadioToCheck");
+            AddCheckCreator(questionId);
             break;
         case '3':
-            DeleteOptions(id);
-            DeleteCreator(id);
-            correctInput = CheckCorrectInputCreated(id);
+            DeleteOptions(questionId);
+            DeleteCreator(questionId);
+            correctInput = CheckCorrectInputCreated(questionId);
             correctInput.value = null;
             correctInput.removeAttribute('onkeypress');
             correctInput.setAttribute('type', 'number');
             break;
         case '4':
-            DeleteOptions(id);
-            DeleteCreator(id);
-            correctInput = CheckCorrectInputCreated(id);
+            DeleteOptions(questionId);
+            DeleteCreator(questionId);
+            correctInput = CheckCorrectInputCreated(questionId);
             correctInput.value = null;
             correctInput.setAttribute('onkeypress', 'KeyPress(event);');
             correctInput.setAttribute('type', 'text');
             break;
         case '5':
-            DeleteOptions(id);
-            DeleteCreator(id);
-            correctInput = CheckCorrectInputCreated(id);
+            DeleteOptions(questionId);
+            DeleteCreator(questionId);
+            correctInput = CheckCorrectInputCreated(questionId);
             correctInput.value = null;
             correctInput.removeAttribute('onkeypress');
             correctInput.setAttribute('type', 'date');
             break;
+    }
+}
+
+function CheckAndSend() {
+    var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+    //Title
+    var titleElement = document.getElementById('Title');
+    var titleError = document.getElementById('Title-Errors');
+    if (titleElement == null || titleElement.value == '') {
+        titleError.innerHTML = "Укажите название теста!";
+        return;
+    }
+    else {
+        titleError.innerHTML = "";
+    }
+    //Description
+    var descriptionElement = document.getElementById('Description');
+    var descriptionError = document.getElementById('Description-Errors');
+    if (descriptionElement == null || descriptionElement.value == '') {
+        descriptionError.innerHTML = "Укажите описание теста!";
+        return;
+    }
+    else {
+        descriptionError.innerHTML = "";
+    }
+    //MaxAttempts
+    var attemptsElement = document.getElementById('MaxAttempts');
+    var attemptsError = document.getElementById('MaxAttempts-Errors');
+    if (attemptsElement == null || attemptsElement.value == '') {
+        attemptsError.innerHTML = "Укажите максимальное количество попыток для теста!";
+        return;
+    }
+    else if (attemptsElement.value < 1 || attemptsElement.value > 100)
+    {
+        attemptsError.innerHTML = "Максимальное количество попыток должно быть в пределах от 1 до 100!";
+        return;
+    }
+    else {
+        descriptionError.innerHTML = "";
+    }
+    //Password
+    var passwordElement = document.getElementById('Password');
+    //Shuffle
+    var shuffleElement = document.getElementById('Shuffle');
+    //Staing To Fill Dictionary
+    var dictionary = new Object();
+    dictionary["Title"] = titleElement.value;
+    dictionary["Description"] = descriptionElement.value;
+    if (passwordElement == null || passwordElement.value == '') {
+        dictionary['Password'] = '';
+    }
+    else {
+        dictionary['Password'] = passwordElement.value;
+    }
+    dictionary["MaxAttempts"] = attemptsElement.value;
+    if (shuffleElement == null) {
+        dictionary['Shuffle'] = '';
+    }
+    else {
+        dictionary['Shuffle'] = shuffleElement.checked;
     }
 }
