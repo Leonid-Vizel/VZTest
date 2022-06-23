@@ -234,7 +234,7 @@ function TransformCorrects(questionId, string) {
     switch (string) {
         case 'RadioToCheck':
             for (var i = 0; i < elementArray.length; i++) {
-                elementArray[i].setAttribute('type','checkbox');
+                elementArray[i].setAttribute('type', 'checkbox');
             }
             break;
         case 'CheckToRadio':
@@ -326,8 +326,7 @@ function CheckAndSend() {
         attemptsError.innerHTML = "Укажите максимальное количество попыток для теста!";
         return;
     }
-    else if (attemptsElement.value < 1 || attemptsElement.value > 100)
-    {
+    else if (attemptsElement.value < 1 || attemptsElement.value > 100) {
         attemptsError.innerHTML = "Максимальное количество попыток должно быть в пределах от 1 до 100!";
         return;
     }
@@ -355,4 +354,53 @@ function CheckAndSend() {
     else {
         dictionary['Shuffle'] = shuffleElement.checked;
     }
+
+    var questions = document.getElementsByName('QuestionContainer');
+    for (var i = 0; i < questions.length; i++) {
+        var questionId = questions[i].id;
+
+        var questionTitleElement = document.getElementById('Questions[' + questionId + '].Title');
+        if (questionTitleElement == null || questionTitleElement.value == '') {
+            //ERROR
+            return;
+        }
+        dictionary['Questions[' + questionId + '].Title'] = questionTitleElement.value;
+
+        var questionTypeElement = document.getElementById('Questions[' + questionId + '].Type');
+        if (questionTypeElement == null || questionTypeElement.value == '') {
+            //ERROR
+            return;
+        }
+        dictionary['Questions[' + questionId + '].Type'] = questionTypeElement.value;
+
+        var questionBallsElement = document.getElementById('Questions[' + questionId + '].Balls');
+        if (questionBallsElement == null || questionBallsElement.value == '') {
+            //ERROR
+            return;
+        }
+        dictionary['Questions[' + questionId + '].Balls'] = questionBallsElement.value;
+
+        switch (questionTypeElement.value) {
+            case '0':
+            case '3':
+            case '4':
+            case '5':
+                var questionCorrectElement = document.getElementById('Questions[' + questionId + '].Correct');
+                if (questionCorrectElement == null || questionCorrectElement.value == '') {
+                    //ERROR
+                    return;
+                }
+                dictionary['Questions[' + questionId + '].Correct'] = questionCorrectElement.value;
+                break;
+            case '1':
+                break;
+            case '2':
+                break;
+            default:
+                //ERROR
+                return;
+                break;
+        }
+    }
+    console.log(dictionary);
 }
