@@ -16,11 +16,14 @@
             <a class = "btn btn-outline-danger" id = 'btn-delete-{questionId}' onclick = "DeleteQuestion({questionId});"><i class="bi bi-x-circle-fill"></i></a>
         </div>
     </div>
+    <span id = "Question-{questionId}-Errors" class = "text-danger"></span>
     <div class = "ml-3">
         <h5>Баллы за ответ:</h5>
         <input id = "Questions[{questionId}].Balls" type = "number" class="form-control" placeholder = "Баллы"/>
+        <span id = "Balls-{questionId}-Errors" class = "text-danger"></span>
         <h5 id = "CorrectLabel-{questionId}">Правильный ответ:</h5>
         <input id = "Questions[{questionId}].Correct" type = "text" class="form-control" placeholder = "Ответ"/>
+        <span id = "Correct-{questionId}-Errors" class = "text-danger"></span>
     </div>
     <hr>
 </script>

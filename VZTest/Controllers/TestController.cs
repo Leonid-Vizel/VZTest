@@ -34,6 +34,10 @@ namespace VZTest.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TestCreateModel model)
         {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return StatusCode(401);
+            }
             Test test = new Test();
             test.Title = model.Title;
             test.Description = model.Description;

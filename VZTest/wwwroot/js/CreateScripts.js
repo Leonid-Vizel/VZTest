@@ -43,17 +43,22 @@ function ReindexQuestion(oldId, newId) {
     var deleteBtn = document.getElementById('btn-delete-' + oldId);
     deleteBtn.setAttribute('onclick', 'DeleteQuestion(' + newId + ');');
     deleteBtn.setAttribute('id', 'btn-delete-' + newId);
+    var questionErrorSpan = document.getElementById('Question-' + oldId + '-Errors');
+    questionErrorSpan.setAttribute('id', 'Question-' + newId + '-Errors');
     var balls = document.getElementById('Questions[' + oldId + '].Balls');
     balls.setAttribute('id', 'Questions[' + newId + '].Balls');
+    var ballsErrorSpan = document.getElementById('Balls-' + oldId + '-Errors');
+    ballsErrorSpan.setAttribute('id', 'Balls-' + newId + '-Errors');
     var correctLabel = document.getElementById('CorrectLabel-' + oldId);
     if (correctLabel != null) {
         correctLabel.setAttribute('id', 'CorrectLabel-' + newId);
     }
     var correctInput = document.getElementById('Questions[' + oldId + '].Correct');
-    while (correctInput != null) {
+    if (correctInput != null && correctInput.getAttribute('name') == null) {
         correctInput.setAttribute('id', 'Questions[' + newId + '].Correct');
-        correctInput.setAttribute('name', 'Questions[' + newId + '].Correct');
         correctInput = document.getElementById('Questions[' + oldId + '].Correct');
+        var correctErrorSpan = document.getElementById('Correct-' + oldId + '-Errors');
+        correctErrorSpan.setAttribute('id', 'Correct-' + newId + '-Errors');
     }
     var creator = document.getElementById('Creator-' + oldId);
     if (creator != null) {
@@ -162,6 +167,7 @@ function DeleteOptions(questionId) {
 function CheckCorrectInputCreated(questionId) {
     var correctInput = document.getElementById('Questions[' + questionId + '].Correct');
     var correctLabel = document.getElementById('CorrectLabel-' + questionId);
+    var correctErrorSpan = document.getElementById('Correct-' + questionId + '-Errors');
     var ballsInput = document.getElementById('Questions[' + questionId + '].Balls');
     if (correctInput == null) {
         correctInput = document.createElement('input');
@@ -174,6 +180,12 @@ function CheckCorrectInputCreated(questionId) {
         else {
             ballsInput.insertAdjacentElement('afterend', correctInput);
         }
+    }
+    if (correctErrorSpan == null) {
+        correctErrorSpan = document.createElement('span');
+        correctErrorSpan.setAttribute('class', 'text-danger');
+        correctErrorSpan.setAttribute('id', 'Correct-' + questionId + '-Errors');
+        correctInput.insertAdjacentElement('afterend', correctErrorSpan);
     }
     if (correctLabel == null) {
         correctLabel = document.createElement('h5');
@@ -191,14 +203,16 @@ function DeleteCorrectInput(questionId) {
     }
     var correctInput = document.getElementById('Questions[' + questionId + '].Correct');
     var correctLabel = document.getElementById('CorrectLabel-' + questionId);
-    if (correctInput == null) {
-        return;
+    var correctErrorSpan = document.getElementById('Correct-' + questionId + '-Errors');
+    if (correctInput != null) {
+        correctInput.remove();
     }
-    correctInput.remove();
-    if (correctLabel == null) {
-        return;
+    if (correctLabel != null) {
+        correctLabel.remove();
     }
-    correctLabel.remove();
+    if (correctErrorSpan != null) {
+        correctErrorSpan.remove();
+    }
 }
 
 function AddRadioCreator(questionId) {
@@ -366,27 +380,44 @@ function CheckAndSend() {
     }
 
     var questions = document.getElementsByName('QuestionContainer');
+    if (questions.length == 0) {
+        attemptsError.innerHTML = "В тесте должен быть как минимум 1 вопрос!";
+        return;
+    }
+    else {
+        attemptsError.innerHTML = "";
+    }
     for (var i = 0; i < questions.length; i++) {
         var questionId = questions[i].id;
-        console.log(questions);
+        var questionError = document.getElementById('Correct-' + questionId + '-Errors');
         var questionTitleElement = document.getElementById('Questions[' + questionId + '].Title');
         if (questionTitleElement == null || questionTitleElement.value == '') {
-            console.log("ERR TITLE");
+            questionError.innerHTML = "Укажите название вопроса!";
             return;
+        }
+        else {
+            questionError.innerHTML = "";
         }
         dictionary['Questions[' + questionId + '].Title'] = questionTitleElement.value;
 
         var questionTypeElement = document.getElementById('Questions[' + questionId + '].Type');
         if (questionTypeElement == null || questionTypeElement.value == '') {
-            console.log("ERR TYPE");
+            questionError.innerHTML = "Укажите тип вопроса!";
             return;
+        }
+        else {
+            questionError.innerHTML = "";
         }
         dictionary['Questions[' + questionId + '].Type'] = questionTypeElement.value;
 
         var questionBallsElement = document.getElementById('Questions[' + questionId + '].Balls');
+        var questionBallsError = document.getElementById('Balls-' + questionId + '-Errors');
         if (questionBallsElement == null || questionBallsElement.value == '') {
-            console.log("ERR BALLS");
+            questionBallsError.innerHTML = "Укажите баллы за правильный ответ!";
             return;
+        }
+        else {
+            questionBallsError.innerHTML = "";
         }
         dictionary['Questions[' + questionId + '].Balls'] = questionBallsElement.value;
 
@@ -395,10 +426,14 @@ function CheckAndSend() {
             case '3':
             case '4':
             case '5':
+                var questionCorrectError = document.getElementById('Correct-' + questionId + '-Errors');
                 var questionCorrectElement = document.getElementById('Questions[' + questionId + '].Correct');
                 if (questionCorrectElement == null || questionCorrectElement.value == '') {
-                    console.log("ERR CORRECT");
+                    questionCorrectError.innerHTML = "Укажите правильный ответ!";
                     return;
+                }
+                else {
+                    questionCorrectError.innerHTML = "";
                 }
                 dictionary['Questions[' + questionId + '].Correct'] = questionCorrectElement.value;
                 break;
@@ -409,8 +444,11 @@ function CheckAndSend() {
                     var optionId = idSplit[idSplit.length - 1];
                     var optionTitleElement = document.getElementById('Questions[' + questionId + '].Options[' + optionId + '].Text');
                     if (optionTitleElement == null || optionTitleElement.value == '') {
-                        console.log("ERR RADIO");
+                        questionError.innerHTML = "Укажите правильынй ответ!";
                         return;
+                    }
+                    else {
+                        questionError.innerHTML = "";
                     }
                     dictionary['Questions[' + questionId + '].Options[' + j + ']'] = optionTitleElement.value;
                 }
@@ -424,8 +462,11 @@ function CheckAndSend() {
                     var optionId = idSplit[idSplit.length - 1];
                     var optionTitleElement = document.getElementById('Questions[' + questionId + '].Options[' + optionId + '].Text');
                     if (optionTitleElement == null || optionTitleElement.value == '') {
-                        console.log("ERR CHECK");
+                        questionError.innerHTML = "Укажите правильынй ответ!";
                         return;
+                    }
+                    else {
+                        questionError.innerHTML = "";
                     }
                     dictionary['Questions[' + questionId + '].Options[' + j + ']'] = optionTitleElement.value;
                 }
@@ -433,7 +474,7 @@ function CheckAndSend() {
                 dictionary['Questions[' + questionId + '].Correct'] = checkResult;
                 break;
             default:
-                //ERROR
+                questionError.innerHTML = "Неизвестный тип вопроса!";
                 return;
                 break;
         }
@@ -446,9 +487,6 @@ function CheckAndSend() {
         data: dictionary,
         error: function (error) {
             switch (error.status) {
-                case 403:
-                    swal("Недоступно!", "У Вас нет доступа к этому действию!", "error");
-                    break;
                 case 401:
                     swal("Авторизуйтесь!", "Для того, чтобы отметить тест надо войти в аккаунт.", "error");
                     break;
@@ -457,7 +495,7 @@ function CheckAndSend() {
                     break;
             }
         },
-        success: function(data) {
+        success: function (data) {
             window.location.replace("/Test/Preview/" + data);
         }
     });
