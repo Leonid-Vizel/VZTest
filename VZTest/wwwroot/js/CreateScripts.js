@@ -175,6 +175,10 @@ function CheckCorrectInputCreated(id) {
 }
 
 function DeleteCorrectInput(id) {
+    var correctArray = document.getElementsByName('Questions[' + id + '].Correct');
+    if (correctArray.length > 0) {
+        return;
+    }
     var correctInput = document.getElementById('Questions[' + id + '].Correct');
     var correctLabel = document.getElementById('CorrectLabel-' + id);
     if (correctInput == null) {
@@ -230,12 +234,12 @@ function TransformCorrects(questionId, string) {
     switch (string) {
         case 'RadioToCheck':
             for (var i = 0; i < elementArray.length; i++) {
-
+                elementArray[i].setAttribute('type','checkbox');
             }
             break;
         case 'CheckToRadio':
             for (var i = 0; i < elementArray.length; i++) {
-
+                elementArray[i].setAttribute('type', 'radio');
             }
             break;
     }
@@ -258,10 +262,12 @@ function OnSelectAnswer(id) {
             break;
         case '1':
             DeleteCorrectInput(id);
+            TransformCorrects(id, "CheckToRadio");
             AddRadioCreator(id);
             break;
         case '2':
             DeleteCorrectInput(id);
+            TransformCorrects(id, "RadioToCheck");
             AddCheckCreator(id);
             break;
         case '3':

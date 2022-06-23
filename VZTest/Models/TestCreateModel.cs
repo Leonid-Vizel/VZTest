@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using VZTest.Models.Test;
 
 namespace VZTest.Models
@@ -15,9 +14,7 @@ namespace VZTest.Models
         [Range(1,100,ErrorMessage = "Максимальное количество попыток должно быть в пределах от 1 до 100")]
         [Required(ErrorMessage = "Максимальное количество попыток должно быть указано")]
         [RegularExpression(@"[0-9]*$", ErrorMessage = "Some message if value entered isn't number")]
-        [DisplayName("Максимальное количество попыток")]
         public int MaxAttempts { get; set; }
-        [DisplayName("Перемешивать порядок вопросов")]
         public bool Shuffle { get; set; }
         public string? Password { get; set; }
         public List<QuestionBlueprint> Questions { get; set; }
