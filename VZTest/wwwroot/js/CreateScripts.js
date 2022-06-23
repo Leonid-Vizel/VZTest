@@ -368,24 +368,24 @@ function CheckAndSend() {
     var questions = document.getElementsByName('QuestionContainer');
     for (var i = 0; i < questions.length; i++) {
         var questionId = questions[i].id;
-
+        console.log(questions);
         var questionTitleElement = document.getElementById('Questions[' + questionId + '].Title');
         if (questionTitleElement == null || questionTitleElement.value == '') {
-            //ERROR
+            console.log("ERR TITLE");
             return;
         }
         dictionary['Questions[' + questionId + '].Title'] = questionTitleElement.value;
 
         var questionTypeElement = document.getElementById('Questions[' + questionId + '].Type');
         if (questionTypeElement == null || questionTypeElement.value == '') {
-            //ERROR
+            console.log("ERR TYPE");
             return;
         }
         dictionary['Questions[' + questionId + '].Type'] = questionTypeElement.value;
 
         var questionBallsElement = document.getElementById('Questions[' + questionId + '].Balls');
         if (questionBallsElement == null || questionBallsElement.value == '') {
-            //ERROR
+            console.log("ERR BALLS");
             return;
         }
         dictionary['Questions[' + questionId + '].Balls'] = questionBallsElement.value;
@@ -397,30 +397,37 @@ function CheckAndSend() {
             case '5':
                 var questionCorrectElement = document.getElementById('Questions[' + questionId + '].Correct');
                 if (questionCorrectElement == null || questionCorrectElement.value == '') {
-                    //ERROR
+                    console.log("ERR CORRECT");
                     return;
                 }
                 dictionary['Questions[' + questionId + '].Correct'] = questionCorrectElement.value;
                 break;
             case '1':
                 var radioArray = document.getElementsByName('option-' + questionId);
-                for (var i = 0; i < radioArray.length; i++) {
-                    var idSplit = radioArray[i].id.split('-');
+                for (var j = 0; j < radioArray.length; j++) {
+                    var idSplit = radioArray[j].id.split('-');
                     var optionId = idSplit[idSplit.length - 1];
                     var optionTitleElement = document.getElementById('Questions[' + questionId + '].Options[' + optionId + '].Text');
                     if (optionTitleElement == null || optionTitleElement.value == '') {
-                        //ERROR
+                        console.log("ERR RADIO");
                         return;
                     }
-                    dictionary['Questions[' + questionId + '].Options[' + i + '].Text'] = optionTitleElement.value;
+                    dictionary['Questions[' + questionId + '].Options[' + j + ']'] = optionTitleElement.value;
                 }
                 var radioResult = GetRadioValue('Questions[' + questionId + '].Correct');
                 dictionary['Questions[' + questionId + '].Correct'] = radioResult;
                 break;
             case '2':
                 var checkArray = document.getElementsByName('option-' + questionId);
-                for (var i = 0; i < checkArray.length; i++) {
-
+                for (var j = 0; j < checkArray.length; j++) {
+                    var idSplit = checkArray[j].id.split('-');
+                    var optionId = idSplit[idSplit.length - 1];
+                    var optionTitleElement = document.getElementById('Questions[' + questionId + '].Options[' + optionId + '].Text');
+                    if (optionTitleElement == null || optionTitleElement.value == '') {
+                        console.log("ERR CHECK");
+                        return;
+                    }
+                    dictionary['Questions[' + questionId + '].Options[' + j + ']'] = optionTitleElement.value;
                 }
                 var checkResult = GetCheckValue('Questions[' + questionId + '].Correct');
                 dictionary['Questions[' + questionId + '].Correct'] = checkResult;
@@ -430,6 +437,7 @@ function CheckAndSend() {
                 return;
                 break;
         }
+        console.log(questions);
     }
     dictionary['__RequestVerificationToken'] = verificationValue;
     $.ajax({

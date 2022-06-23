@@ -22,7 +22,7 @@ namespace VZTest.Models
         public QuestionType Type { get; set; }
         public string? ImageName { get; set; }
         public double Balls { get; set; }
-        public List<Option> Options { get; set; }
+        public List<string> Options { get; set; }
         public string Correct { get; set; }
     }
 }
