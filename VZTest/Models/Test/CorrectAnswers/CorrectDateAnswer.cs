@@ -6,5 +6,12 @@ namespace VZTest.Models.Test.CorrectAnswers
     {
         [Required(ErrorMessage = "Укажите ответ на вопрос!")]
         public DateTime Correct { get; set; }
+
+        public CorrectDateAnswer() { }
+
+        public CorrectDateAnswer(DateTime correct)
+        {
+            Correct = correct;
+        }
     }
 }

@@ -6,5 +6,12 @@ namespace VZTest.Models.Test.CorrectAnswers
     {
         [Required(ErrorMessage = "Укажите ответ на вопрос!")]
         public string Correct { get; set; }
+
+        public CorrectTextAnswer() { }
+
+        public CorrectTextAnswer(string correct)
+        {
+            Correct = correct;
+        }
     }
 }

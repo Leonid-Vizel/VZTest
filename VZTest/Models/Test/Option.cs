@@ -9,5 +9,15 @@ namespace VZTest.Models.Test
         public int QuestionId { get; set; }
         [Required(ErrorMessage = "Укажите наименование опции")]
         public string Title { get; set; }
+
+        public Option()
+        {
+            Title = string.Empty;
+        }
+
+        public Option(string title)
+        {
+            Title = title;
+        }
     }
 }

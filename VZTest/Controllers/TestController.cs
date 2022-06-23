@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using VZTest.Instruments;
 using VZTest.Models;
 using VZTest.Models.Test;
+using VZTest.Models.Test.CorrectAnswers;
 using VZTest.Repository.IRepository;
 
 namespace VZTest.Controllers
@@ -30,7 +32,7 @@ namespace VZTest.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(TestCreateModel model)
+        public async Task<IActionResult> Create(TestCreateModel model)
         {
             Test test = new Test();
             test.Title = model.Title;
@@ -40,7 +42,44 @@ namespace VZTest.Controllers
             test.Opened = false;
             test.Public = false;
             test.MaxAttempts = model.MaxAttempts;
-            return View();
+            test.Questions = new List<Question>();
+            if (model.Password != null)
+            {
+                test.PasswordHash = Hasher.HashPassword(model.Password);
+            }
+            foreach (QuestionBlueprint blueptint in model.Questions)
+            {
+                Question? question = blueptint.ToQuestion();
+                if (question != null)
+                {
+                    test.Questions.Add(question);
+                }
+            }
+            await unitOfWork.AddTest(test);
+            await unitOfWork.SaveAsync();
+
+            foreach (Question Question in test.Questions.Where(x => x.Type == QuestionType.Radio))
+            {
+                CorrectIntAnswer answer = Question.CorrectAnswer as CorrectIntAnswer;
+                Question.CorrectAnswer = new CorrectIntAnswer(Question.Options[answer.Correct].Id);
+                Question.CorrectAnswer.QuestionId = Question.Id;
+                await unitOfWork.CorrectAnswerRepository.AddAsync(Question.CorrectAnswer);
+            }
+            foreach (Question Question in test.Questions.Where(x => x.Type == QuestionType.Check))
+            {
+                CorrectCheckAnswer answer = Question.CorrectAnswer as CorrectCheckAnswer;
+                int[] indexes = answer.Correct;
+                int[] answers = new int[indexes.Length];
+                for (int i = 0; i < indexes.Length; i++)
+                {
+                    answers[i] = Question.Options[indexes[i]].Id;
+                }
+                Question.CorrectAnswer = new CorrectCheckAnswer(answers);
+                Question.CorrectAnswer.QuestionId = Question.Id;
+                await unitOfWork.CorrectAnswerRepository.AddAsync(Question.CorrectAnswer);
+            }
+            await unitOfWork.SaveAsync();
+            return Content(test.Id.ToString());
         }
 
         #endregion
@@ -536,7 +575,7 @@ namespace VZTest.Controllers
                         int[] optionIds = new int[splitted.Length];
                         for (int i = 0; i < splitted.Length; i++)
                         {
-                            if (!int.TryParse(splitted[i],out optionIds[i]))
+                            if (!int.TryParse(splitted[i], out optionIds[i]))
                             {
                                 return StatusCode(400);
                             }

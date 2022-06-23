@@ -39,5 +39,17 @@ namespace VZTest.Models.Test.CorrectAnswers
             }
         }
         public string? CheckAnswerString { get; set; }
+
+        public CorrectCheckAnswer() { }
+
+        public CorrectCheckAnswer(string correct)
+        {
+            CheckAnswerString = correct;
+        }
+
+        public CorrectCheckAnswer(int[] correct)
+        {
+            Correct = correct;
+        }
     }
 }

@@ -265,7 +265,7 @@ namespace VZTest.Repository.Repository
                 {
                     option.QuestionId = question.Id;
                 }
-                if (question.CorrectAnswer != null)
+                if (question.CorrectAnswer != null && question.Type != QuestionType.Radio && question.Type != QuestionType.Check)
                 {
                     await CorrectAnswerRepository.AddAsync(question.CorrectAnswer);
                 }

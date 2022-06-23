@@ -444,11 +444,21 @@ function CheckAndSend() {
         type: "POST",
         url: "/Test/Create/",
         data: dictionary,
-        error: function () {
-            swal("Ошибка!", "Отправка данных не удалась, попробуйте позже!", "error");
+        error: function (error) {
+            switch (error.status) {
+                case 403:
+                    swal("Недоступно!", "У Вас нет доступа к этому действию!", "error");
+                    break;
+                case 401:
+                    swal("Авторизуйтесь!", "Для того, чтобы отметить тест надо войти в аккаунт.", "error");
+                    break;
+                default:
+                    swal("Ошибка!", "Отправка данных не удалась, попробуйте позже!", "error");
+                    break;
+            }
         },
-        success: function() {
-            swal("Отправлено!", "Данные отправлены", "success");
+        success: function(data) {
+            window.location.replace("/Test/Preview/" + data);
         }
     });
 }

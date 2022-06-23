@@ -15,6 +15,7 @@ namespace VZTest.Models.Test
         public double Balls { get; set; }
         [NotMapped]
         public List<Option> Options { get; set; }
+        [NotMapped]
         public CorrectAnswer? CorrectAnswer { get; set; }
     }
     public enum QuestionType
