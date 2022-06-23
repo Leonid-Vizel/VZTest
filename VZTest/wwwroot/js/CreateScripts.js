@@ -29,6 +29,9 @@ function ReindexQuestions() {
 }
 
 function ReindexQuestion(oldId, newId) {
+    if (oldId == newId) {
+        return;
+    }
     var header = document.getElementById('QuestionHeader-' + oldId);
     header.innerHTML = 'Вопрос #' + (newId + 1);
     header.setAttribute('id', 'QuestionHeader-' + newId);
@@ -121,14 +124,20 @@ function ReindexOptions(oldQuestionId, newQuestionId) {
         ReindexOption(oldQuestionId, newQuestionId, oldId, i);
         option.setAttribute('id', 'option-' + newQuestionId + '-' + i);
     }
-    while (options.length > 0) {
-        options.setAttribute('name', 'option-' + newQuestionId);
+    if (oldQuestionId != newQuestionId) {
+        while (options.length > 0) {
+            options[0].setAttribute('name', 'option-' + newQuestionId);
+        }
     }
 }
 
 function ReindexOption(questionId, oldId, newId) {
+    if (oldId == newId) {
+        return;
+    }
     var titleInput = document.getElementById('Questions[' + questionId + '].Options[' + oldId + '].Text');
     titleInput.setAttribute('id', 'Questions[' + questionId + '].Options[' + newId + '].Text');
+    titleInput.setAttribute('value', newId);
     var deleteBtn = document.getElementById('delete-question-' + questionId + '-option-' + oldId);
     deleteBtn.setAttribute('id', 'delete-question-' + questionId + '-option-' + newId);
     deleteBtn.setAttribute('onclick', 'DeleteOption(' + questionId + ',' + newId + ')');
@@ -137,6 +146,7 @@ function ReindexOption(questionId, oldId, newId) {
 function ReindexOption(oldQuestionId, newQuestionId, oldId, newId) {
     var titleInput = document.getElementById('Questions[' + oldQuestionId + '].Options[' + oldId + '].Text');
     titleInput.setAttribute('id', 'Questions[' + newQuestionId + '].Options[' + newId + '].Text');
+    titleInput.setAttribute('value', newId);
     var deleteBtn = document.getElementById('delete-question-' + oldQuestionId + '-option-' + oldId);
     deleteBtn.setAttribute('id', 'delete-question-' + newQuestionId + '-option-' + newId);
     deleteBtn.setAttribute('onclick', 'DeleteOption(' + newQuestionId + ',' + newId + ')');
@@ -337,7 +347,7 @@ function CheckAndSend() {
     var passwordElement = document.getElementById('Password');
     //Shuffle
     var shuffleElement = document.getElementById('Shuffle');
-    //Staing To Fill Dictionary
+    //Starting To Fill Dictionary
     var dictionary = new Object();
     dictionary["Title"] = titleElement.value;
     dictionary["Description"] = descriptionElement.value;
@@ -393,8 +403,27 @@ function CheckAndSend() {
                 dictionary['Questions[' + questionId + '].Correct'] = questionCorrectElement.value;
                 break;
             case '1':
+                var radioArray = document.getElementsByName('option-' + questionId);
+                for (var i = 0; i < radioArray.length; i++) {
+                    var idSplit = radioArray[i].id.split('-');
+                    var optionId = idSplit[idSplit.length - 1];
+                    var optionTitleElement = document.getElementById('Questions[' + questionId + '].Options[' + optionId + '].Text');
+                    if (optionTitleElement == null || optionTitleElement.value == '') {
+                        //ERROR
+                        return;
+                    }
+                    dictionary['Questions[' + questionId + '].Options[' + i + '].Text'] = optionTitleElement.value;
+                }
+                var radioResult = GetRadioValue('Questions[' + questionId + '].Correct');
+                dictionary['Questions[' + questionId + '].Correct'] = radioResult;
                 break;
             case '2':
+                var checkArray = document.getElementsByName('option-' + questionId);
+                for (var i = 0; i < checkArray.length; i++) {
+
+                }
+                var checkResult = GetCheckValue('Questions[' + questionId + '].Correct');
+                dictionary['Questions[' + questionId + '].Correct'] = checkResult;
                 break;
             default:
                 //ERROR
@@ -402,5 +431,16 @@ function CheckAndSend() {
                 break;
         }
     }
-    console.log(dictionary);
+    dictionary['__RequestVerificationToken'] = verificationValue;
+    $.ajax({
+        type: "POST",
+        url: "/Test/Create/",
+        data: dictionary,
+        error: function () {
+            swal("Ошибка!", "Отправка данных не удалась, попробуйте позже!", "error");
+        },
+        success: function() {
+            swal("Отправлено!", "Данные отправлены", "success");
+        }
+    });
 }
