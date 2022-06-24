@@ -55,7 +55,7 @@
         <h5><a class="link" asp-controller="Test" asp-action="Preview" asp-route-Id="@test.Test.Id">@test.Test.Title</a></h5>
         <div class="row col-15">
             <div class="col-3">
-                <h6>Номер: #@test.Test.Id <a class="btn btn-outline-primary btn-sm" onclick="SetClipboard(@test.Test.Id)"><i id="copyIcon" class="bi bi-clipboard-check"></i></a></h6>
+                <h6>Номер: #@test.Test.Id <a class="btn btn-primary btn-sm" onclick="SetClipboard(@test.Test.Id)"><i id="copyIcon" class="bi bi-clipboard-check"></i></a></h6>
             </div>
             <div class="col-3">
                 <h6>Создано: @test.Test.CreatedTime.ToString("dd.MM.yyyy")</h6>
@@ -72,25 +72,25 @@
         </div>
         <div class="text-end">
             <form>
-                <a asp-controller="Test" asp-action="Results" asp-route-id="@test.Test.Id" class="btn btn-outline-success"><i class="bi bi-file-earmark-text"></i> Результаты</a>
-                <a class="btn btn-outline-warning" asp-controller="Test" asp-action="Edit" asp-route-Id="@test.Test.Id"><i class="bi bi-pencil"></i> Редактировать</a>
+                <a asp-controller="Test" asp-action="Results" asp-route-id="@test.Test.Id" class="btn btn-success"><i class="bi bi-file-earmark-text"></i> Результаты</a>
+                <a class="btn btn-warning" asp-controller="Test" asp-action="Edit" asp-route-Id="@test.Test.Id"><i class="bi bi-pencil"></i> Редактировать</a>
                 @if (test.Test.Opened)
                 {
-                    <a id="Close-@test.Test.Id" class="btn btn-outline-warning" onclick="OpenToggle(@test.Test.Id);"><i class="bi bi-door-closed"></i> Закрыть</a>
+                    <a id="Close-@test.Test.Id" class="btn btn-warning" onclick="OpenToggle(@test.Test.Id);"><i class="bi bi-door-closed"></i> Закрыть</a>
                 }
                 else
                 {
-                    <a id="Open-@test.Test.Id" class="btn btn-outline-success" onclick="OpenToggle(@test.Test.Id);"><i class="bi bi-door-open"></i> Открыть</a>
+                    <a id="Open-@test.Test.Id" class="btn btn-success" onclick="OpenToggle(@test.Test.Id);"><i class="bi bi-door-open"></i> Открыть</a>
                 }
                 @if (test.Test.Public)
                 {
-                    <a id="Private-@test.Test.Id" class="btn btn-outline-warning" onclick="PublicToggle(@test.Test.Id);"><i class="bi bi-door-closed"></i> Приватизировать</a>
+                    <a id="Private-@test.Test.Id" class="btn btn-warning" onclick="PublicToggle(@test.Test.Id);"><i class="bi bi-door-closed"></i> Приватизировать</a>
                 }
                 else
                 {
-                    <a id="Public-@test.Test.Id" class="btn btn-outline-success" onclick="PublicToggle(@test.Test.Id);"><i class="bi bi-door-open"></i> Опубликовать</a>
+                    <a id="Public-@test.Test.Id" class="btn btn-success" onclick="PublicToggle(@test.Test.Id);"><i class="bi bi-door-open"></i> Опубликовать</a>
                 }
-                <a class="btn btn-outline-danger" onclick="Delete(@test.Test.Id);"><i class="bi bi-trash"></i> Удалить</a>
+                <a class="btn btn-danger" onclick="Delete(@test.Test.Id);"><i class="bi bi-trash"></i> Удалить</a>
             </form>
         </div>
     </div>

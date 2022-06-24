@@ -19,7 +19,7 @@
                         },
                         success: function () {
                             var element = document.getElementById("Private-" + id);
-                            element.setAttribute('class', 'btn btn-outline-success');
+                            element.setAttribute('class', 'btn btn-success');
                             element.innerHTML = "<i class=\"bi bi-door-open\"></i> Опубликовать";
                             element.setAttribute('id', "Public-" + id);
                         }
@@ -45,7 +45,7 @@
                         },
                         success: function () {
                             var element = document.getElementById("Public-" + id);
-                            element.setAttribute('class', 'btn btn-outline-warning');
+                            element.setAttribute('class', 'btn btn-warning');
                             element.innerHTML = "<i class=\"bi bi-door-closed\"></i> Приватизировать";
                             element.setAttribute('id', "Private-" + id);
                         }

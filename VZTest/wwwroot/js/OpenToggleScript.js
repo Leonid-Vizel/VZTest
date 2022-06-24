@@ -19,7 +19,7 @@
                         },
                         success: function () {
                             var element = document.getElementById("Close-" + id);
-                            element.setAttribute('class', 'btn btn-outline-success');
+                            element.setAttribute('class', 'btn btn-success');
                             element.innerHTML = "<i class=\"bi bi-door-open\"></i> Открыть";
                             element.setAttribute('id', "Open-" + id);
                         }
@@ -45,7 +45,7 @@
                         },
                         success: function () {
                             var element = document.getElementById("Open-" + id);
-                            element.setAttribute('class', 'btn btn-outline-warning');
+                            element.setAttribute('class', 'btn btn-warning');
                             element.innerHTML = "<i class=\"bi bi-door-closed\"></i> Закрыть";
                             element.setAttribute('id', "Close-" + id);
                         }
