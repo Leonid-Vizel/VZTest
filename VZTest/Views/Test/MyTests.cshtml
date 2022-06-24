@@ -1,20 +1,23 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using VZTest.Models.Test
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
 @inject SignInManager<IdentityUser> signInManager
-@model IEnumerable<TestStatistics>
+@model IPagedList<TestStatistics>
 @{
     ViewData["Title"] = "Ваши тесты";
 }
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial"/>
+    <partial name="_AuthorisePartial" />
     return;
 }
 
 @if (Model == null)
 {
-    <partial name="_ErrorPartial"/>
+    <partial name="_ErrorPartial" />
     return;
 }
 
@@ -27,13 +30,24 @@
     return;
 }
 
-<partial name="_AjaxPartial"/>
-<partial name="_SweetAlertsPartial"/>
+<partial name="_AjaxPartial" />
+<partial name="_SweetAlertsPartial" />
 <script src="~/js/ClipboardScript.js"></script>
 <script src="~/js/DeleteScript.js"></script>
 <script src="~/js/OpenToggleScript.js"></script>
 <script src="~/js/PublicToggleScript.js"></script>
 <script src="~/js/ProcessErrorsScript.js"></script>
+
+@if (ViewBag.TotalPages > 1)
+{
+    <div style="display:flex; justify-content: center;">
+        @Html.PagedListPager(Model, page => Url.Action("List","Test", new {page = page}),
+        new PagedListRenderOptions {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }})
+    </div>
+    <hr>
+}
 
 @foreach (TestStatistics test in Model)
 {
@@ -81,4 +95,13 @@
         </div>
     </div>
     <hr id="test-separator-@test.Test.Id">
+}
+@if (ViewBag.TotalPages > 1)
+{
+    <div class="mt-2" style="display:flex; justify-content: center;">
+        @Html.PagedListPager(Model, page => Url.Action("List","Test", new {page = page}),
+        new PagedListRenderOptions {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }})
+    </div>
 }

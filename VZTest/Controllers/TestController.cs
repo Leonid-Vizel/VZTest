@@ -329,26 +329,52 @@ namespace VZTest.Controllers
         #region List
         public async Task<IActionResult> List(int page = 1)
         {
-            if (page < 1)
-            {
-                page = 1;
-            }
             if (!signInManager.IsSignedIn(User))
             {
                 return View(null);
             }
-            return View((await unitOfWork.GetPublicTestsStatistics(userManager.GetUserId(User))).ToPagedList(page, 6));
+            if (page < 1)
+            {
+                page = 1;
+            }
+            IEnumerable<TestStatistics> tests = await unitOfWork.GetPublicTestsStatistics(userManager.GetUserId(User));
+            int total = tests.Count();
+            if (total % 6 > 0)
+            {
+                total = total / 6 + 1;
+            }
+            else
+            {
+                total = total / 6;
+            }
+            ViewBag.TotalPages = total;
+            return View(tests.ToPagedList(page, 6));
         }
         #endregion
 
         #region MyTests
-        public async Task<IActionResult> MyTests()
+        public async Task<IActionResult> MyTests(int page = 1)
         {
             if (!signInManager.IsSignedIn(User))
             {
                 return View(null);
             }
-            return View(await unitOfWork.GetUserTestsStatistics(userManager.GetUserId(User)));
+            if (page < 1)
+            {
+                page = 1;
+            }
+            IEnumerable<TestStatistics> tests = await unitOfWork.GetUserTestsStatistics(userManager.GetUserId(User));
+            int total = tests.Count();
+            if (total % 6 > 0)
+            {
+                total = total / 6 + 1;
+            }
+            else
+            {
+                total = total / 6;
+            }
+            ViewBag.TotalPages = total;
+            return View(tests.ToPagedList(page, 6));
         }
         #endregion
 
