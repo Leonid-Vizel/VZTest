@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Diagnostics;
+using X.PagedList;
 using VZTest.Instruments;
 using VZTest.Models;
 using VZTest.Models.Test;
@@ -327,13 +327,17 @@ namespace VZTest.Controllers
         #endregion
 
         #region List
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> List(int page = 1)
         {
+            if (page < 1)
+            {
+                page = 1;
+            }
             if (!signInManager.IsSignedIn(User))
             {
                 return View(null);
             }
-            return View(await unitOfWork.GetPublicTestsStatistics(userManager.GetUserId(User)));
+            return View((await unitOfWork.GetPublicTestsStatistics(userManager.GetUserId(User))).ToPagedList(page, 6));
         }
         #endregion
 

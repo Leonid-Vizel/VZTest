@@ -1,14 +1,17 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using X.PagedList
+@using X.PagedList.Mvc.Core;
 @using VZTest.Models.Test
+@using X.PagedList.Web.Common
 @inject SignInManager<IdentityUser> signInManager
-@model IEnumerable<TestStatistics>
+@model IPagedList<TestStatistics>
 @{
     ViewData["Title"] = "Публичные тесты";
 }
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial"/>
+    <partial name="_AuthorisePartial" />
     return;
 }
 
@@ -18,14 +21,20 @@
     return;
 }
 
-<partial name = "_AjaxPartial"/>
-<partial name = "_SweetAlertsPartial"/>
-<script src = "~/js/StarScript.js"></script>
+<partial name="_AjaxPartial" />
+<partial name="_SweetAlertsPartial" />
+<script src="~/js/StarScript.js"></script>
 
 <h2><i class="bi bi-list-check"></i> @ViewData["Title"]</h2>
 <hr>
 
-<form></form> @*FOR VALIDATION TOKEN*@
+<div style = "display:flex; justify-content: center;">
+    @Html.PagedListPager(Model, page => Url.Action("List","Test", new {page = page}), 
+        new PagedListRenderOptions {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }})
+</div>
+<form hidden></form> @*FOR VALIDATION TOKEN*@
 <div class="list-group">
     @foreach (TestStatistics testStat in Model)
     {
@@ -54,4 +63,10 @@
             <small>ID:@testStat.Test.Id</small>
         </div>
     }
+</div>
+<div class="mt-2" style = "display:flex; justify-content: center;">
+    @Html.PagedListPager(Model, page => Url.Action("List","Test", new {page = page}), 
+        new PagedListRenderOptions {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }})
 </div>

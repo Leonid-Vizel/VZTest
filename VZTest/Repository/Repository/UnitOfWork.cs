@@ -44,7 +44,7 @@ namespace VZTest.Repository.Repository
 
         public async Task<IEnumerable<TestStatistics>> GetPublicTestsStatistics(string userId)
         {
-            IEnumerable<Test> foundTests = TestRepository.GetWhere(x => x.Public && x.Opened).ToList();
+            List<Test> foundTests = TestRepository.GetWhere(x => x.Public && x.Opened).ToList();
             List<TestStatistics> testStatistics = new List<TestStatistics>();
             foreach (Test test in foundTests)
             {
@@ -87,7 +87,7 @@ namespace VZTest.Repository.Repository
         public IEnumerable<Attempt> GetUserTestAttempts(int testId, string userId)
         {
             List<Attempt> attempts = AttemptRepository.GetWhere(x => x.TestId == testId && x.UserId.Equals(userId)).ToList();
-            foreach(Attempt attempt in attempts)
+            foreach (Attempt attempt in attempts)
             {
                 GetAttemptAnswers(attempt);
             }
@@ -157,7 +157,7 @@ namespace VZTest.Repository.Repository
             {
                 return;
             }
-            foreach(Answer answer in attempt.Answers)
+            foreach (Answer answer in attempt.Answers)
             {
                 AnswerRepository.Remove(answer);
             }
@@ -267,6 +267,7 @@ namespace VZTest.Repository.Repository
                 }
                 if (question.CorrectAnswer != null && question.Type != QuestionType.Radio && question.Type != QuestionType.Check)
                 {
+                    question.CorrectAnswer.QuestionId = question.Id;
                     await CorrectAnswerRepository.AddAsync(question.CorrectAnswer);
                 }
                 await OptionRepository.AddRangeAsync(question.Options);
@@ -453,7 +454,7 @@ namespace VZTest.Repository.Repository
                         return 0;
                     }
                     int incorrectCount = 0;
-                    foreach(int answerId in answer.CheckAnswers)
+                    foreach (int answerId in answer.CheckAnswers)
                     {
                         if (!correctCheckAnswer.Correct.Contains(answerId))
                         {
@@ -473,7 +474,7 @@ namespace VZTest.Repository.Repository
                     }
                     else if (incorrectCount == 1)
                     {
-                        return question.Balls/2;
+                        return question.Balls / 2;
                     }
                     else
                     {
