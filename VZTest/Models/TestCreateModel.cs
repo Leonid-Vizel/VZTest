@@ -7,8 +7,7 @@ namespace VZTest.Models
     {
         public string Title { get; set; }
         public string? Description { get; set; }
-        public string? ImageName { get; set; }
-        public IFormFile? ImageFile { get; set; }
+        public string? ImageUrl { get; set; }
         public int MaxAttempts { get; set; }
         public bool Shuffle { get; set; }
         public string? Password { get; set; }
@@ -19,7 +18,7 @@ namespace VZTest.Models
     {
         public string Title { get; set; }
         public QuestionType Type { get; set; }
-        public string? ImageName { get; set; }
+        public string? ImageUrl { get; set; }
         public double Balls { get; set; }
         public List<string> Options { get; set; }
         public string Correct { get; set; }
@@ -29,7 +28,7 @@ namespace VZTest.Models
             Question question = new Question();
             question.Title = Title;
             question.Type = Type;
-            question.ImageName = ImageName;
+            question.ImageUrl = ImageUrl;
             question.Balls = Balls;
             question.Options = new List<Option>();
             Options?.ForEach(x => question.Options.Add(new Option(x)));

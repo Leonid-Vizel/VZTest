@@ -55,7 +55,7 @@ namespace VZTest.Repository.Repository
 
         public async Task<TestStatistics?> GetTestStatistics(int testId, string userId)
         {
-            Test? test = TestRepository.FirstOrDefault(x => x.Id == testId);
+            Test? test = GetTestMainInfo(testId);
             if (test == null)
             {
                 return null;
@@ -176,6 +176,11 @@ namespace VZTest.Repository.Repository
             }
             AttemptRepository.Remove(attempt);
         }
+
+        public Attempt? GetAttemptMainInfo(int attemptId)
+        {
+            return AttemptRepository.FirstOrDefault(x => x.Id == attemptId);
+        }
         #endregion
 
         #region Questions
@@ -186,7 +191,7 @@ namespace VZTest.Repository.Repository
             {
                 foreach (Question question in questions)
                 {
-                    question.Options = GetQuestionOptions(question.Id).ToList();
+                    question.Options = GetQuestionOptions(question.Id);
                     question.CorrectAnswer = GetQuestionCorrectAnswer(question.Id);
                 }
             }
@@ -194,12 +199,12 @@ namespace VZTest.Repository.Repository
             {
                 foreach (Question question in questions)
                 {
-                    question.Options = GetQuestionOptions(question.Id).ToList();
+                    question.Options = GetQuestionOptions(question.Id);
                 }
             }
             foreach (Question question in questions)
             {
-                question.Options = GetQuestionOptions(question.Id).ToList();
+                question.Options = GetQuestionOptions(question.Id);
             }
             return questions;
         }
@@ -212,6 +217,21 @@ namespace VZTest.Repository.Repository
         public double GetTestTotalBalls(int testId)
         {
             return QuestionRepository.GetWhere(x => x.TestId == testId).Sum(x => x.Balls);
+        }
+
+        public Question? GetQuestion(int questionId, bool loadOptions)
+        {
+            if (loadOptions)
+            {
+                Question? question = QuestionRepository.FirstOrDefault(x => x.Id == questionId);
+                if (question == null)
+                {
+                    return null;
+                }
+                question.Options = GetQuestionOptions(questionId);
+                return question;
+            }
+            return QuestionRepository.FirstOrDefault(x=>x.Id == questionId);
         }
         #endregion
 
@@ -309,7 +329,7 @@ namespace VZTest.Repository.Repository
 
         public Test? GetTestById(int testId, bool loadAnswers)
         {
-            Test? test = TestRepository.FirstOrDefault(x => x.Id == testId);
+            Test? test = GetTestMainInfo(testId);
             if (test == null)
             {
                 return null;
@@ -317,12 +337,31 @@ namespace VZTest.Repository.Repository
             test.Questions = GetTestQuestions(test.Id, loadAnswers).ToList();
             return test;
         }
+
+        public void FillTest(Test test, bool loadAnswers)
+        {
+            if (test == null)
+            {
+                return;
+            }
+            test.Questions = GetTestQuestions(test.Id, loadAnswers).ToList();
+        }
+
+        public Test? GetTestMainInfo(int testId)
+        {
+            return TestRepository.FirstOrDefault(x => x.Id == testId);
+        }
         #endregion
 
         #region Options
-        public IEnumerable<Option> GetQuestionOptions(int questionId)
+        public List<Option> GetQuestionOptions(int questionId)
         {
-            return OptionRepository.GetWhere(x => x.QuestionId == questionId);
+            return OptionRepository.GetWhere(x => x.QuestionId == questionId).ToList();
+        }
+
+        public bool OptionExists(int questionId, int optionId)
+        {
+            return OptionRepository.FirstOrDefault(x => x.Id == optionId && x.QuestionId == questionId) != null;
         }
         #endregion
 
@@ -339,6 +378,11 @@ namespace VZTest.Repository.Repository
                     attempt.Answers.Add(answer);
                 }
             }
+        }
+
+        public Answer? GetAnswer(int attemptId, int questionId)
+        {
+            return AnswerRepository.FirstOrDefault(x => x.AttemptId == attemptId && x.QuestionId == questionId);
         }
 
         private double CheckAnswerCorrect(Answer answer)

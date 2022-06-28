@@ -22,6 +22,7 @@ namespace VZTest.Repository.IRepository
         void CheckAttempt(Attempt attempt);
         void RemoveAttempt(int attemptId);
         void RemoveAttempt(Attempt attempt);
+        Attempt? GetAttemptMainInfo(int attemptId);
         #endregion
 
         #region TestStatistics
@@ -33,6 +34,7 @@ namespace VZTest.Repository.IRepository
         #region Questions
         IEnumerable<Question> GetTestQuestions(int testId, bool loadAnswers);
         Task<int> GetTestQuestionCount(int testId);
+        Question? GetQuestion(int questionId, bool loadOptions);
         #endregion
 
         #region UserStars
@@ -44,17 +46,21 @@ namespace VZTest.Repository.IRepository
 
         #region Tests
         Test? GetTestById(int testId, bool loadAnswers);
+        void FillTest(Test test, bool loadAnswers);
+        Test? GetTestMainInfo(int testId);
         double GetTestTotalBalls(int testId);
         void RemoveTest(int testId);
         Task AddTest(Test value);
         #endregion
 
         #region Options
-        IEnumerable<Option> GetQuestionOptions(int questionId);
+        List<Option> GetQuestionOptions(int questionId);
+        bool OptionExists(int questionId, int optionId);
         #endregion
 
         #region Answers
         void GetAttemptAnswers(Attempt attempt);
+        Answer? GetAnswer(int attemptId, int questionId);
         #endregion
 
         #region CorrectAnswer

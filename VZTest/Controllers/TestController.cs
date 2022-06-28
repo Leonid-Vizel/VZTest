@@ -88,12 +88,43 @@ namespace VZTest.Controllers
 
         #endregion
 
+        #region
+
+        public IActionResult Edit(int id)
+        {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return View(null);
+            }
+            Test? foundTest = unitOfWork.GetTestMainInfo(id);
+            if (foundTest == null)
+            {
+                return View(null);
+            }
+            if (!foundTest.UserId.Equals(userManager.GetUserId(User)))
+            {
+                TestEditModel model = new TestEditModel();
+                model.Forbidden = true;
+                return View(model);
+            }
+            if (foundTest.Opened)
+            {
+                TestEditModel model = new TestEditModel();
+                model.TestOpened = true;
+                return View(model);
+            }
+            unitOfWork.FillTest(foundTest, true);
+            return View(foundTest);
+        }
+
+        #endregion
+
         #region Attempt
         public IActionResult Attempt(int id)
         {
             if (!signInManager.IsSignedIn(User))
             {
-                return View(null); //Authorize
+                return View(null);
             }
             Attempt? attempt = unitOfWork.GetAttemptWithAnswers(id);
             AttemptModel attemptModel = new AttemptModel();
@@ -216,7 +247,7 @@ namespace VZTest.Controllers
                 return View(null); //Authorize
             }
             string userId = userManager.GetUserId(User);
-            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
             {
                 model.NotFound = true;
@@ -243,7 +274,7 @@ namespace VZTest.Controllers
             }
             string userId = userManager.GetUserId(User);
             TestPriviewModel model = new TestPriviewModel();
-            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
             {
                 model.NotFound = true;
@@ -387,7 +418,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(401); //unauthorised
             }
-            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
             {
                 return StatusCode(404); //not found
@@ -423,7 +454,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(401); //unauthorised
             }
-            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
             {
                 return StatusCode(404); //not found
@@ -446,7 +477,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(401); //unauthorised
             }
-            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
             {
                 return StatusCode(404); //not found
@@ -469,7 +500,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(401);
             }
-            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
             {
                 return StatusCode(404);
@@ -491,7 +522,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(401);
             }
-            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
             {
                 return StatusCode(404);
@@ -515,7 +546,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(401);
             }
-            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
             {
                 return StatusCode(404);
@@ -544,9 +575,9 @@ namespace VZTest.Controllers
             {
                 return StatusCode(401);
             }
-            Attempt? attempt = unitOfWork.AttemptRepository.FirstOrDefault(x => x.Id == attemptId);
-            Answer? foundAnswer = unitOfWork.AnswerRepository.FirstOrDefault(x => x.AttemptId == attemptId && x.QuestionId == questionId);
-            Question? foundQuestion = unitOfWork.QuestionRepository.FirstOrDefault(x => x.Id == questionId);
+            Attempt? attempt = unitOfWork.GetAttemptMainInfo(attemptId);
+            Answer? foundAnswer = unitOfWork.GetAnswer(attemptId, questionId);
+            Question? foundQuestion = unitOfWork.GetQuestion(questionId, false);
             if (foundAnswer == null || foundQuestion == null || attempt == null)
             {
                 return StatusCode(404);
@@ -597,8 +628,7 @@ namespace VZTest.Controllers
                         {
                             return StatusCode(400);
                         }
-                        Option? foundOption = unitOfWork.OptionRepository.FirstOrDefault(x => x.Id == radioResult && x.QuestionId == questionId);
-                        if (foundOption == null)
+                        if (!unitOfWork.OptionExists(questionId, radioResult))
                         {
                             return StatusCode(404);
                         }
@@ -613,8 +643,7 @@ namespace VZTest.Controllers
                             {
                                 return StatusCode(400);
                             }
-                            Option? checkOption = unitOfWork.OptionRepository.FirstOrDefault(x => x.Id == optionIds[i] && x.QuestionId == questionId);
-                            if (checkOption == null)
+                            if (!unitOfWork.OptionExists(questionId, optionIds[i]))
                             {
                                 return StatusCode(404);
                             }
@@ -636,7 +665,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(401);
             }
-            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == id);
+            Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
             {
                 return StatusCode(404);
@@ -657,12 +686,12 @@ namespace VZTest.Controllers
             {
                 return StatusCode(401);
             }
-            Attempt? foundAttempt = unitOfWork.AttemptRepository.FirstOrDefault(x => x.Id == id);
+            Attempt? foundAttempt = unitOfWork.GetAttemptMainInfo(id);
             if (foundAttempt == null)
             {
                 return StatusCode(404);
             }
-            Test? foundTest = unitOfWork.TestRepository.FirstOrDefault(x => x.Id == foundAttempt.TestId);
+            Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
             {
                 return StatusCode(404);
@@ -674,6 +703,22 @@ namespace VZTest.Controllers
             unitOfWork.RemoveAttempt(foundAttempt);
             await unitOfWork.SaveAsync();
             return Ok();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult GetTestStatus(int id)
+        {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return StatusCode(401);
+            }
+            Test? testAttempt = unitOfWork.GetTestMainInfo(id);
+            if (testAttempt == null)
+            {
+                return StatusCode(404);
+            }
+            return Content(testAttempt.Opened.ToString());
         }
         #endregion
     }

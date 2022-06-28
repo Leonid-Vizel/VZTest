@@ -11,7 +11,7 @@ namespace VZTest.Models.Test
         [Required(ErrorMessage = "")]
         public string Title { get; set; }
         public QuestionType Type { get; set; }
-        public string? ImageName { get; set; }
+        public string? ImageUrl { get; set; }
         public double Balls { get; set; }
         [NotMapped]
         public List<Option> Options { get; set; }

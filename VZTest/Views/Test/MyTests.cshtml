@@ -37,6 +37,7 @@
 <script src="~/js/OpenToggleScript.js"></script>
 <script src="~/js/PublicToggleScript.js"></script>
 <script src="~/js/ProcessErrorsScript.js"></script>
+<script src="~/js/PreEditCheck.js"></script>
 
 @if (ViewBag.TotalPages > 1)
 {
@@ -73,7 +74,7 @@
         <div class="text-end">
             <form>
                 <a asp-controller="Test" asp-action="Results" asp-route-id="@test.Test.Id" class="btn btn-success"><i class="bi bi-file-earmark-text"></i> Результаты</a>
-                <a class="btn btn-warning" asp-controller="Test" asp-action="Edit" asp-route-Id="@test.Test.Id"><i class="bi bi-pencil"></i> Редактировать</a>
+                <a class="btn btn-warning" onclick = "PreEditCheck(@test.Test.Id);"><i class="bi bi-pencil"></i> Редактировать</a>
                 @if (test.Test.Opened)
                 {
                     <a id="Close-@test.Test.Id" class="btn btn-warning" onclick="OpenToggle(@test.Test.Id);"><i class="bi bi-door-closed"></i> Закрыть</a>
