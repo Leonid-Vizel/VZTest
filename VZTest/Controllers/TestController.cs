@@ -67,7 +67,7 @@ namespace VZTest.Controllers
                 CorrectIntAnswer answer = Question.CorrectAnswer as CorrectIntAnswer;
                 Question.CorrectAnswer = new CorrectIntAnswer(Question.Options[answer.Correct].Id);
                 Question.CorrectAnswer.QuestionId = Question.Id;
-                await unitOfWork.CorrectAnswerRepository.AddAsync(Question.CorrectAnswer);
+                await unitOfWork.AddCorrectAnswerAsync(Question.CorrectAnswer);
             }
             foreach (Question Question in test.Questions.Where(x => x.Type == QuestionType.Check))
             {
@@ -80,7 +80,7 @@ namespace VZTest.Controllers
                 }
                 Question.CorrectAnswer = new CorrectCheckAnswer(answers);
                 Question.CorrectAnswer.QuestionId = Question.Id;
-                await unitOfWork.CorrectAnswerRepository.AddAsync(Question.CorrectAnswer);
+                await unitOfWork.AddCorrectAnswerAsync(Question.CorrectAnswer);
             }
             await unitOfWork.SaveAsync();
             return Content(test.Id.ToString());
@@ -189,7 +189,7 @@ namespace VZTest.Controllers
             }
             attempt.Active = false;
             unitOfWork.CheckAttempt(attempt);
-            unitOfWork.AttemptRepository.Update(attempt);
+            unitOfWork.UpdateAttempt(attempt);
             await unitOfWork.SaveAsync();
             return RedirectToAction("Result", new { Id = attempt.Id });
         }
@@ -334,7 +334,7 @@ namespace VZTest.Controllers
                 Active = true,
                 Sequence = string.Join('-', questions.Select(x => x.Id))
             };
-            await unitOfWork.AttemptRepository.AddAsync(attempt);
+            await unitOfWork.AddAttemptAsync(attempt);
             await unitOfWork.SaveAsync();
             List<Answer> answers = new List<Answer>();
             foreach (Question question in questions)
@@ -344,7 +344,7 @@ namespace VZTest.Controllers
                 answer.AttemptId = attempt.Id;
                 answers.Add(answer);
             }
-            await unitOfWork.AnswerRepository.AddRangeAsync(answers);
+            await unitOfWork.AddAnswerRangeAsync(answers);
             await unitOfWork.SaveAsync();
             return RedirectToAction("Attempt", new { id = attempt.Id });
         }
@@ -440,7 +440,7 @@ namespace VZTest.Controllers
             }
             else
             {
-                await unitOfWork.UserStarRepository.AddAsync(new UserStar() { TestId = id, UserId = userManager.GetUserId(User) });
+                await unitOfWork.AddUserStarAsync(new UserStar() { TestId = id, UserId = userManager.GetUserId(User) });
             }
             await unitOfWork.SaveAsync();
             return Content(JsonConvert.SerializeObject(await unitOfWork.GetTestStarsCount(id)));
@@ -462,7 +462,7 @@ namespace VZTest.Controllers
             if (foundTest.UserId.Equals(userManager.GetUserId(User)))
             {
                 foundTest.Opened = !opened;
-                unitOfWork.TestRepository.Update(foundTest);
+                unitOfWork.UpdateTest(foundTest);
                 await unitOfWork.SaveAsync();
                 return Ok();
             }
@@ -485,7 +485,7 @@ namespace VZTest.Controllers
             if (foundTest.UserId.Equals(userManager.GetUserId(User)))
             {
                 foundTest.Public = !isPublic;
-                unitOfWork.TestRepository.Update(foundTest);
+                unitOfWork.UpdateTest(foundTest);
                 await unitOfWork.SaveAsync();
                 return Ok();
             }
@@ -652,7 +652,7 @@ namespace VZTest.Controllers
                         break;
                 }
             }
-            unitOfWork.AnswerRepository.Update(foundAnswer);
+            unitOfWork.UpdateAnswer(foundAnswer);
             await unitOfWork.SaveAsync();
             return Ok();
         }

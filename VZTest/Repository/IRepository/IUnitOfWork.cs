@@ -18,11 +18,13 @@ namespace VZTest.Repository.IRepository
         IEnumerable<Attempt> GetTestAttempts(int testId, bool loadAnswers);
         IEnumerable<Attempt> GetUserTestAttempts(int testId, string userId);
         Attempt? GetAttemptWithAnswers(int attemptId);
+        Attempt? GetAttemptMainInfo(int attemptId);
         Task<int> GetTestAttemptsCount(int testId);
+        Task AddAttemptAsync(Attempt attempt);
         void CheckAttempt(Attempt attempt);
         void RemoveAttempt(int attemptId);
         void RemoveAttempt(Attempt attempt);
-        Attempt? GetAttemptMainInfo(int attemptId);
+        void UpdateAttempt(Attempt attempt);
         #endregion
 
         #region TestStatistics
@@ -42,15 +44,17 @@ namespace VZTest.Repository.IRepository
         bool RemoveUserStar(int testId, string userId);
         bool CheckUserLiked(int testId, string userId);
         Task<int> GetTestStarsCount(int testId);
+        Task AddUserStarAsync(UserStar star);
         #endregion
 
         #region Tests
         Test? GetTestById(int testId, bool loadAnswers);
-        void FillTest(Test test, bool loadAnswers);
         Test? GetTestMainInfo(int testId);
-        double GetTestTotalBalls(int testId);
-        void RemoveTest(int testId);
         Task AddTest(Test value);
+        double GetTestTotalBalls(int testId);
+        void FillTest(Test test, bool loadAnswers);
+        void RemoveTest(int testId);
+        void UpdateTest(Test test);
         #endregion
 
         #region Options
@@ -59,12 +63,15 @@ namespace VZTest.Repository.IRepository
         #endregion
 
         #region Answers
-        void GetAttemptAnswers(Attempt attempt);
         Answer? GetAnswer(int attemptId, int questionId);
+        Task AddAnswerRangeAsync(IEnumerable<Answer> answers);
+        void GetAttemptAnswers(Attempt attempt);
+        void UpdateAnswer(Answer answer);
         #endregion
 
         #region CorrectAnswer
         CorrectAnswer? GetQuestionCorrectAnswer(int questionId);
+        Task AddCorrectAnswerAsync(CorrectAnswer answer);
         #endregion
 
         Task SaveAsync();

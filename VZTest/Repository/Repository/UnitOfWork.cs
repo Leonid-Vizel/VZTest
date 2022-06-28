@@ -181,6 +181,16 @@ namespace VZTest.Repository.Repository
         {
             return AttemptRepository.FirstOrDefault(x => x.Id == attemptId);
         }
+
+        public async Task AddAttemptAsync(Attempt attempt)
+        {
+            await AttemptRepository.AddAsync(attempt);
+        }
+
+        public void UpdateAttempt(Attempt attempt)
+        {
+            AttemptRepository.Update(attempt);
+        }
         #endregion
 
         #region Questions
@@ -266,6 +276,11 @@ namespace VZTest.Repository.Repository
         {
             return await UserStarRepository.CountAsync(x => x.TestId == testId);
         }
+
+        public async Task AddUserStarAsync(UserStar star)
+        {
+            await UserStarRepository.AddAsync(star);
+        }
         #endregion
 
         #region Tests
@@ -350,6 +365,11 @@ namespace VZTest.Repository.Repository
         public Test? GetTestMainInfo(int testId)
         {
             return TestRepository.FirstOrDefault(x => x.Id == testId);
+        }
+
+        public void UpdateTest(Test test)
+        {
+            TestRepository.Update(test);
         }
         #endregion
 
@@ -528,12 +548,27 @@ namespace VZTest.Repository.Repository
                     return 0;
             }
         }
+
+        public async Task AddAnswerRangeAsync(IEnumerable<Answer> answers)
+        {
+            await AnswerRepository.AddRangeAsync(answers);
+        }
+
+        public void UpdateAnswer(Answer answer)
+        {
+            AnswerRepository.Update(answer);
+        }
         #endregion
 
         #region CorrectAnswer
         public CorrectAnswer? GetQuestionCorrectAnswer(int questionId)
         {
             return CorrectAnswerRepository.FirstOrDefault(x => x.QuestionId == questionId);
+        }
+
+        public async Task AddCorrectAnswerAsync(CorrectAnswer answer)
+        {
+            await CorrectAnswerRepository.AddAsync(answer);
         }
         #endregion
 
