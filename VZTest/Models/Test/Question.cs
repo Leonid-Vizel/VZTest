@@ -17,6 +17,19 @@ namespace VZTest.Models.Test
         public List<Option> Options { get; set; }
         [NotMapped]
         public CorrectAnswer? CorrectAnswer { get; set; }
+
+        public QuestionBlueprint ToBlueprint()
+        {
+            return new QuestionBlueprint()
+            {
+                Title = Title,
+                Type = Type,
+                ImageUrl = ImageUrl,
+                Balls = Balls,
+                Options = Options.Select(x=>x.Title).ToList(),
+                Correct = CorrectAnswer.ToString()
+            };
+        }
     }
     public enum QuestionType
     {

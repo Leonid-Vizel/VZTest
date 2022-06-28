@@ -1,4 +1,77 @@
-﻿@model TestEditModel
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> signInManager
+@model TestEditModel
 @{
     ViewData["Title"] = "Редактрование теста";
 }
+
+@if (!signInManager.IsSignedIn(User))
+{
+    <partial name="_AuthorisePartial"/>
+    return;
+}
+
+@if (Model == null)
+{
+    <partial name="_ErrorPartial"/>
+    return;
+}
+
+@if (Model.Forbidden)
+{
+    <partial name="_ForbiddenPartial"/>
+    return;
+}
+
+@if (Model.TestOpened)
+{
+    <partial name="_ForbiddenPartial"/>
+    return;
+}
+
+<h2><i class="bi bi-plus-circle"></i> @ViewData["Title"]</h2>
+<hr>
+
+<form>
+    <div>
+        <label for="Title">Название</label>
+        <input id="Title" type="text" class="form-control" value = "@Model.Title"/>
+        <span id="Title-Errors" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label for="Description">Описание:</label>
+        <textarea id="Description" class="form-control">@Model.Description</textarea>
+        <span id="Description-Errors" class="text-danger"></span>
+    </div>
+
+    <hr>
+    <h2><i class="bi bi-gear"></i> Настройки</h2>
+
+    <div>
+        <label for="Password">Пароль</label>
+        <input id="Password" type="password" class="form-control" />
+    </div>
+
+    <div>
+        <label for="MaxAttempts">Максимальное количество попыток</label>
+        <input id="MaxAttempts" type="number" class="form-control" value = "@Model.MaxAttempts"/>
+        <span id="MaxAttempts-Errors" class="text-danger"></span>
+    </div>
+
+    <div class="form-check">
+        @if (Model.Shuffle)
+        {
+            <input id="Shuffle" class="form-check-input" type="checkbox" checked>
+        }
+        else
+        {
+            <input id="Shuffle" class="form-check-input" type="checkbox">
+        }
+        <label for="Shuffle" class="form-check-label">Перемешивать порядок вопросов</label>
+    </div>
+    <hr>
+    <a class="btn btn-outline-info mt-2" id="addQuestionBtn" onclick="AddQuestion()"><i class="bi bi-plus-circle-dotted"></i> Добавить вопрос</a>
+    <hr>
+    <a class="btn btn-outline-primary" onclick="CheckAndSend()"><i class="bi bi-pencil-fill"></i> Редактировать</a>
+</form>

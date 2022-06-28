@@ -51,5 +51,7 @@ namespace VZTest.Models.Test.CorrectAnswers
         {
             Correct = correct;
         }
+
+        public override string ToString() => CheckAnswerString;
     }
 }

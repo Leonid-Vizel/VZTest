@@ -190,7 +190,7 @@ function CheckCorrectInputCreated(questionId) {
     if (correctLabel == null) {
         correctLabel = document.createElement('h5');
         correctLabel.setAttribute('id', 'CorrectLabel-' + questionId);
-        correctLabel.innerHTML = 'Баллы за ответ:';
+        correctLabel.innerHTML = 'Правильный ответ:';
         ballsInput.insertAdjacentElement('afterend', correctLabel);
     }
     return correctInput;
@@ -281,7 +281,7 @@ function OnSelectAnswer(questionId) {
             DeleteCreator(questionId);
             correctInput = CheckCorrectInputCreated(questionId);
             correctInput.value = null;
-            correctInput.removeAttribute('onkeypress');
+            correctInput.removeAttribute('oninput');
             correctInput.setAttribute('type', 'text');
             break;
         case '1':
@@ -299,23 +299,23 @@ function OnSelectAnswer(questionId) {
             DeleteCreator(questionId);
             correctInput = CheckCorrectInputCreated(questionId);
             correctInput.value = null;
-            correctInput.removeAttribute('onkeypress');
-            correctInput.setAttribute('type', 'number');
+            correctInput.setAttribute('oninput', "OnInput(event);");
+            correctInput.setAttribute('type', 'text');
             break;
         case '4':
             DeleteOptions(questionId);
             DeleteCreator(questionId);
             correctInput = CheckCorrectInputCreated(questionId);
             correctInput.value = null;
-            correctInput.setAttribute('onkeypress', 'KeyPress(event);');
-            correctInput.setAttribute('type', 'text');
+            correctInput.removeAttribute('oninput');
+            correctInput.setAttribute('type', 'number');
             break;
         case '5':
             DeleteOptions(questionId);
             DeleteCreator(questionId);
             correctInput = CheckCorrectInputCreated(questionId);
             correctInput.value = null;
-            correctInput.removeAttribute('onkeypress');
+            correctInput.removeAttribute('oninput');
             correctInput.setAttribute('type', 'date');
             break;
     }

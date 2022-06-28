@@ -10,7 +10,7 @@ namespace VZTest.Models.Test
         [Required(ErrorMessage = "Укажите название теста")]
         public string Title { get; set; }
         public string? Description { get; set; }
-        public string? ImageName { get; set; }
+        public string? ImageUrl { get; set; }
         public string UserId { get; set; }
         [Required(ErrorMessage = "Укажите максимальное количество попыток")]
         public int MaxAttempts { get; set; }
@@ -21,5 +21,18 @@ namespace VZTest.Models.Test
         public bool Shuffle { get; set; }
         [NotMapped]
         public List<Question> Questions { get; set; }
+
+        public TestEditModel ToEditModel()
+        {
+            return new TestEditModel()
+            {
+                Title = Title,
+                Description = Description,
+                ImageUrl = ImageUrl,
+                MaxAttempts = MaxAttempts,
+                Shuffle = Shuffle,
+                Questions = Questions.Select(x => x.ToBlueprint()).ToList()
+            };
+        }
     }
 }

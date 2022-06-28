@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using X.PagedList;
 using VZTest.Instruments;
 using VZTest.Models;
@@ -114,7 +113,7 @@ namespace VZTest.Controllers
                 return View(model);
             }
             unitOfWork.FillTest(foundTest, true);
-            return View(foundTest);
+            return View(foundTest.ToEditModel());
         }
 
         #endregion
@@ -443,7 +442,7 @@ namespace VZTest.Controllers
                 await unitOfWork.AddUserStarAsync(new UserStar() { TestId = id, UserId = userManager.GetUserId(User) });
             }
             await unitOfWork.SaveAsync();
-            return Content(JsonConvert.SerializeObject(await unitOfWork.GetTestStarsCount(id)));
+            return Content((await unitOfWork.GetTestStarsCount(id)).ToString());
         }
 
         [HttpPost]
