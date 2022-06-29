@@ -16,15 +16,21 @@ namespace VZTest.Models
 
     public class QuestionBlueprint
     {
+        public int Id { get; set; } //Only if converted from Question
         public string Title { get; set; }
         public QuestionType Type { get; set; }
         public string? ImageUrl { get; set; }
         public double Balls { get; set; }
+        public List<int> OptionIds { get; set; }
         public List<string> Options { get; set; }
         public string Correct { get; set; }
 
         public Question? ToQuestion()
         {
+            if (Correct.Length == 0)
+            {
+                return null;
+            }
             Question question = new Question();
             question.Title = Title;
             question.Type = Type;

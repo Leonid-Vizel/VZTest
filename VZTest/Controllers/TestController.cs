@@ -37,6 +37,10 @@ namespace VZTest.Controllers
             {
                 return StatusCode(401);
             }
+            if (model.Questions.Count == 0 || model.Title.Length == 0 || model.MaxAttempts == 0)
+            {
+                return BadRequest();
+            }
             Test test = new Test();
             test.Title = model.Title;
             test.Description = model.Description;
@@ -57,6 +61,10 @@ namespace VZTest.Controllers
                 {
                     test.Questions.Add(question);
                 }
+            }
+            if (test.Questions.Count == 0)
+            {
+                return BadRequest();
             }
             await unitOfWork.AddTest(test);
             await unitOfWork.SaveAsync();

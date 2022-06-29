@@ -22,11 +22,13 @@ namespace VZTest.Models.Test
         {
             return new QuestionBlueprint()
             {
+                Id = Id,
                 Title = Title,
                 Type = Type,
                 ImageUrl = ImageUrl,
                 Balls = Balls,
                 Options = Options.Select(x=>x.Title).ToList(),
+                OptionIds = Options.Select(x=>x.Id).ToList(),
                 Correct = CorrectAnswer.ToString()
             };
         }

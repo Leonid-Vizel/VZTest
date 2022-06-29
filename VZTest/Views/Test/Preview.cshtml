@@ -49,12 +49,11 @@
     }
 </div>
 <hr>
-<span style="white-space: pre-line">
-    Название: <b>@Model.Test.Title</b>
+<span style="white-space: pre-line">Название: <b>@Model.Test.Title</b>
     Описание: <b>@Model.Test.Description</b>
     Максимальное количество попыток: <b>@Model.Test.MaxAttempts</b>
+    Был пройден пользователями платформы <b>@Model.TotalAttempts @WordHelp.Inflect(Model.TotalAttempts,"раз","раз","раза")</b>
 </span>
-<span style="white-space: pre-line">Был пройден пользователями платформы <b>@Model.TotalAttempts @WordHelp.Inflect(Model.TotalAttempts,"раз","раз","раза")</b></span>
 <hr>
 @if (Model.UserAttempts.Count() > 0)
 {

@@ -7,27 +7,39 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial"/>
+    <partial name="_AuthorisePartial" />
     return;
 }
 
 @if (Model == null)
 {
-    <partial name="_ErrorPartial"/>
+    <partial name="_ErrorPartial" />
     return;
 }
 
 @if (Model.Forbidden)
 {
-    <partial name="_ForbiddenPartial"/>
+    <partial name="_ForbiddenPartial" />
     return;
 }
 
 @if (Model.TestOpened)
 {
-    <partial name="_ForbiddenPartial"/>
+    <partial name="_ForbiddenPartial" />
     return;
 }
+
+<script src="~/js/IntInputLimit.js"></script>
+
+<style>
+    hr {
+        margin: 0.5rem 0;
+    }
+
+    .ml-3 {
+        margin-left: 0.5rem !important;
+    }
+</style>
 
 <h2><i class="bi bi-plus-circle"></i> @ViewData["Title"]</h2>
 <hr>
@@ -35,7 +47,7 @@
 <form>
     <div>
         <label for="Title">Название</label>
-        <input id="Title" type="text" class="form-control" value = "@Model.Title"/>
+        <input id="Title" type="text" class="form-control" value="@Model.Title" />
         <span id="Title-Errors" class="text-danger"></span>
     </div>
 
@@ -55,7 +67,7 @@
 
     <div>
         <label for="MaxAttempts">Максимальное количество попыток</label>
-        <input id="MaxAttempts" type="number" class="form-control" value = "@Model.MaxAttempts"/>
+        <input id="MaxAttempts" type="number" class="form-control" value="@Model.MaxAttempts" />
         <span id="MaxAttempts-Errors" class="text-danger"></span>
     </div>
 
@@ -71,6 +83,159 @@
         <label for="Shuffle" class="form-check-label">Перемешивать порядок вопросов</label>
     </div>
     <hr>
+    @for (int i = 0; i < Model.Questions.Count; i++)
+    {
+        QuestionBlueprint question = Model.Questions[i];
+        <div class="mt-3" name="QuestionContainer" id="@i" data-id="@question.Id">
+            <h5 id="QuestionHeader-@i">Вопрос #@(i+1)</h5>
+            <div class="input-group">
+                <input id="Questions[@i].Title" type="text" class="form-control" placeholder="Название" value="@question.Title" />
+                <div class="input-group-append">
+                    <select class="form-select" id="Questions[@i].Type" onchange="OnSelectAnswer(@i);">
+                        @switch (question.Type)
+                        {
+                            case VZTest.Models.Test.QuestionType.Text:
+                                <option value="0" selected>Текст</option>
+                                <option value="1">Радио-кнопки</option>
+                                <option value="2">Флажки</option>
+                                <option value="3">Целое число</option>
+                                <option value="4">Дробное число</option>
+                                <option value="5">Дата</option>
+                                break;
+                            case VZTest.Models.Test.QuestionType.Radio:
+                                <option value="0">Текст</option>
+                                <option value="1" selected>Радио-кнопки</option>
+                                <option value="2">Флажки</option>
+                                <option value="3">Целое число</option>
+                                <option value="4">Дробное число</option>
+                                <option value="5">Дата</option>
+                                break;
+                            case VZTest.Models.Test.QuestionType.Check:
+                                <option value="0">Текст</option>
+                                <option value="1">Радио-кнопки</option>
+                                <option value="2" selected>Флажки</option>
+                                <option value="3">Целое число</option>
+                                <option value="4">Дробное число</option>
+                                <option value="5">Дата</option>
+                                break;
+                            case VZTest.Models.Test.QuestionType.Int:
+                                <option value="0">Текст</option>
+                                <option value="1">Радио-кнопки</option>
+                                <option value="2">Флажки</option>
+                                <option value="3" selected>Целое число</option>
+                                <option value="4">Дробное число</option>
+                                <option value="5">Дата</option>
+                                break;
+                            case VZTest.Models.Test.QuestionType.Double:
+                                <option value="0">Текст</option>
+                                <option value="1">Радио-кнопки</option>
+                                <option value="2">Флажки</option>
+                                <option value="3">Целое число</option>
+                                <option value="4" selected>Дробное число</option>
+                                <option value="5">Дата</option>
+                                break;
+                            case VZTest.Models.Test.QuestionType.Date:
+                                <option value="0">Текст</option>
+                                <option value="1">Радио-кнопки</option>
+                                <option value="2">Флажки</option>
+                                <option value="3">Целое число</option>
+                                <option value="4">Дробное число</option>
+                                <option value="5" selected>Дата</option>
+                                break;
+                        }
+                    </select>
+                </div>
+                <div class="input-group-append">
+                    <a class="btn btn-outline-danger" id='btn-delete-@i' onclick="DeleteQuestion(@i);"><i class="bi bi-x-circle-fill"></i></a>
+                </div>
+            </div>
+            <span id="Question-@i-Errors" class="text-danger"></span>
+            <div class="ml-3">
+                <h5>Баллы за ответ:</h5>
+                <input id="Questions[@i].Balls" type="number" class="form-control" placeholder="Баллы" value="@question.Balls.ToString().Replace(",",".")" />
+                <span id="Balls-@i-Errors" class="text-danger"></span>
+                @switch (question.Type)
+                {
+                    case VZTest.Models.Test.QuestionType.Text:
+                        <h5 id="CorrectLabel-@i">Правильный ответ:</h5>
+                        <input id="Questions[@i].Correct" type="text" class="form-control" placeholder="Ответ" value="@question.Correct" />
+                        <span id="Correct-@i-Errors" class="text-danger"></span>
+                        break;
+                    case VZTest.Models.Test.QuestionType.Radio:
+                        @for (int j = 0; j < question.Options.Count; j++)
+                        {
+                            string title = question.Options[j];
+                            int id = question.OptionIds[j];
+
+                            <div id="option-@i-@j" name="option-@i" date-id="@id" class="input-group mt-2 ml-3">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        @if (question.Correct.Equals(@id.ToString()))
+                                        {
+                                            <input id="Questions[@i].Correct" name="Questions[@i].Correct" class="form-check-input" type="radio" value="@j" checked>
+                                        }
+                                        else
+                                        {
+                                            <input id="Questions[@i].Correct" name="Questions[@i].Correct" class="form-check-input" type="radio" value="@j">
+                                        }
+                                        &#8201;
+                                    </div>
+                                </div>
+                                <input id="Questions[@i].Options[@j].Text" class="form-control" placeholder="Название опции" value="@title">
+                                <div class="input-group-append">
+                                    <a class="btn btn-outline-danger" id="delete-question-@i-option-@j" onclick="DeleteOption(@i,@j)"><i class="bi bi-x-circle-fill"></i></a>
+                                </div>
+                            </div>
+                        }
+                        break;
+                    case VZTest.Models.Test.QuestionType.Check:
+                        string[] corrects = question.Correct.Split(',');
+                        @for (int j = 0; j < question.Options.Count; j++)
+                        {
+                            string title = question.Options[j];
+                            int id = question.OptionIds[j];
+
+                            <div id="option-@i-@j" name="option-@i" date-id="@id" class="input-group mt-2 ml-3">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        @if (corrects.Contains(@id.ToString()))
+                                        {
+                                            <input id="Questions[@i].Correct" name="Questions[@i].Correct" class="form-check-input" type="checkbox" value="@j" checked>
+                                        }
+                                        else
+                                        {
+                                            <input id="Questions[@i].Correct" name="Questions[@i].Correct" class="form-check-input" type="checkbox" value="@j">
+                                        }
+                                        &#8201;
+                                    </div>
+                                </div>
+                                <input id="Questions[@i].Options[@j].Text" class="form-control" placeholder="Название опции" value="@title">
+                                <div class="input-group-append">
+                                    <a class="btn btn-outline-danger" id="delete-question-@i-option-@j" onclick="DeleteOption(@i,@j)"><i class="bi bi-x-circle-fill"></i></a>
+                                </div>
+                            </div>
+                        }
+                        break;
+                    case VZTest.Models.Test.QuestionType.Int:
+                        <h5 id="CorrectLabel-@i">Правильный ответ:</h5>
+                        <input id="Questions[@i].Correct" type="text" class="form-control" placeholder="Ответ" oninput="OnInput(event);" value="@question.Correct" />
+                        <span id="Correct-@i-Errors" class="text-danger"></span>
+                        break;
+                    case VZTest.Models.Test.QuestionType.Double:
+                        <h5 id="CorrectLabel-@i">Правильный ответ:</h5>
+                        <input id="Questions[@i].Correct" type="number" class="form-control" placeholder="Ответ" value="@question.Correct.ToString().Replace(",",".")" />
+                        <span id="Correct-@i-Errors" class="text-danger"></span>
+                        break;
+                    case VZTest.Models.Test.QuestionType.Date:
+                        <h5 id="CorrectLabel-@i">Правильный ответ:</h5>
+                        <input id="Questions[@i].Correct" type="date" class="form-control" placeholder="Ответ" value="@question.Correct" />
+                        <span id="Correct-@i-Errors" class="text-danger"></span>
+                        break;
+                }
+            </div>
+            <hr>
+        </div>
+    }
     <a class="btn btn-outline-info mt-2" id="addQuestionBtn" onclick="AddQuestion()"><i class="bi bi-plus-circle-dotted"></i> Добавить вопрос</a>
     <hr>
     <a class="btn btn-outline-primary" onclick="CheckAndSend()"><i class="bi bi-pencil-fill"></i> Редактировать</a>

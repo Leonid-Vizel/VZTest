@@ -389,7 +389,7 @@ function CheckAndSend() {
     }
     for (var i = 0; i < questions.length; i++) {
         var questionId = questions[i].id;
-        var questionError = document.getElementById('Correct-' + questionId + '-Errors');
+        var questionError = document.getElementById('Question-' + questionId + '-Errors');
         var questionTitleElement = document.getElementById('Questions[' + questionId + '].Title');
         if (questionTitleElement == null || questionTitleElement.value == '') {
             questionError.innerHTML = "Укажите название вопроса!";
