@@ -56,7 +56,7 @@ namespace VZTest.Controllers
             }
             foreach (QuestionBlueprint blueptint in model.Questions)
             {
-                Question? question = blueptint.ToQuestion();
+                Question? question = blueptint.ToQuestion(false);
                 if (question != null)
                 {
                     test.Questions.Add(question);
@@ -171,7 +171,7 @@ namespace VZTest.Controllers
             List<Question> newOptionQuestions = new List<Question>();
             foreach (QuestionBlueprint blueprint in model.Questions.Where(x => x.Id == 0))
             {
-                Question? question = blueprint.ToQuestion();
+                Question? question = blueprint.ToQuestion(false);
                 if (question == null)
                 {
                     continue;
@@ -246,7 +246,7 @@ namespace VZTest.Controllers
                 {
                     continue;
                 }
-                Question? updQuestion = foundBlueprint.ToQuestion();
+                Question? updQuestion = foundBlueprint.ToQuestion(true);
                 if (updQuestion == null)
                 {
                     continue;
@@ -254,18 +254,111 @@ namespace VZTest.Controllers
                 question.Title = updQuestion.Title;
                 question.Balls = updQuestion.Balls;
                 question.ImageUrl = updQuestion.ImageUrl;
-                unitOfWork.UpdateQuestion(question);
-                if (question.Type == updQuestion.Type)
-                {
-                    if (!question.CorrectAnswer.Equals(updQuestion.CorrectAnswer))
-                    {
 
-                    }
-                }
-                else
+                switch (question.Type)
                 {
-                    
+                    case QuestionType.Text:
+                    case QuestionType.Int:
+                    case QuestionType.Double:
+                    case QuestionType.Date:
+                        switch (updQuestion.Type)
+                        {
+                            case QuestionType.Text:
+                            case QuestionType.Int:
+                            case QuestionType.Double:
+                            case QuestionType.Date:
+                                if (question.Type != updQuestion.Type || !question.CorrectAnswer.Equals(updQuestion.CorrectAnswer))
+                                {
+                                    unitOfWork.RemoveCorrectAnswer(question.CorrectAnswer);
+                                    await unitOfWork.AddCorrectAnswerAsync(updQuestion.CorrectAnswer);
+                                }
+                                break;
+                            case QuestionType.Check:
+                            case QuestionType.Radio:
+                                foreach (Option option in updQuestion.Options)
+                                {
+                                    option.QuestionId = question.Id;
+                                    await unitOfWork.AddOptionAsync(option);
+                                }
+                                //ADD CORRECT REFORMAT!!!!!
+                                unitOfWork.RemoveCorrectAnswer(question.CorrectAnswer);
+                                await unitOfWork.AddCorrectAnswerAsync(updQuestion.CorrectAnswer);
+                                break;
+                        }
+                        break;
+                    case QuestionType.Check:
+                    case QuestionType.Radio:
+                        switch (updQuestion.Type)
+                        {
+                            case QuestionType.Text:
+                            case QuestionType.Int:
+                            case QuestionType.Double:
+                            case QuestionType.Date:
+                                foreach (Option option in question.Options)
+                                {
+                                    unitOfWork.RemoveOption(option);
+                                }
+                                unitOfWork.RemoveCorrectAnswer(question.CorrectAnswer);
+                                await unitOfWork.AddCorrectAnswerAsync(updQuestion.CorrectAnswer);
+                                break;
+                            case QuestionType.Check:
+                            case QuestionType.Radio:
+                                updQuestion.Options = updQuestion.Options.Where(x => x.Id == 0 || question.Options.Any(o => o.Id == x.Id)).ToList();
+                                //New
+                                foreach (Option option in updQuestion.Options.Where(x => x.Id == 0))
+                                {
+                                    question.Options.Add(option);
+                                    option.QuestionId = updQuestion.Id;
+                                    await unitOfWork.AddOptionAsync(option);
+                                }
+                                //Edit
+                                foreach (Option option in updQuestion.Options.Where(x => x.Id != 0))
+                                {
+                                    Option? initialOption = question.Options.FirstOrDefault(x => x.Id == option.Id);
+                                    if (initialOption == null)
+                                    {
+                                        continue;
+                                    }
+                                    initialOption.Title = option.Title;
+                                    unitOfWork.UpdateOption(initialOption);
+                                }
+                                //Delete
+                                List<Option> optionsToDelete = question.Options.Where(x => !updQuestion.Options.Any(o => o.Id == x.Id)).ToList();
+                                foreach (Option option in optionsToDelete)
+                                {
+                                    question.Options.Remove(option);
+                                    unitOfWork.RemoveOption(option);
+                                }
+                                await unitOfWork.SaveAsync();
+                                #region Correct Reformatting
+                                if (question.Type == QuestionType.Radio)
+                                {
+                                    CorrectIntAnswer answer = updQuestion.CorrectAnswer as CorrectIntAnswer;
+                                    updQuestion.CorrectAnswer = new CorrectIntAnswer(question.Options[answer.Correct].Id);
+                                }
+                                else
+                                {
+                                    CorrectCheckAnswer answer = updQuestion.CorrectAnswer as CorrectCheckAnswer;
+                                    int[] indexes = answer.Correct;
+                                    int[] answers = new int[indexes.Length];
+                                    for (int i = 0; i < indexes.Length; i++)
+                                    {
+                                        answers[i] = question.Options[indexes[i]].Id;
+                                    }
+                                    updQuestion.CorrectAnswer = new CorrectCheckAnswer(answers);
+                                }
+                                #endregion
+                                if (question.Type != updQuestion.Type || !question.CorrectAnswer.Equals(updQuestion.CorrectAnswer))
+                                {
+                                    unitOfWork.RemoveCorrectAnswer(question.CorrectAnswer);
+                                    await unitOfWork.AddCorrectAnswerAsync(updQuestion.CorrectAnswer);
+                                }
+                                break;
+                        }
+                        break;
                 }
+                question.Type = updQuestion.Type;
+                unitOfWork.UpdateQuestion(question);
             }
 
             #endregion

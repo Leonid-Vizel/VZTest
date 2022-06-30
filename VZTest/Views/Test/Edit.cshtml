@@ -36,8 +36,8 @@
 }
 
 <partial name="_CreateBlocksPartial" />
-<partial name = "_AjaxPartial"/>
-<partial name = "_SweetAlertsPartial"/>
+<partial name="_AjaxPartial" />
+<partial name="_SweetAlertsPartial" />
 <script src="~/js/CreateScripts.js"></script>
 <script src="~/js/IntInputLimit.js"></script>
 <script src="~/js/InputScripts.js"></script>
@@ -56,7 +56,7 @@
 <hr>
 
 <form>
-    <div id = "test-id" hidden>@Model.Id</div>
+    <div id="test-id" hidden>@Model.Id</div>
     <div>
         <label for="Title">Название</label>
         <input id="Title" type="text" class="form-control" value="@Model.Title" />
@@ -199,6 +199,7 @@
                                 </div>
                             </div>
                         }
+                        <a id="Creator-@i" class="btn btn-outline-info mt-2" onclick="AddRadioOption(@i);"><i class="bi bi-plus-circle"></i> Добавить опцию</a>
                         break;
                     case VZTest.Models.Test.QuestionType.Check:
                         string[] corrects = question.Correct.Split(',');
@@ -207,7 +208,7 @@
                             string title = question.Options[j];
                             int id = question.OptionIds[j];
 
-                            <div id="option-@i-@j" name="option-@i" date-id="@id" class="input-group mt-2 ml-3">
+                            <div id="option-@i-@j" name="option-@i" data-id="@id" class="input-group mt-2 ml-3">
                                 <div class="input-group-prepend">
                                     <div class="input-group-text">
                                         @if (corrects.Contains(@id.ToString()))
@@ -227,6 +228,7 @@
                                 </div>
                             </div>
                         }
+                        <a id="Creator-@i" class="btn btn-outline-info mt-2" onclick="AddCheckOption(@i);"><i class="bi bi-plus-circle"></i> Добавить опцию</a>
                         break;
                     case VZTest.Models.Test.QuestionType.Int:
                         <h5 id="CorrectLabel-@i">Правильный ответ:</h5>

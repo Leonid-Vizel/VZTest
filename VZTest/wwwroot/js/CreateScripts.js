@@ -65,7 +65,7 @@ function ReindexQuestion(oldId, newId) {
         creator.setAttribute('onclick', 'AddRadioOption(' + newId + ');');
         creator.setAttribute('id', 'Creator-' + newId);
     }
-    ReindexOptions(oldId, newId);
+    ReindexOptionsWithQuestion(oldId, newId);
 }
 
 function AddRadioOption(questionId) {
@@ -113,20 +113,20 @@ function ReindexOptions(questionId) {
     var options = document.getElementsByName('option-' + questionId);
     for (var i = 0; i < options.length; i++) {
         var option = options[i];
-        var splitArray = option.id.split('-');
+        var splitArray = option.id.split('-'); 
         var oldId = splitArray[splitArray.length - 1];
         ReindexOption(questionId, oldId, i);
         option.setAttribute('id', 'option-' + questionId + '-' + i);
     }
 }
 
-function ReindexOptions(oldQuestionId, newQuestionId) {
+function ReindexOptionsWithQuestion(oldQuestionId, newQuestionId) {
     var options = document.getElementsByName('option-' + oldQuestionId);
     for (var i = 0; i < options.length; i++) {
         var option = options[i];
         var splitArray = option.id.split('-');
         var oldId = splitArray[splitArray.length - 1];
-        ReindexOption(oldQuestionId, newQuestionId, oldId, i);
+        ReindexOptionWithQuestion(oldQuestionId, newQuestionId, oldId, i);
         option.setAttribute('id', 'option-' + newQuestionId + '-' + i);
     }
     if (oldQuestionId != newQuestionId) {
@@ -142,16 +142,19 @@ function ReindexOption(questionId, oldId, newId) {
     }
     var titleInput = document.getElementById('Questions[' + questionId + '].Options[' + oldId + '].Text');
     titleInput.setAttribute('id', 'Questions[' + questionId + '].Options[' + newId + '].Text');
-    titleInput.setAttribute('value', newId);
+    var correctInput = document.getElementById('Questions[' + questionId + '].Correct');
+    correctInput.setAttribute('value', newId);
     var deleteBtn = document.getElementById('delete-question-' + questionId + '-option-' + oldId);
     deleteBtn.setAttribute('id', 'delete-question-' + questionId + '-option-' + newId);
     deleteBtn.setAttribute('onclick', 'DeleteOption(' + questionId + ',' + newId + ')');
 }
 
-function ReindexOption(oldQuestionId, newQuestionId, oldId, newId) {
+function ReindexOptionWithQuestion(oldQuestionId, newQuestionId, oldId, newId) {
     var titleInput = document.getElementById('Questions[' + oldQuestionId + '].Options[' + oldId + '].Text');
     titleInput.setAttribute('id', 'Questions[' + newQuestionId + '].Options[' + newId + '].Text');
-    titleInput.setAttribute('value', newId);
+    var correctInput = document.getElementById('Questions[' + oldQuestionId + '].Correct');
+    correctInput.setAttribute('id', 'Questions[' + newQuestionId + '].Correct');
+    correctInput.setAttribute('value', newId);
     var deleteBtn = document.getElementById('delete-question-' + oldQuestionId + '-option-' + oldId);
     deleteBtn.setAttribute('id', 'delete-question-' + newQuestionId + '-option-' + newId);
     deleteBtn.setAttribute('onclick', 'DeleteOption(' + newQuestionId + ',' + newId + ')');
@@ -226,16 +229,8 @@ function AddRadioCreator(questionId) {
     button.setAttribute('class', 'btn btn-outline-info mt-2');
     button.setAttribute('onclick', 'AddRadioOption(' + questionId + ');');
     button.innerHTML = "<i class=\"bi bi-plus-circle\"></i> Добавить опцию";
-    var ballsInput = document.getElementById('Questions[' + questionId + '].Balls');
-    ballsInput.insertAdjacentElement('afterend', button);
-}
-
-function DeleteCreator(questionId) {
-    var creator = document.getElementById('Creator-' + questionId);
-    if (creator == null) {
-        return;
-    }
-    creator.remove();
+    var ballsErrorSpan = document.getElementById('Balls-' + questionId + '-Errors');
+    ballsErrorSpan.insertAdjacentElement('afterend', button);
 }
 
 function AddCheckCreator(questionId) {
@@ -249,8 +244,16 @@ function AddCheckCreator(questionId) {
     button.setAttribute('class', 'btn btn-outline-info mt-2');
     button.setAttribute('onclick', 'AddCheckOption(' + questionId + ');');
     button.innerHTML = "<i class=\"bi bi-plus-circle\"></i> Добавить опцию";
-    var ballsInput = document.getElementById('Questions[' + questionId + '].Balls');
-    ballsInput.insertAdjacentElement('afterend', button);
+    var ballsErrorSpan = document.getElementById('Balls-' + questionId + '-Errors');
+    ballsErrorSpan.insertAdjacentElement('afterend', button);
+}
+
+function DeleteCreator(questionId) {
+    var creator = document.getElementById('Creator-' + questionId);
+    if (creator == null) {
+        return;
+    }
+    creator.remove();
 }
 
 function TransformCorrects(questionId, string) {
@@ -408,6 +411,9 @@ function CheckAndSend(method) {
         if (questions[i].getAttribute('data-id') != null) {
             dictionary['Questions[' + questionId + '].Id'] = questions[i].getAttribute('data-id');
         }
+        else {
+            dictionary['Questions[' + questionId + '].Id'] = 0;
+        }
 
         var questionTypeElement = document.getElementById('Questions[' + questionId + '].Type');
         if (questionTypeElement == null || questionTypeElement.value == '') {
@@ -460,9 +466,11 @@ function CheckAndSend(method) {
                         questionError.innerHTML = "";
                     }
                     dictionary['Questions[' + questionId + '].Options[' + j + ']'] = optionTitleElement.value;
-
                     if (radioArray[j].getAttribute('data-id') != null) {
                         dictionary['Questions[' + questionId + '].OptionIds[' + j + ']'] = radioArray[j].getAttribute('data-id');
+                    }
+                    else {
+                        dictionary['Questions[' + questionId + '].OptionIds[' + j + ']'] = 0;
                     }
                 }
                 var radioResult = GetRadioValue('Questions[' + questionId + '].Correct');
@@ -482,6 +490,12 @@ function CheckAndSend(method) {
                         questionError.innerHTML = "";
                     }
                     dictionary['Questions[' + questionId + '].Options[' + j + ']'] = optionTitleElement.value;
+                    if (checkArray[j].getAttribute('data-id') != null) {
+                        dictionary['Questions[' + questionId + '].OptionIds[' + j + ']'] = checkArray[j].getAttribute('data-id');
+                    }
+                    else {
+                        dictionary['Questions[' + questionId + '].OptionIds[' + j + ']'] = 0;
+                    }
                 }
                 var checkResult = GetCheckValue('Questions[' + questionId + '].Correct');
                 dictionary['Questions[' + questionId + '].Correct'] = checkResult;
@@ -491,7 +505,6 @@ function CheckAndSend(method) {
                 return;
                 break;
         }
-        console.log(questions);
     }
     dictionary['__RequestVerificationToken'] = verificationValue;
     $.ajax({

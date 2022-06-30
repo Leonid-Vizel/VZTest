@@ -53,5 +53,34 @@ namespace VZTest.Models.Test.CorrectAnswers
         }
 
         public override string ToString() => CheckAnswerString;
+
+        public override bool Equals(object? obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            CorrectCheckAnswer? objAnswer = obj as CorrectCheckAnswer;
+            if (objAnswer == null)
+            {
+                return false;
+            }
+            int[] array1 = objAnswer.Correct;
+            int[] array2 = Correct;
+            if (array1.Length != array2.Length)
+            {
+                return false;
+            }
+            Array.Sort(array1);
+            Array.Sort(array2);
+            for (int i = 0; i < array1.Length; i++)
+            {
+                if (array1[i] != array2[i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }

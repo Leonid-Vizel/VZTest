@@ -64,6 +64,8 @@ namespace VZTest.Repository.IRepository
         List<Option> GetQuestionOptions(int questionId);
         bool OptionExists(int questionId, int optionId);
         Task AddOptionAsync(Option option);
+        void RemoveOption(Option option);
+        void UpdateOption(Option option);
         #endregion
 
         #region Answers

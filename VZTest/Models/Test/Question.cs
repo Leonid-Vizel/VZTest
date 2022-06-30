@@ -29,7 +29,7 @@ namespace VZTest.Models.Test
                 Balls = Balls,
                 Options = Options.Select(x=>x.Title).ToList(),
                 OptionIds = Options.Select(x=>x.Id).ToList(),
-                Correct = CorrectAnswer.ToString()
+                Correct = CorrectAnswer?.ToString()
             };
         }
     }

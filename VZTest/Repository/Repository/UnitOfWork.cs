@@ -415,6 +415,16 @@ namespace VZTest.Repository.Repository
         {
             await OptionRepository.AddAsync(option);
         }
+
+        public void RemoveOption(Option option)
+        {
+            OptionRepository.Remove(option);
+        }
+
+        public void UpdateOption(Option option)
+        {
+            OptionRepository.Update(option);
+        }
         #endregion
 
         #region Answers
