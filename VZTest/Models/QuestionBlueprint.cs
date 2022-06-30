@@ -101,6 +101,10 @@ namespace VZTest.Models
                     question.CorrectAnswer = new CorrectIntAnswer(radioResult);
                     break;
             }
+            if (transferId)
+            {
+                question.CorrectAnswer.QuestionId = question.Id;
+            }
             return question;
         }
     }

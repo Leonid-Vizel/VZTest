@@ -182,13 +182,13 @@
                             <div id="option-@i-@j" name="option-@i" data-id="@id" class="input-group mt-2 ml-3">
                                 <div class="input-group-prepend">
                                     <div class="input-group-text">
-                                        @if (question.Correct.Equals(@id.ToString()))
+                                        @if (question.Correct.Equals(id.ToString()))
                                         {
-                                            <input id="Questions[@i].Correct" name="Questions[@i].Correct" class="form-check-input" type="radio" value="@j" checked>
+                                            <input id="Option-@i-@j-Correct" name="Questions[@i].Correct" class="form-check-input" type="radio" value="@j" checked>
                                         }
                                         else
                                         {
-                                            <input id="Questions[@i].Correct" name="Questions[@i].Correct" class="form-check-input" type="radio" value="@j">
+                                            <input id="Option-@i-@j-Correct" name="Questions[@i].Correct" class="form-check-input" type="radio" value="@j">
                                         }
                                         &#8201;
                                     </div>
@@ -213,11 +213,11 @@
                                     <div class="input-group-text">
                                         @if (corrects.Contains(@id.ToString()))
                                         {
-                                            <input id="Questions[@i].Correct" name="Questions[@i].Correct" class="form-check-input" type="checkbox" value="@j" checked>
+                                            <input id="Option-@i-@j-Correct" name="Questions[@i].Correct" class="form-check-input" type="checkbox" value="@j" checked>
                                         }
                                         else
                                         {
-                                            <input id="Questions[@i].Correct" name="Questions[@i].Correct" class="form-check-input" type="checkbox" value="@j">
+                                            <input id="Option-@i-@j-Correct" name="Questions[@i].Correct" class="form-check-input" type="checkbox" value="@j">
                                         }
                                         &#8201;
                                     </div>

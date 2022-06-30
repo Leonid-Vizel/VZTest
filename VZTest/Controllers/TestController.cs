@@ -168,37 +168,39 @@ namespace VZTest.Controllers
             #endregion
 
             #region Adding new questions
+            List<Question?> newQuestions = model.Questions.Where(x => x.Id == 0).Select(x=>x.ToQuestion(false)).ToList();
             List<Question> newOptionQuestions = new List<Question>();
-            foreach (QuestionBlueprint blueprint in model.Questions.Where(x => x.Id == 0))
+            foreach (Question? question in newQuestions)
             {
-                Question? question = blueprint.ToQuestion(false);
                 if (question == null)
                 {
+                    newQuestions.Remove(question);
                     continue;
                 }
+                question.TestId = model.Id;
+                await unitOfWork.AddQuestionAsync(question);
+            }
+            await unitOfWork.SaveAsync();
+            foreach (Question question in newQuestions)
+            {
                 switch (question.Type)
                 {
                     case QuestionType.Text:
                     case QuestionType.Int:
                     case QuestionType.Double:
                     case QuestionType.Date:
+                        question.CorrectAnswer.QuestionId = question.Id;
                         await unitOfWork.AddCorrectAnswerAsync(question.CorrectAnswer);
                         break;
                     case QuestionType.Check:
                     case QuestionType.Radio:
                         newOptionQuestions.Add(question);
+                        foreach (Option option in question.Options)
+                        {
+                            option.QuestionId = model.Id;
+                            await unitOfWork.AddOptionAsync(option);
+                        }
                         break;
-                }
-                question.TestId = model.Id;
-                await unitOfWork.AddQuestionAsync(question);
-            }
-            await unitOfWork.SaveAsync();
-            foreach (Question newQuestion in newOptionQuestions)
-            {
-                foreach (Option option in newQuestion.Options)
-                {
-                    option.QuestionId = model.Id;
-                    await unitOfWork.AddOptionAsync(option);
                 }
             }
             await unitOfWork.SaveAsync();
@@ -229,7 +231,7 @@ namespace VZTest.Controllers
 
             #region Deleting questions
             IEnumerable<int> Ids = model.Questions.Where(x => x.Id != 0).Select(x => x.Id);
-            IEnumerable<Question> questionsToDelete = foundTest.Questions.Where(x => !Ids.Any(y => y == x.Id));
+            List<Question> questionsToDelete = foundTest.Questions.Where(x => !Ids.Any(y => y == x.Id)).ToList();
             foreach (Question question in questionsToDelete)
             {
                 unitOfWork.RemoveQuestion(question);
@@ -267,9 +269,12 @@ namespace VZTest.Controllers
                             case QuestionType.Int:
                             case QuestionType.Double:
                             case QuestionType.Date:
-                                if (question.Type != updQuestion.Type || !question.CorrectAnswer.Equals(updQuestion.CorrectAnswer))
+                                if (question.Type != updQuestion.Type || !updQuestion.CorrectAnswer.Equals(question.CorrectAnswer))
                                 {
-                                    unitOfWork.RemoveCorrectAnswer(question.CorrectAnswer);
+                                    if (question.CorrectAnswer != null)
+                                    {
+                                        unitOfWork.RemoveCorrectAnswer(question.CorrectAnswer);
+                                    }
                                     await unitOfWork.AddCorrectAnswerAsync(updQuestion.CorrectAnswer);
                                 }
                                 break;
@@ -278,10 +283,31 @@ namespace VZTest.Controllers
                                 foreach (Option option in updQuestion.Options)
                                 {
                                     option.QuestionId = question.Id;
+                                    question.Options.Add(option);
                                     await unitOfWork.AddOptionAsync(option);
                                 }
-                                //ADD CORRECT REFORMAT!!!!!
-                                unitOfWork.RemoveCorrectAnswer(question.CorrectAnswer);
+                                await unitOfWork.SaveAsync();
+                                if (updQuestion.Type == QuestionType.Radio)
+                                {
+                                    CorrectIntAnswer answer = updQuestion.CorrectAnswer as CorrectIntAnswer;
+                                    updQuestion.CorrectAnswer = new CorrectIntAnswer(question.Options[answer.Correct].Id);
+                                }
+                                else
+                                {
+                                    CorrectCheckAnswer answer = updQuestion.CorrectAnswer as CorrectCheckAnswer;
+                                    int[] indexes = answer.Correct;
+                                    int[] answers = new int[indexes.Length];
+                                    for (int i = 0; i < indexes.Length; i++)
+                                    {
+                                        answers[i] = question.Options[indexes[i]].Id;
+                                    }
+                                    updQuestion.CorrectAnswer = new CorrectCheckAnswer(answers);
+                                }
+                                updQuestion.CorrectAnswer.QuestionId = question.Id;
+                                if (question.CorrectAnswer != null)
+                                {
+                                    unitOfWork.RemoveCorrectAnswer(question.CorrectAnswer);
+                                }
                                 await unitOfWork.AddCorrectAnswerAsync(updQuestion.CorrectAnswer);
                                 break;
                         }
@@ -298,7 +324,10 @@ namespace VZTest.Controllers
                                 {
                                     unitOfWork.RemoveOption(option);
                                 }
-                                unitOfWork.RemoveCorrectAnswer(question.CorrectAnswer);
+                                if (question.CorrectAnswer != null)
+                                {
+                                    unitOfWork.RemoveCorrectAnswer(question.CorrectAnswer);
+                                }
                                 await unitOfWork.AddCorrectAnswerAsync(updQuestion.CorrectAnswer);
                                 break;
                             case QuestionType.Check:
@@ -348,9 +377,13 @@ namespace VZTest.Controllers
                                     updQuestion.CorrectAnswer = new CorrectCheckAnswer(answers);
                                 }
                                 #endregion
-                                if (question.Type != updQuestion.Type || !question.CorrectAnswer.Equals(updQuestion.CorrectAnswer))
+                                if (question.Type != updQuestion.Type || !updQuestion.CorrectAnswer.Equals(question.CorrectAnswer))
                                 {
-                                    unitOfWork.RemoveCorrectAnswer(question.CorrectAnswer);
+                                    if (question.CorrectAnswer != null)
+                                    {
+                                        unitOfWork.RemoveCorrectAnswer(question.CorrectAnswer);
+                                    }
+                                    updQuestion.CorrectAnswer.QuestionId = question.Id;
                                     await unitOfWork.AddCorrectAnswerAsync(updQuestion.CorrectAnswer);
                                 }
                                 break;

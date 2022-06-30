@@ -113,7 +113,7 @@ function ReindexOptions(questionId) {
     var options = document.getElementsByName('option-' + questionId);
     for (var i = 0; i < options.length; i++) {
         var option = options[i];
-        var splitArray = option.id.split('-'); 
+        var splitArray = option.id.split('-');
         var oldId = splitArray[splitArray.length - 1];
         ReindexOption(questionId, oldId, i);
         option.setAttribute('id', 'option-' + questionId + '-' + i);
@@ -142,7 +142,8 @@ function ReindexOption(questionId, oldId, newId) {
     }
     var titleInput = document.getElementById('Questions[' + questionId + '].Options[' + oldId + '].Text');
     titleInput.setAttribute('id', 'Questions[' + questionId + '].Options[' + newId + '].Text');
-    var correctInput = document.getElementById('Questions[' + questionId + '].Correct');
+    var correctInput = document.getElementById('Option-' + questionId + '-' + oldId + '-Correct');
+    correctInput.setAttribute('id', 'Option-' + questionId + '-' + newId + '-Correct');
     correctInput.setAttribute('value', newId);
     var deleteBtn = document.getElementById('delete-question-' + questionId + '-option-' + oldId);
     deleteBtn.setAttribute('id', 'delete-question-' + questionId + '-option-' + newId);
@@ -152,8 +153,8 @@ function ReindexOption(questionId, oldId, newId) {
 function ReindexOptionWithQuestion(oldQuestionId, newQuestionId, oldId, newId) {
     var titleInput = document.getElementById('Questions[' + oldQuestionId + '].Options[' + oldId + '].Text');
     titleInput.setAttribute('id', 'Questions[' + newQuestionId + '].Options[' + newId + '].Text');
-    var correctInput = document.getElementById('Questions[' + oldQuestionId + '].Correct');
-    correctInput.setAttribute('id', 'Questions[' + newQuestionId + '].Correct');
+    var correctInput = document.getElementById('Option-' + oldQuestionId + '-' + oldId + '-Correct');
+    correctInput.setAttribute('id', 'Option-' + newQuestionId + '-' + newId + '-Correct');
     correctInput.setAttribute('value', newId);
     var deleteBtn = document.getElementById('delete-question-' + oldQuestionId + '-option-' + oldId);
     deleteBtn.setAttribute('id', 'delete-question-' + newQuestionId + '-option-' + newId);
