@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using VZTest.Models;
-using VZTest.Models.Test;
-using VZTest.Models.Test.CorrectAnswers;
-using VZTest.Repository.IRepository;
 
 namespace VZTest.Controllers
 {

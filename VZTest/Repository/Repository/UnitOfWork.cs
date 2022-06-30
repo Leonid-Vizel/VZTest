@@ -243,6 +243,33 @@ namespace VZTest.Repository.Repository
             }
             return QuestionRepository.FirstOrDefault(x=>x.Id == questionId);
         }
+
+        public async Task AddQuestionAsync(Question question)
+        {
+            await QuestionRepository.AddAsync(question);
+        }
+
+        public void RemoveQuestion(Question question)
+        {
+            QuestionRepository.Remove(question);
+            if (question.CorrectAnswer != null)
+            {
+                CorrectAnswerRepository.Remove(question.CorrectAnswer);
+            }
+            foreach (Option option in question.Options)
+            {
+                OptionRepository.Remove(option);
+            }
+            foreach(Answer answer in AnswerRepository.GetWhere(x=>x.QuestionId == question.Id))
+            {
+                AnswerRepository.Remove(answer);
+            }
+        }
+
+        public void UpdateQuestion(Question question)
+        {
+            QuestionRepository.Update(question);
+        }
         #endregion
 
         #region UserStars
@@ -382,6 +409,11 @@ namespace VZTest.Repository.Repository
         public bool OptionExists(int questionId, int optionId)
         {
             return OptionRepository.FirstOrDefault(x => x.Id == optionId && x.QuestionId == questionId) != null;
+        }
+
+        public async Task AddOptionAsync (Option option)
+        {
+            await OptionRepository.AddAsync(option);
         }
         #endregion
 
@@ -569,6 +601,11 @@ namespace VZTest.Repository.Repository
         public async Task AddCorrectAnswerAsync(CorrectAnswer answer)
         {
             await CorrectAnswerRepository.AddAsync(answer);
+        }
+
+        public void RemoveCorrectAnswer(CorrectAnswer answer)
+        {
+            CorrectAnswerRepository.Remove(answer);
         }
         #endregion
 

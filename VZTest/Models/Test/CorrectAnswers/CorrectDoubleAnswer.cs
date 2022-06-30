@@ -15,5 +15,19 @@ namespace VZTest.Models.Test.CorrectAnswers
         }
 
         public override string ToString() => Correct.ToString();
+
+        public override bool Equals(object? obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            CorrectDoubleAnswer? objAnswer = obj as CorrectDoubleAnswer;
+            if (objAnswer == null)
+            {
+                return false;
+            }
+            return objAnswer.Correct == Correct;
+        }
     }
 }

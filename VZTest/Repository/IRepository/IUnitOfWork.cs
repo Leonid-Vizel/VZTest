@@ -37,6 +37,9 @@ namespace VZTest.Repository.IRepository
         IEnumerable<Question> GetTestQuestions(int testId, bool loadAnswers);
         Task<int> GetTestQuestionCount(int testId);
         Question? GetQuestion(int questionId, bool loadOptions);
+        Task AddQuestionAsync(Question question);
+        void RemoveQuestion(Question question);
+        void UpdateQuestion(Question question);
         #endregion
 
         #region UserStars
@@ -60,6 +63,7 @@ namespace VZTest.Repository.IRepository
         #region Options
         List<Option> GetQuestionOptions(int questionId);
         bool OptionExists(int questionId, int optionId);
+        Task AddOptionAsync(Option option);
         #endregion
 
         #region Answers
@@ -72,6 +76,7 @@ namespace VZTest.Repository.IRepository
         #region CorrectAnswer
         CorrectAnswer? GetQuestionCorrectAnswer(int questionId);
         Task AddCorrectAnswerAsync(CorrectAnswer answer);
+        void RemoveCorrectAnswer(CorrectAnswer answer);
         #endregion
 
         Task SaveAsync();

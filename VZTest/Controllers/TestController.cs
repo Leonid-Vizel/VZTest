@@ -106,7 +106,9 @@ namespace VZTest.Controllers
             Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
             {
-                return View(null);
+                TestEditModel model = new TestEditModel();
+                model.NotFound = true;
+                return View(model);
             }
             if (!foundTest.UserId.Equals(userManager.GetUserId(User)))
             {
@@ -121,7 +123,156 @@ namespace VZTest.Controllers
                 return View(model);
             }
             unitOfWork.FillTest(foundTest, true);
-            return View(foundTest.ToEditModel());
+            return View(foundTest.ToEditModel(id));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(TestEditModel model)
+        {
+            if (!signInManager.IsSignedIn(User))
+            {
+                return StatusCode(401);
+            }
+            Test? foundTest = unitOfWork.GetTestMainInfo(model.Id);
+            if (foundTest == null)
+            {
+                return StatusCode(404);
+            }
+            if (!foundTest.UserId.Equals(userManager.GetUserId(User)))
+            {
+                return StatusCode(403);
+            }
+            unitOfWork.FillTest(foundTest, true);
+
+            #region Updating the test main info
+            foundTest.Title = model.Title;
+            foundTest.Description = model.Description;
+            foundTest.ImageUrl = model.ImageUrl;
+            foundTest.MaxAttempts = model.MaxAttempts;
+            if (model.Password == null)
+            {
+                foundTest.PasswordHash = null;
+            }
+            else
+            {
+                foundTest.PasswordHash = Hasher.HashPassword(model.Password);
+            }
+            foundTest.Shuffle = model.Shuffle;
+            #endregion
+
+            unitOfWork.UpdateTest(foundTest);
+
+            #region Cleaning the model
+            model.Questions = model.Questions.Where(x => x.Id == 0 || foundTest.Questions.Any(q => q.Id == x.Id)).ToList();
+            #endregion
+
+            #region Adding new questions
+            List<Question> newOptionQuestions = new List<Question>();
+            foreach (QuestionBlueprint blueprint in model.Questions.Where(x => x.Id == 0))
+            {
+                Question? question = blueprint.ToQuestion();
+                if (question == null)
+                {
+                    continue;
+                }
+                switch (question.Type)
+                {
+                    case QuestionType.Text:
+                    case QuestionType.Int:
+                    case QuestionType.Double:
+                    case QuestionType.Date:
+                        await unitOfWork.AddCorrectAnswerAsync(question.CorrectAnswer);
+                        break;
+                    case QuestionType.Check:
+                    case QuestionType.Radio:
+                        newOptionQuestions.Add(question);
+                        break;
+                }
+                question.TestId = model.Id;
+                await unitOfWork.AddQuestionAsync(question);
+            }
+            await unitOfWork.SaveAsync();
+            foreach (Question newQuestion in newOptionQuestions)
+            {
+                foreach (Option option in newQuestion.Options)
+                {
+                    option.QuestionId = model.Id;
+                    await unitOfWork.AddOptionAsync(option);
+                }
+            }
+            await unitOfWork.SaveAsync();
+
+            foreach (Question newQuestion in newOptionQuestions)
+            {
+                if (newQuestion.Type == QuestionType.Radio)
+                {
+                    CorrectIntAnswer answer = newQuestion.CorrectAnswer as CorrectIntAnswer;
+                    newQuestion.CorrectAnswer = new CorrectIntAnswer(newQuestion.Options[answer.Correct].Id);
+                }
+                else
+                {
+                    CorrectCheckAnswer answer = newQuestion.CorrectAnswer as CorrectCheckAnswer;
+                    int[] indexes = answer.Correct;
+                    int[] answers = new int[indexes.Length];
+                    for (int i = 0; i < indexes.Length; i++)
+                    {
+                        answers[i] = newQuestion.Options[indexes[i]].Id;
+                    }
+                    newQuestion.CorrectAnswer = new CorrectCheckAnswer(answers);
+                }
+
+                newQuestion.CorrectAnswer.QuestionId = newQuestion.Id;
+                await unitOfWork.AddCorrectAnswerAsync(newQuestion.CorrectAnswer);
+            }
+            #endregion
+
+            #region Deleting questions
+            IEnumerable<int> Ids = model.Questions.Where(x => x.Id != 0).Select(x => x.Id);
+            IEnumerable<Question> questionsToDelete = foundTest.Questions.Where(x => !Ids.Any(y => y == x.Id));
+            foreach (Question question in questionsToDelete)
+            {
+                unitOfWork.RemoveQuestion(question);
+                foundTest.Questions.Remove(question);
+            }
+            #endregion
+
+            #region Updating the questions
+
+            foreach (Question question in foundTest.Questions)
+            {
+                QuestionBlueprint? foundBlueprint = model.Questions.FirstOrDefault(x => x.Id == question.Id);
+                if (foundBlueprint == null)
+                {
+                    continue;
+                }
+                Question? updQuestion = foundBlueprint.ToQuestion();
+                if (updQuestion == null)
+                {
+                    continue;
+                }
+                question.Title = updQuestion.Title;
+                question.Balls = updQuestion.Balls;
+                question.ImageUrl = updQuestion.ImageUrl;
+                unitOfWork.UpdateQuestion(question);
+                if (question.Type == updQuestion.Type)
+                {
+                    if (!question.CorrectAnswer.Equals(updQuestion.CorrectAnswer))
+                    {
+
+                    }
+                }
+                else
+                {
+                    
+                }
+            }
+
+            #endregion
+
+            await unitOfWork.SaveAsync();
+
+            return Content(model.Id.ToString());
         }
 
         #endregion

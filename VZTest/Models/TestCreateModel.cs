@@ -38,6 +38,10 @@ namespace VZTest.Models
             question.Balls = Balls;
             question.Options = new List<Option>();
             Options?.ForEach(x => question.Options.Add(new Option(x)));
+            if ((question.Type == QuestionType.Radio || question.Type == QuestionType.Check) && question.Options.Count == 0)
+            {
+                return null;
+            }
             switch (question.Type)
             {
                 case QuestionType.Text:

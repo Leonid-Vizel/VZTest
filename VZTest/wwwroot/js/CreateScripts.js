@@ -363,6 +363,11 @@ function CheckAndSend(method) {
     var shuffleElement = document.getElementById('Shuffle');
     //Starting To Fill Dictionary
     var dictionary = new Object();
+
+    var testIdElement = document.getElementById('test-id');
+    if (testIdElement != null) {
+        dictionary["Id"] = testIdElement.innerHTML;
+    }
     dictionary["Title"] = titleElement.value;
     dictionary["Description"] = descriptionElement.value;
     if (passwordElement == null || passwordElement.value == '') {

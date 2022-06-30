@@ -22,10 +22,11 @@ namespace VZTest.Models.Test
         [NotMapped]
         public List<Question> Questions { get; set; }
 
-        public TestEditModel ToEditModel()
+        public TestEditModel ToEditModel(int id)
         {
             return new TestEditModel()
             {
+                Id = id,
                 Title = Title,
                 Description = Description,
                 ImageUrl = ImageUrl,

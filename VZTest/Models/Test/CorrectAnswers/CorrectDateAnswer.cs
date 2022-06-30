@@ -15,5 +15,19 @@ namespace VZTest.Models.Test.CorrectAnswers
         }
 
         public override string ToString() => Correct.ToString("dd.MM.yyyy");
+
+        public override bool Equals(object? obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            CorrectDateAnswer? objAnswer = obj as CorrectDateAnswer;
+            if (objAnswer == null)
+            {
+                return false;
+            }
+            return objAnswer.Correct == Correct;
+        }
     }
 }
