@@ -11,6 +11,7 @@ namespace VZTest.Controllers
 {
     public class TestController : Controller
     {
+        private const int pageSize = 5;
         private IUnitOfWork unitOfWork;
         private SignInManager<IdentityUser> signInManager;
         private UserManager<IdentityUser> userManager;
@@ -654,16 +655,16 @@ namespace VZTest.Controllers
             }
             IEnumerable<TestStatistics> tests = await unitOfWork.GetPublicTestsStatistics(userManager.GetUserId(User));
             int total = tests.Count();
-            if (total % 6 > 0)
+            if (total % pageSize > 0)
             {
-                total = total / 6 + 1;
+                total = total / pageSize + 1;
             }
             else
             {
-                total = total / 6;
+                total = total / pageSize;
             }
             ViewBag.TotalPages = total;
-            return View(tests.ToPagedList(page, 6));
+            return View(await tests.ToPagedListAsync(page, pageSize));
         }
         #endregion
 
@@ -680,16 +681,16 @@ namespace VZTest.Controllers
             }
             IEnumerable<TestStatistics> tests = await unitOfWork.GetUserTestsStatistics(userManager.GetUserId(User));
             int total = tests.Count();
-            if (total % 6 > 0)
+            if (total % pageSize > 0)
             {
-                total = total / 6 + 1;
+                total = total / pageSize + 1;
             }
             else
             {
-                total = total / 6;
+                total = total / pageSize;
             }
             ViewBag.TotalPages = total;
-            return View(tests.ToPagedList(page, 6));
+            return View(await tests.ToPagedListAsync(page, pageSize));
         }
         #endregion
 
@@ -975,7 +976,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(404);
             }
-            Test? foundTest = unitOfWork.GetTestMainInfo(id);
+            Test? foundTest = unitOfWork.GetTestMainInfo(foundAttempt.TestId);
             if (foundTest == null)
             {
                 return StatusCode(404);

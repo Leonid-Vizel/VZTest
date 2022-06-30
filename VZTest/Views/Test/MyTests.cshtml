@@ -21,6 +21,16 @@
     return;
 }
 
+<style>
+    .full-width{
+        width: 100%;
+    }
+
+    hr {
+        margin: 0.5rem;
+    }
+</style>
+
 <h2><i class="bi bi-list-stars"></i> @ViewData["Title"]</h2>
 <hr id="top-separator">
 
@@ -42,14 +52,13 @@
 @if (ViewBag.TotalPages > 1)
 {
     <div style="display:flex; justify-content: center;">
-        @Html.PagedListPager(Model, page => Url.Action("List","Test", new {page = page}),
+        @Html.PagedListPager(Model, page => Url.Action("MyTests","Test", new {page = page}),
         new PagedListRenderOptions {
         LiElementClasses = new string[] { "page-item" },
         PageClasses = new string[] { "page-link" }})
     </div>
     <hr>
 }
-
 @foreach (TestStatistics test in Model)
 {
     <div class="container" id="test-container-@test.Test.Id" name="test-container">
@@ -97,10 +106,15 @@
     </div>
     <hr id="test-separator-@test.Test.Id">
 }
+@if (Model.Count() < 5)
+{
+    <a asp-controller = "Test" asp-action = "Create" class = "btn btn-outline-primary" style = "width: 100%"><i class="bi bi-plus-circle"></i> Добавить</a>
+    <hr>
+}
 @if (ViewBag.TotalPages > 1)
 {
     <div class="mt-2" style="display:flex; justify-content: center;">
-        @Html.PagedListPager(Model, page => Url.Action("List","Test", new {page = page}),
+        @Html.PagedListPager(Model, page => Url.Action("MyTests","Test", new {page = page}),
         new PagedListRenderOptions {
         LiElementClasses = new string[] { "page-item" },
         PageClasses = new string[] { "page-link" }})
