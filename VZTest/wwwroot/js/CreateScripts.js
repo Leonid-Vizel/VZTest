@@ -321,7 +321,7 @@ function OnSelectAnswer(questionId) {
     }
 }
 
-function CheckAndSend() {
+function CheckAndSend(method) {
     var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
     //Title
     var titleElement = document.getElementById('Title');
@@ -400,6 +400,10 @@ function CheckAndSend() {
         }
         dictionary['Questions[' + questionId + '].Title'] = questionTitleElement.value;
 
+        if (questions[i].getAttribute('data-id') != null) {
+            dictionary['Questions[' + questionId + '].Id'] = questions[i].getAttribute('data-id');
+        }
+
         var questionTypeElement = document.getElementById('Questions[' + questionId + '].Type');
         if (questionTypeElement == null || questionTypeElement.value == '') {
             questionError.innerHTML = "Укажите тип вопроса!";
@@ -451,6 +455,10 @@ function CheckAndSend() {
                         questionError.innerHTML = "";
                     }
                     dictionary['Questions[' + questionId + '].Options[' + j + ']'] = optionTitleElement.value;
+
+                    if (radioArray[j].getAttribute('data-id') != null) {
+                        dictionary['Questions[' + questionId + '].OptionIds[' + j + ']'] = radioArray[j].getAttribute('data-id');
+                    }
                 }
                 var radioResult = GetRadioValue('Questions[' + questionId + '].Correct');
                 dictionary['Questions[' + questionId + '].Correct'] = radioResult;
@@ -483,7 +491,7 @@ function CheckAndSend() {
     dictionary['__RequestVerificationToken'] = verificationValue;
     $.ajax({
         type: "POST",
-        url: "/Test/Create/",
+        url: "/Test/" + method + "/",
         data: dictionary,
         error: function (error) {
             switch (error.status) {

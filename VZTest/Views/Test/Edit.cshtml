@@ -29,7 +29,9 @@
     return;
 }
 
+<script src="~/js/CreateScripts.js"></script>
 <script src="~/js/IntInputLimit.js"></script>
+<script src="~/js/InputScripts.js"></script>
 
 <style>
     hr {
@@ -167,7 +169,7 @@
                             string title = question.Options[j];
                             int id = question.OptionIds[j];
 
-                            <div id="option-@i-@j" name="option-@i" date-id="@id" class="input-group mt-2 ml-3">
+                            <div id="option-@i-@j" name="option-@i" data-id="@id" class="input-group mt-2 ml-3">
                                 <div class="input-group-prepend">
                                     <div class="input-group-text">
                                         @if (question.Correct.Equals(@id.ToString()))
@@ -228,7 +230,7 @@
                         break;
                     case VZTest.Models.Test.QuestionType.Date:
                         <h5 id="CorrectLabel-@i">Правильный ответ:</h5>
-                        <input id="Questions[@i].Correct" type="date" class="form-control" placeholder="Ответ" value="@question.Correct" />
+                        <input id="Questions[@i].Correct" type="date" class="form-control" placeholder="Ответ" value="@DateTime.Parse(question.Correct).ToString("yyyy-MM-dd")" />
                         <span id="Correct-@i-Errors" class="text-danger"></span>
                         break;
                 }
@@ -238,5 +240,5 @@
     }
     <a class="btn btn-outline-info mt-2" id="addQuestionBtn" onclick="AddQuestion()"><i class="bi bi-plus-circle-dotted"></i> Добавить вопрос</a>
     <hr>
-    <a class="btn btn-outline-primary" onclick="CheckAndSend()"><i class="bi bi-pencil-fill"></i> Редактировать</a>
+    <a class="btn btn-outline-primary" onclick="CheckAndSend('Edit')"><i class="bi bi-pencil-fill"></i> Редактировать</a>
 </form>
