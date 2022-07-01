@@ -9,30 +9,30 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial"/>
+    <partial name="_AuthorisePartial" />
     return;
 }
 
 @if (Model == null)
 {
-    <partial name="_ErrorPartial"/>
+    <partial name="_ErrorPartial" />
     return;
 }
 
 @if (Model.NotFound)
 {
-    <partial name = "_NotFoundPartial"/>
+    <partial name="_NotFoundPartial" />
     return;
 }
 
 @if (Model.Forbidden)
 {
-    <partial name = "_ForbiddenPartial"/>
+    <partial name="_ForbiddenPartial" />
     return;
 }
 
 <h2><i class="bi bi-list-check"></i> Результаты теста '@Model.Test.Title'</h2>
-<hr id = "top-separator">
+<hr id="top-separator">
 
 @if (Model.Attempts.Count() == 0)
 {
@@ -40,46 +40,43 @@
     return;
 }
 
-<partial name="_AjaxPartial"/>
-<partial name="_SweetAlertsPartial"/>
-<script src = "~/js/DeleteAttemptScript.js"></script>
+<partial name="_AjaxPartial" />
+<partial name="_SweetAlertsPartial" />
+<script src="~/js/DeleteAttemptScript.js"></script>
 <script src="~/js/ProcessErrorsScript.js"></script>
 <link rel="stylesheet" href="~/css/CenterFlex.css">
 <link rel="stylesheet" href="~/css/PercentCircle.css">
 
 @foreach (Attempt attempt in Model.Attempts)
 {
-    @if (!attempt.Active)
-    {
-        int percent = (int)((attempt.Balls / attempt.MaxBalls) * 100);
-        IdentityUser user = await userManager.FindByIdAsync(attempt.UserId);
-        <div class="flex-wrapper" id = "circle-@attempt.Id">
-            <div class="single-chart-sm">
-                <svg viewBox="0 0 36 36" class="circular-chart green">
-                    <path class="circle-bg"
+    int percent = (int)((attempt.Balls / attempt.MaxBalls) * 100);
+    IdentityUser user = await userManager.FindByIdAsync(attempt.UserId);
+    <div class="flex-wrapper" id="circle-@attempt.Id">
+        <div class="single-chart-sm">
+            <svg viewBox="0 0 36 36" class="circular-chart green">
+                <path class="circle-bg"
                   d="M18 2.0845
           a 15.9155 15.9155 0 0 1 0 31.831
           a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    <path class="circle"
+                <path class="circle"
                   stroke-dasharray="@percent, 100"
                   d="M18 2.0845
           a 15.9155 15.9155 0 0 1 0 31.831
           a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    <text x="18" y="20.35" class="percentage">@attempt.Balls / @attempt.MaxBalls</text>
-                </svg>
-            </div>
-            <div class="center">
-                <h5>
-                    <a asp-controller="Test" asp-action="Attempt" asp-route-id="@attempt.Id">Попытка от @attempt.TimeStarted.ToString("dd.MM.yyyy HH:mm:ss")</a>
-                </h5>
-                <h5>Пользователь: @user.UserName</h5>
-            </div>
-            <div class="center px-3">
-                <h5>
-                    <a class = "btn btn-outline-danger" onclick = "DeleteAttempt(@attempt.Id);">Удалить</a>
-                </h5>
-            </div>
+                <text x="18" y="20.35" class="percentage">@attempt.Balls / @attempt.MaxBalls</text>
+            </svg>
         </div>
-    }
-    <hr id = "separator-@attempt.Id" name = "separator">
+        <div class="center">
+            <h5>
+                <a asp-controller="Test" asp-action="Attempt" asp-route-id="@attempt.Id">Попытка от @attempt.TimeStarted.ToString("dd.MM.yyyy HH:mm:ss")</a>
+            </h5>
+            <h5>Пользователь: @user.UserName</h5>
+        </div>
+        <div class="center px-3">
+            <h5>
+                <a class="btn btn-outline-danger" onclick="DeleteAttempt(@attempt.Id);">Удалить</a>
+            </h5>
+        </div>
+    </div>
+    <hr id="separator-@attempt.Id" name="separator">
 }

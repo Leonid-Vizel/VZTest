@@ -169,15 +169,10 @@ namespace VZTest.Controllers
             #endregion
 
             #region Adding new questions
-            List<Question?> newQuestions = model.Questions.Where(x => x.Id == 0).Select(x=>x.ToQuestion(false)).ToList();
+            List<Question> newQuestions = model.Questions.Where(x => x.Id == 0).Select(x => x.ToQuestion(false)).Where(x => x != null).ToList();
             List<Question> newOptionQuestions = new List<Question>();
             foreach (Question? question in newQuestions)
             {
-                if (question == null)
-                {
-                    newQuestions.Remove(question);
-                    continue;
-                }
                 question.TestId = model.Id;
                 await unitOfWork.AddQuestionAsync(question);
             }
@@ -198,7 +193,7 @@ namespace VZTest.Controllers
                         newOptionQuestions.Add(question);
                         foreach (Option option in question.Options)
                         {
-                            option.QuestionId = model.Id;
+                            option.QuestionId = question.Id;
                             await unitOfWork.AddOptionAsync(option);
                         }
                         break;
@@ -544,7 +539,7 @@ namespace VZTest.Controllers
                 return View(model);
             }
             model.Test = foundTest;
-            model.Attempts = unitOfWork.GetTestAttempts(id, true);
+            model.Attempts = unitOfWork.GetTestAttempts(id, true).Where(x=>!x.Active);
             return View(model);
         }
 
