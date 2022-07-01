@@ -31,7 +31,7 @@
 
 @if (Model.TestOpened)
 {
-    <partial name="_ForbiddenPartial" />
+    <partial name="_TestOpenedPartial" model = "@Model.Id"/>
     return;
 }
 

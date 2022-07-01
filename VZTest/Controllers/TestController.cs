@@ -96,7 +96,7 @@ namespace VZTest.Controllers
 
         #endregion
 
-        #region
+        #region Edit
 
         public IActionResult Edit(int id)
         {
@@ -120,6 +120,7 @@ namespace VZTest.Controllers
             if (foundTest.Opened)
             {
                 TestEditModel model = new TestEditModel();
+                model.Id = id;
                 model.TestOpened = true;
                 return View(model);
             }

@@ -1,0 +1,9 @@
+﻿@model int
+<link rel="stylesheet" href="~/css/Mainbox.css">
+
+<div class="mainbox text-center">
+    <h1>Упс...</h1>
+    <h3>Кажется, этот тест всё ещё открыт!</h3>
+    <h5>Предлагаем Вам либо перейти к <a asp-controller="Test" asp-action="Preview" asp-route-id = "@Model">тесту</a>,</h5>
+    <h5>либо отправиться на <a asp-controller="Home" asp-action="Index">Главную</a>!</h5>
+</div>
