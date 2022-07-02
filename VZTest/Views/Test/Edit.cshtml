@@ -31,7 +31,7 @@
 
 @if (Model.TestOpened)
 {
-    <partial name="_TestOpenedPartial" model = "@Model.Id"/>
+    <partial name="_TestOpenedPartial" model="@Model.Id" />
     return;
 }
 
@@ -163,6 +163,16 @@
             </div>
             <span id="Question-@i-Errors" class="text-danger"></span>
             <div class="ml-3">
+                <h5>Изображение:</h5>
+                @if (Model.ImageUrl != null)
+                {
+                    <input id="Questions[@i].ImageUrl" type="url" class="form-control" placeholder="Ссылка на картинку" value="@Model.ImageUrl" />
+                }
+                else
+                {
+                    <input id="Questions[@i].ImageUrl" type="url" class="form-control" placeholder="Ссылка на картинку"/>
+                }
+                <span id="Image-@i-Errors" class="text-danger"></span>
                 <h5>Баллы за ответ:</h5>
                 <input id="Questions[@i].Balls" type="number" class="form-control" placeholder="Баллы" value="@question.Balls.ToString().Replace(",",".")" />
                 <span id="Balls-@i-Errors" class="text-danger"></span>

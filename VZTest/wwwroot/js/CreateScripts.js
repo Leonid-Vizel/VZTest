@@ -542,3 +542,15 @@ function CheckAndSend(method) {
         }
     });
 }
+
+function CheckUrl(urlString) {
+    let url;
+
+    try {
+        url = new URL(urlString);
+    } catch (_) {
+        return false;
+    }
+
+    return url.protocol === "http:" || url.protocol === "https:";
+}
