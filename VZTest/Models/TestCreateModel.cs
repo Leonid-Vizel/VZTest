@@ -9,5 +9,14 @@
         public bool Shuffle { get; set; }
         public string? Password { get; set; }
         public List<QuestionBlueprint> Questions { get; set; }
+
+        public bool Validate()
+        {
+            if (Title.Length == 0 || MaxAttempts == 0 || Questions.Count == 0)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

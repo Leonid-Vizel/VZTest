@@ -155,6 +155,7 @@ function ReindexOptionWithQuestion(oldQuestionId, newQuestionId, oldId, newId) {
     titleInput.setAttribute('id', 'Questions[' + newQuestionId + '].Options[' + newId + '].Text');
     var correctInput = document.getElementById('Option-' + oldQuestionId + '-' + oldId + '-Correct');
     correctInput.setAttribute('id', 'Option-' + newQuestionId + '-' + newId + '-Correct');
+    correctInput.setAttribute('name', 'Questions[' + newQuestionId + '].Correct');
     correctInput.setAttribute('value', newId);
     var deleteBtn = document.getElementById('delete-question-' + oldQuestionId + '-option-' + oldId);
     deleteBtn.setAttribute('id', 'delete-question-' + newQuestionId + '-option-' + newId);
@@ -460,7 +461,7 @@ function CheckAndSend(method) {
                     var optionId = idSplit[idSplit.length - 1];
                     var optionTitleElement = document.getElementById('Questions[' + questionId + '].Options[' + optionId + '].Text');
                     if (optionTitleElement == null || optionTitleElement.value == '') {
-                        questionError.innerHTML = "Укажите правильынй ответ!";
+                        questionError.innerHTML = "Укажите названия всех опций!";
                         return;
                     }
                     else {
@@ -475,6 +476,13 @@ function CheckAndSend(method) {
                     }
                 }
                 var radioResult = GetRadioValue('Questions[' + questionId + '].Correct');
+                if (radioResult == '') {
+                    questionError.innerHTML = "Укажите правильный ответ!";
+                    return;
+                }
+                else {
+                    questionError.innerHTML = "";
+                }
                 dictionary['Questions[' + questionId + '].Correct'] = radioResult;
                 break;
             case '2':
@@ -484,7 +492,7 @@ function CheckAndSend(method) {
                     var optionId = idSplit[idSplit.length - 1];
                     var optionTitleElement = document.getElementById('Questions[' + questionId + '].Options[' + optionId + '].Text');
                     if (optionTitleElement == null || optionTitleElement.value == '') {
-                        questionError.innerHTML = "Укажите правильынй ответ!";
+                        questionError.innerHTML = "Укажите названия всех опций!";
                         return;
                     }
                     else {
@@ -499,6 +507,13 @@ function CheckAndSend(method) {
                     }
                 }
                 var checkResult = GetCheckValue('Questions[' + questionId + '].Correct');
+                if (checkResult == '') {
+                    questionError.innerHTML = "Укажите правильный ответ!";
+                    return;
+                }
+                else {
+                    questionError.innerHTML = "";
+                }
                 dictionary['Questions[' + questionId + '].Correct'] = checkResult;
                 break;
             default:

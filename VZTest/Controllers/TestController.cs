@@ -42,6 +42,10 @@ namespace VZTest.Controllers
             {
                 return BadRequest();
             }
+            if (!model.Validate())
+            {
+                return BadRequest();
+            }
             Test test = new Test();
             test.Title = model.Title;
             test.Description = model.Description;
@@ -145,6 +149,12 @@ namespace VZTest.Controllers
             {
                 return StatusCode(403);
             }
+
+            if (!model.Validate())
+            {
+                return BadRequest();
+            }
+
             unitOfWork.FillTest(foundTest, true);
 
             #region Updating the test main info

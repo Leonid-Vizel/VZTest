@@ -16,7 +16,7 @@ namespace VZTest.Models
 
         public Question? ToQuestion(bool transferId)
         {
-            if (Correct.Length == 0)
+            if (Correct == null || Correct.Length == 0)
             {
                 return null;
             }
