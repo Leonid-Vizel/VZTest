@@ -80,6 +80,10 @@
             <span class="text-muted">Задание: </span>
             @question.Title
         </h6>
+        @if (question.ImageUrl != null)
+        {
+            <img class="img-fluid rounded" src = "@question.ImageUrl">
+        }
         @switch (question.Type)
         {
             case QuestionType.Text:

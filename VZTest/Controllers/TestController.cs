@@ -24,7 +24,6 @@ namespace VZTest.Controllers
         }
 
         #region Create
-
         public IActionResult Create()
         {
             return View();
@@ -51,6 +50,10 @@ namespace VZTest.Controllers
             test.Description = model.Description;
             test.CreatedTime = DateTime.Now;
             test.UserId = userManager.GetUserId(User);
+            if (Uri.IsWellFormedUriString(model.ImageUrl, UriKind.RelativeOrAbsolute))
+            {
+                test.ImageUrl = model.ImageUrl;
+            }
             test.Opened = false;
             test.Public = false;
             test.MaxAttempts = model.MaxAttempts;
@@ -160,7 +163,10 @@ namespace VZTest.Controllers
             #region Updating the test main info
             foundTest.Title = model.Title;
             foundTest.Description = model.Description;
-            foundTest.ImageUrl = model.ImageUrl;
+            if (Uri.IsWellFormedUriString(model.ImageUrl, UriKind.RelativeOrAbsolute))
+            {
+                foundTest.ImageUrl = model.ImageUrl;
+            }
             foundTest.MaxAttempts = model.MaxAttempts;
             if (model.Password == null)
             {

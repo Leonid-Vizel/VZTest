@@ -45,6 +45,10 @@ function ReindexQuestion(oldId, newId) {
     deleteBtn.setAttribute('id', 'btn-delete-' + newId);
     var questionErrorSpan = document.getElementById('Question-' + oldId + '-Errors');
     questionErrorSpan.setAttribute('id', 'Question-' + newId + '-Errors');
+    var image = document.getElementById('Questions[' + oldId + '].ImageUrl');
+    image.setAttribute('id', 'Questions[' + newId + '].ImageUrl');
+    var imageErrorSpan = document.getElementById('Image-' + oldId + '-Errors');
+    imageErrorSpan.setAttribute('id', 'Image-' + newId + '-Errors');
     var balls = document.getElementById('Questions[' + oldId + '].Balls');
     balls.setAttribute('id', 'Questions[' + newId + '].Balls');
     var ballsErrorSpan = document.getElementById('Balls-' + oldId + '-Errors');
@@ -274,6 +278,18 @@ function TransformCorrects(questionId, string) {
     }
 }
 
+function CheckUrl(urlString) {
+    let url;
+
+    try {
+        url = new URL(urlString);
+    } catch (_) {
+        return false;
+    }
+
+    return url.protocol === "http:" || url.protocol === "https:";
+}
+
 function OnSelectAnswer(questionId) {
     var correctInput;
     var element = document.getElementById('Questions[' + questionId + '].Type');
@@ -348,6 +364,7 @@ function CheckAndSend(method) {
     else {
         descriptionError.innerHTML = "";
     }
+
     //MaxAttempts
     var attemptsElement = document.getElementById('MaxAttempts');
     var attemptsError = document.getElementById('MaxAttempts-Errors');
@@ -375,6 +392,20 @@ function CheckAndSend(method) {
     }
     dictionary["Title"] = titleElement.value;
     dictionary["Description"] = descriptionElement.value;
+
+    var imageElement = document.getElementById('ImageUrl');
+    var imageError = document.getElementById('ImageUrl-Errors');
+    if (imageElement != null && !CheckUrl(imageElement.value)) {
+        imageError.innerHTML = "Укажите действительную ссылку!";
+        return;
+    }
+    else if (imageElement != null) {
+        dictionary["ImageUrl"] = imageElement.value;
+    }
+    else {
+        imageError.innerHTML = "";
+    }
+
     if (passwordElement == null || passwordElement.value == '') {
         dictionary['Password'] = '';
     }
@@ -426,6 +457,19 @@ function CheckAndSend(method) {
             questionError.innerHTML = "";
         }
         dictionary['Questions[' + questionId + '].Type'] = questionTypeElement.value;
+
+        var questionImageElement = document.getElementById('Questions[' + questionId + '].ImageUrl');
+        var questionImageError = document.getElementById('Image-' + questionId + '-Errors');
+        if (questionImageElement != null && !CheckUrl(questionImageElement.value)) {
+            questionImageError.innerHTML = "Укажите действительную ссылку!";
+            return;
+        }
+        else if (questionImageElement != null) {
+            dictionary['Questions[' + questionId + '].ImageUrl'] = questionImageElement.value;
+        }
+        else {
+            questionImageError.innerHTML = "";
+        }
 
         var questionBallsElement = document.getElementById('Questions[' + questionId + '].Balls');
         var questionBallsError = document.getElementById('Balls-' + questionId + '-Errors');
