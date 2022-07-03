@@ -16,25 +16,25 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial"/>
+    <partial name="_AuthorisePartial" />
     return;
 }
 
 @if (Model == null)
 {
-    <partial name="_ErrorPartial"/>
+    <partial name="_ErrorPartial" />
     return;
 }
 
 @if (Model.Forbidden)
 {
-    <partial name="_ForbiddenPartial"/>
+    <partial name="_ForbiddenPartial" />
     return;
 }
 
 @if (Model.NotFound)
 {
-    <partial name="_NotFoundPartial"/>
+    <partial name="_NotFoundPartial" />
     return;
 }
 
@@ -91,6 +91,10 @@
         <span class="text-muted">Задание: </span>
         @question.Title
     </h6>
+    @if (question.ImageUrl != null)
+    {
+        <img class="img-fluid rounded" src="@question.ImageUrl">
+    }
     @switch (question.Type)
     {
         case QuestionType.Text:

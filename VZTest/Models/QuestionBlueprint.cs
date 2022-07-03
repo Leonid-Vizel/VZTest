@@ -31,7 +31,10 @@ namespace VZTest.Models
             }
             question.Title = Title;
             question.Type = Type;
-            question.ImageUrl = ImageUrl;
+            if (Uri.IsWellFormedUriString(ImageUrl, UriKind.RelativeOrAbsolute))
+            {
+                question.ImageUrl = ImageUrl;
+            }
             question.Balls = Balls;
             question.Options = new List<Option>();
             if (question.Type == QuestionType.Check || question.Type == QuestionType.Radio)

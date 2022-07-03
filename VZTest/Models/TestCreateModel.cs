@@ -12,7 +12,7 @@
 
         public bool Validate()
         {
-            if (Title.Length == 0 || MaxAttempts == 0 || Questions.Count == 0)
+            if (Title.Length == 0 || MaxAttempts <= 0 || Questions.Count == 0)
             {
                 return false;
             }

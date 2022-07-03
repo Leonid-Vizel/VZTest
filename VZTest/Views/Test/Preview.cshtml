@@ -60,6 +60,10 @@
     Максимальное количество попыток: <b>@Model.Test.MaxAttempts</b>
     Был пройден пользователями платформы <b>@Model.TotalAttempts @WordHelp.Inflect(Model.TotalAttempts,"раз","раз","раза")</b>
 </span>
+@if (Model.Test.ImageUrl != null)
+{
+    <img class = "img-fluid rounded" src = "@Model.Test.ImageUrl">
+}
 <hr>
 @if (Model.Test.UserId.Equals(userManager.GetUserId(User)))
 {
