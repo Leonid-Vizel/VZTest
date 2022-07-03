@@ -45,6 +45,10 @@ function ReindexQuestion(oldId, newId) {
     deleteBtn.setAttribute('id', 'btn-delete-' + newId);
     var questionErrorSpan = document.getElementById('Question-' + oldId + '-Errors');
     questionErrorSpan.setAttribute('id', 'Question-' + newId + '-Errors');
+    var image = document.getElementById('Questions[' + oldId + '].ImageUrl');
+    image.setAttribute('id', 'Questions[' + newId + '].ImageUrl');
+    var imageErrorSpan = document.getElementById('Image-' + oldId + '-Errors');
+    imageErrorSpan.setAttribute('id', 'Image-' + newId + '-Errors');
     var balls = document.getElementById('Questions[' + oldId + '].Balls');
     balls.setAttribute('id', 'Questions[' + newId + '].Balls');
     var ballsErrorSpan = document.getElementById('Balls-' + oldId + '-Errors');
@@ -274,6 +278,18 @@ function TransformCorrects(questionId, string) {
     }
 }
 
+function CheckUrl(urlString) {
+    let url;
+
+    try {
+        url = new URL(urlString);
+    } catch (_) {
+        return false;
+    }
+
+    return url.protocol === "http:" || url.protocol === "https:";
+}
+
 function OnSelectAnswer(questionId) {
     var correctInput;
     var element = document.getElementById('Questions[' + questionId + '].Type');
@@ -427,6 +443,19 @@ function CheckAndSend(method) {
         }
         dictionary['Questions[' + questionId + '].Type'] = questionTypeElement.value;
 
+        var questionImageElement = document.getElementById('Questions[' + questionId + '].ImageUrl');
+        var questionImageError = document.getElementById('Image-' + questionId + '-Errors');
+        if (questionImageElement != null && !CheckUrl(questionImageElement)) {
+            questionImageError.innerHTML = "Укажите действительную ссылку!";
+            return;
+        }
+        else if (questionImageElement != null) {
+            dictionary['Questions[' + questionId + '].ImageUrl'] = questionImageElement.value;
+        }
+        else {
+            questionImageError.innerHTML = "";
+        }
+
         var questionBallsElement = document.getElementById('Questions[' + questionId + '].Balls');
         var questionBallsError = document.getElementById('Balls-' + questionId + '-Errors');
         if (questionBallsElement == null || questionBallsElement.value == '') {
@@ -541,16 +570,4 @@ function CheckAndSend(method) {
             window.location.replace("/Test/Preview/" + data);
         }
     });
-}
-
-function CheckUrl(urlString) {
-    let url;
-
-    try {
-        url = new URL(urlString);
-    } catch (_) {
-        return false;
-    }
-
-    return url.protocol === "http:" || url.protocol === "https:";
 }
