@@ -177,6 +177,7 @@ namespace VZTest.Controllers
                 foundTest.PasswordHash = Hasher.HashPassword(model.Password);
             }
             foundTest.Shuffle = model.Shuffle;
+            foundTest.EditedTime = DateTime.Now;
             #endregion
 
             unitOfWork.UpdateTest(foundTest);
