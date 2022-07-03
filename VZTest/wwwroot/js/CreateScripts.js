@@ -364,6 +364,7 @@ function CheckAndSend(method) {
     else {
         descriptionError.innerHTML = "";
     }
+
     //MaxAttempts
     var attemptsElement = document.getElementById('MaxAttempts');
     var attemptsError = document.getElementById('MaxAttempts-Errors');
@@ -391,6 +392,20 @@ function CheckAndSend(method) {
     }
     dictionary["Title"] = titleElement.value;
     dictionary["Description"] = descriptionElement.value;
+
+    var imageElement = document.getElementById('ImageUrl');
+    var imageError = document.getElementById('ImageUrl-Errors');
+    if (imageElement != null && !CheckUrl(imageElement.value)) {
+        imageError.innerHTML = "Укажите действительную ссылку!";
+        return;
+    }
+    else if (imageElement != null) {
+        dictionary["ImageUrl"] = imageElement.value;
+    }
+    else {
+        imageError.innerHTML = "";
+    }
+
     if (passwordElement == null || passwordElement.value == '') {
         dictionary['Password'] = '';
     }
@@ -445,7 +460,7 @@ function CheckAndSend(method) {
 
         var questionImageElement = document.getElementById('Questions[' + questionId + '].ImageUrl');
         var questionImageError = document.getElementById('Image-' + questionId + '-Errors');
-        if (questionImageElement != null && !CheckUrl(questionImageElement)) {
+        if (questionImageElement != null && !CheckUrl(questionImageElement.value)) {
             questionImageError.innerHTML = "Укажите действительную ссылку!";
             return;
         }
