@@ -419,8 +419,8 @@ function CheckAndSend(method) {
 
     var endTimeElement = document.getElementById('EndTime');
     var endTimeError = document.getElementById('EndTime-Errors');
-    if (endTimeElement != null) {
-        if (startTimeElement != null && !CheckTime(startTimeElement.value, endTimeElement.value)) {
+    if (endTimeElement != null && endTimeElement.value != '') {
+        if (startTimeElement != null && startTimeElement.value != '' && !CheckTime(startTimeElement.value, endTimeElement.value)) {
             endTimeError.innerHTML = 'Дата и время окончания теста должны быть позже даты и времени его начала!';
             return;
         }

@@ -12,9 +12,29 @@
     <partial name="_AuthorisePartial" />
     return;
 }
-@if (Model == null || Model.Forbidden)
+@if (Model == null)
+{
+    <partial name="_ErrorPartial" />
+    return;
+}
+@if (Model.Forbidden)
 {
     <partial name="_ForbiddenPartial" />
+    return;
+}
+@if (Model.Closed)
+{
+    <partial name="_TestClosedPartial" />
+    return;
+}
+@if (Model.BeforeStart)
+{
+    <partial name="_BeforeTimePartial" />
+    return;
+}
+@if (Model.AfterEnd)
+{
+    <partial name="_AfterTimePartial" />
     return;
 }
 @if (Model.NotFound)

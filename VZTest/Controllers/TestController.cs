@@ -606,48 +606,44 @@ namespace VZTest.Controllers
                 return View(null);
             }
             string userId = userManager.GetUserId(User);
-            TestStatistics? foundTest = await unitOfWork.GetTestStatistics(id, userId);
+            Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
             {
                 TestPriviewModel model = new TestPriviewModel();
                 model.NotFound = true;
                 return View(model);
             }
-            if (!foundTest.Test.UserId.Equals(userId) && foundTest.Test.PasswordHash != null && !foundTest.Test.PasswordHash.Equals(passwordHash))
+            if (!foundTest.Opened)
+            {
+                TestPriviewModel model = new TestPriviewModel();
+                model.Closed = true;
+                return View(model);
+            }
+            if (!foundTest.UserId.Equals(userId) && foundTest.PasswordHash != null && !foundTest.PasswordHash.Equals(passwordHash))
             {
                 TestPriviewModel model = new TestPriviewModel();
                 model.Forbidden = true;
                 return View(model);
             }
-            IEnumerable<Attempt> userAttempts = unitOfWork.GetUserTestAttempts(id, userId);
-            if (foundTest.Test.MaxAttempts <= userAttempts.Count())
+            if (foundTest.StartTime != null && DateTime.Compare(foundTest.StartTime.Value,DateTime.Now) < 0)
             {
-                return RedirectToAction("Preview");
+                TestPriviewModel model = new TestPriviewModel();
+                model.Test = foundTest;
+                model.BeforeStart = true;
+                return View(model);
             }
-            List<Question> questions = unitOfWork.GetTestQuestions(id, false).ToList();
-            if (foundTest.Test.Shuffle)
+            if (foundTest.EndTime != null && DateTime.Compare(foundTest.EndTime.Value, DateTime.Now) > 0)
             {
-                Shuffler.Shuffle(questions);
+                TestPriviewModel model = new TestPriviewModel();
+                model.Test = foundTest;
+                model.AfterEnd = true;
+                return View(model);
             }
-            Attempt attempt = new Attempt()
+            Attempt? attempt = await unitOfWork.CreateAttempt(foundTest, userId);
+            if (attempt == null)
             {
-                UserId = userId,
-                TestId = id,
-                TimeStarted = DateTime.Now,
-                Active = true,
-                Sequence = string.Join('-', questions.Select(x => x.Id))
-            };
-            await unitOfWork.AddAttemptAsync(attempt);
-            await unitOfWork.SaveAsync();
-            List<Answer> answers = new List<Answer>();
-            foreach (Question question in questions)
-            {
-                Answer answer = new Answer();
-                answer.QuestionId = question.Id;
-                answer.AttemptId = attempt.Id;
-                answers.Add(answer);
+                return RedirectToAction("Preview", new { id = id });
             }
-            await unitOfWork.AddAnswerRangeAsync(answers);
             await unitOfWork.SaveAsync();
             return RedirectToAction("Attempt", new { id = attempt.Id });
         }

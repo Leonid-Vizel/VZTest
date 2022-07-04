@@ -1,4 +1,5 @@
 ﻿using VZTest.Data;
+using VZTest.Instruments;
 using VZTest.Models;
 using VZTest.Models.Test;
 using VZTest.Models.Test.CorrectAnswers;
@@ -84,6 +85,40 @@ namespace VZTest.Repository.Repository
         #endregion
 
         #region Attemps
+
+        public async Task<Attempt?> CreateAttempt(Test test, string userId)
+        {
+            IEnumerable<Attempt> userAttempts = GetUserTestAttempts(test.Id, userId);
+            if (test.MaxAttempts <= userAttempts.Count())
+            {
+                return null;
+            }
+            List<Question> questions = GetTestQuestions(test.Id, false).ToList();
+            if (test.Shuffle)
+            {
+                Shuffler.Shuffle(questions);
+            }
+            Attempt attempt = new Attempt()
+            {
+                UserId = userId,
+                TestId = test.Id,
+                TimeStarted = DateTime.Now,
+                Active = true,
+                Sequence = string.Join('-', questions.Select(x => x.Id))
+            };
+            await AddAttemptAsync(attempt);
+            await SaveAsync();
+            List<Answer> answers = new List<Answer>();
+            foreach (Question question in questions)
+            {
+                Answer answer = new Answer();
+                answer.QuestionId = question.Id;
+                answer.AttemptId = attempt.Id;
+                answers.Add(answer);
+            }
+            await AddAnswerRangeAsync(answers);
+            return attempt;
+        }
         public IEnumerable<Attempt> GetUserTestAttempts(int testId, string userId)
         {
             List<Attempt> attempts = AttemptRepository.GetWhere(x => x.TestId == testId && x.UserId.Equals(userId)).ToList();
