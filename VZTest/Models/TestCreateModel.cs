@@ -8,6 +8,8 @@
         public int MaxAttempts { get; set; }
         public bool Shuffle { get; set; }
         public string? Password { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
         public List<QuestionBlueprint> Questions { get; set; }
 
         public bool Validate()

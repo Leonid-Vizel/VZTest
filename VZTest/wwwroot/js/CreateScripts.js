@@ -1,17 +1,17 @@
 ﻿function AddQuestion() {
-    var questionCount = document.getElementsByName('QuestionContainer').length;
-    var div = document.createElement('div');
+    let questionCount = document.getElementsByName('QuestionContainer').length;
+    let div = document.createElement('div');
     div.setAttribute('class', 'mt-3');
     div.setAttribute('name', 'QuestionContainer');
     div.setAttribute('id', questionCount);
-    var elementAfter = document.getElementById('addQuestionBtn');
+    let elementAfter = document.getElementById('addQuestionBtn');
     div.innerHTML = document.getElementById('QuestionBlock').innerHTML.replace(/{questionId}/g, questionCount).replace(/{questionIdPlus}/g, questionCount + 1);
     elementAfter.insertAdjacentElement('beforebegin', div);
     div.scrollIntoView();
 }
 
 function DeleteQuestion(questionId) {
-    var questionDiv = document.getElementById(questionId);
+    let questionDiv = document.getElementById(questionId);
     if (questionDiv == null) {
         return;
     }
@@ -20,9 +20,9 @@ function DeleteQuestion(questionId) {
 }
 
 function ReindexQuestions() {
-    var allQuestions = document.getElementsByName('QuestionContainer');
-    for (var i = 0; i < allQuestions.length; i++) {
-        var question = allQuestions[i];
+    let allQuestions = document.getElementsByName('QuestionContainer');
+    for (let i = 0; i < allQuestions.length; i++) {
+        let question = allQuestions[i];
         ReindexQuestion(question.id, i);
         question.setAttribute('id', i);
     }
@@ -32,36 +32,36 @@ function ReindexQuestion(oldId, newId) {
     if (oldId == newId) {
         return;
     }
-    var header = document.getElementById('QuestionHeader-' + oldId);
+    let header = document.getElementById('QuestionHeader-' + oldId);
     header.innerHTML = 'Вопрос #' + (newId + 1);
     header.setAttribute('id', 'QuestionHeader-' + newId);
-    var input = document.getElementById('Questions[' + oldId + '].Title');
+    let input = document.getElementById('Questions[' + oldId + '].Title');
     input.setAttribute('id', 'Questions[' + newId + '].Title');
-    var select = document.getElementById('Questions[' + oldId + '].Type');
+    let select = document.getElementById('Questions[' + oldId + '].Type');
     select.setAttribute('onchange', 'OnSelectAnswer(' + newId + ');');
     select.setAttribute('id', 'Questions[' + newId + '].Type');
-    var deleteBtn = document.getElementById('btn-delete-' + oldId);
+    let deleteBtn = document.getElementById('btn-delete-' + oldId);
     deleteBtn.setAttribute('onclick', 'DeleteQuestion(' + newId + ');');
     deleteBtn.setAttribute('id', 'btn-delete-' + newId);
-    var questionErrorSpan = document.getElementById('Question-' + oldId + '-Errors');
+    let questionErrorSpan = document.getElementById('Question-' + oldId + '-Errors');
     questionErrorSpan.setAttribute('id', 'Question-' + newId + '-Errors');
-    var image = document.getElementById('Questions[' + oldId + '].ImageUrl');
+    let image = document.getElementById('Questions[' + oldId + '].ImageUrl');
     image.setAttribute('id', 'Questions[' + newId + '].ImageUrl');
-    var imageErrorSpan = document.getElementById('Image-' + oldId + '-Errors');
+    let imageErrorSpan = document.getElementById('Image-' + oldId + '-Errors');
     imageErrorSpan.setAttribute('id', 'Image-' + newId + '-Errors');
-    var balls = document.getElementById('Questions[' + oldId + '].Balls');
+    let balls = document.getElementById('Questions[' + oldId + '].Balls');
     balls.setAttribute('id', 'Questions[' + newId + '].Balls');
-    var ballsErrorSpan = document.getElementById('Balls-' + oldId + '-Errors');
+    let ballsErrorSpan = document.getElementById('Balls-' + oldId + '-Errors');
     ballsErrorSpan.setAttribute('id', 'Balls-' + newId + '-Errors');
-    var correctLabel = document.getElementById('CorrectLabel-' + oldId);
+    let correctLabel = document.getElementById('CorrectLabel-' + oldId);
     if (correctLabel != null) {
         correctLabel.setAttribute('id', 'CorrectLabel-' + newId);
     }
-    var correctInput = document.getElementById('Questions[' + oldId + '].Correct');
+    let correctInput = document.getElementById('Questions[' + oldId + '].Correct');
     if (correctInput != null && correctInput.getAttribute('name') == null) {
         correctInput.setAttribute('id', 'Questions[' + newId + '].Correct');
         correctInput = document.getElementById('Questions[' + oldId + '].Correct');
-        var correctErrorSpan = document.getElementById('Correct-' + oldId + '-Errors');
+        let correctErrorSpan = document.getElementById('Correct-' + oldId + '-Errors');
         correctErrorSpan.setAttribute('id', 'Correct-' + newId + '-Errors');
     }
     var creator = document.getElementById('Creator-' + oldId);
@@ -73,10 +73,10 @@ function ReindexQuestion(oldId, newId) {
 }
 
 function AddRadioOption(questionId) {
-    var optionCount = document.getElementsByName('option-' + questionId).length;
-    var optionBlock = document.getElementById('RadioOptionBlock').innerHTML.replace(/{questionId}/g, questionId).replace(/{optionId}/g, optionCount);
-    var creatorButton = document.getElementById('Creator-' + questionId);
-    var optionDiv = document.createElement('div');
+    let optionCount = document.getElementsByName('option-' + questionId).length;
+    let optionBlock = document.getElementById('RadioOptionBlock').innerHTML.replace(/{questionId}/g, questionId).replace(/{optionId}/g, optionCount);
+    let creatorButton = document.getElementById('Creator-' + questionId);
+    let optionDiv = document.createElement('div');
     if (optionBlock == null || creatorButton == null || optionDiv == null) {
         return;
     }
@@ -89,10 +89,10 @@ function AddRadioOption(questionId) {
 }
 
 function AddCheckOption(questionId) {
-    var optionCount = document.getElementsByName('option-' + questionId).length;
-    var optionBlock = document.getElementById('CheckOptionBlock').innerHTML.replace(/{questionId}/g, questionId).replace(/{optionId}/g, optionCount);
-    var creatorButton = document.getElementById('Creator-' + questionId);
-    var optionDiv = document.createElement('div');
+    let optionCount = document.getElementsByName('option-' + questionId).length;
+    let optionBlock = document.getElementById('CheckOptionBlock').innerHTML.replace(/{questionId}/g, questionId).replace(/{optionId}/g, optionCount);
+    let creatorButton = document.getElementById('Creator-' + questionId);
+    let optionDiv = document.createElement('div');
     if (optionBlock == null || creatorButton == null || optionDiv == null) {
         return;
     }
@@ -105,7 +105,7 @@ function AddCheckOption(questionId) {
 }
 
 function DeleteOption(questionId, optionId) {
-    var optionDiv = document.getElementById('option-' + questionId + '-' + optionId);
+    let optionDiv = document.getElementById('option-' + questionId + '-' + optionId);
     if (optionDiv == null) {
         return;
     }
@@ -290,6 +290,12 @@ function CheckUrl(urlString) {
     return url.protocol === "http:" || url.protocol === "https:";
 }
 
+function CheckTime(timeLower, timeHigher) {
+    let lowerDateTime = new Date(timeLower).getDate();
+    let higherDateTime = new Date(timeHigher).getDate();
+    return lowerDateTime < higherDateTime;
+}
+
 function OnSelectAnswer(questionId) {
     var correctInput;
     var element = document.getElementById('Questions[' + questionId + '].Type');
@@ -404,6 +410,27 @@ function CheckAndSend(method) {
     }
     else {
         imageError.innerHTML = "";
+    }
+
+    var startTimeElement = document.getElementById('StartTime');
+    if (startTimeElement != null) {
+        dictionary['StartTime'] = startTimeElement.value;
+    }
+
+    var endTimeElement = document.getElementById('EndTime');
+    var endTimeError = document.getElementById('EndTime-Errors');
+    if (endTimeElement != null) {
+        if (startTimeElement != null && !CheckTime(startTimeElement.value, endTimeElement.value)) {
+            endTimeError.innerHTML = 'Дата и время окончания теста должны быть позже даты и времени его начала!';
+            return;
+        }
+        else {
+            endTimeError.innerHTML = '';
+        }
+        dictionary['EndTime'] = endTimeElement.value;
+    }
+    else {
+        endTimeError.innerHTML = '';
     }
 
     if (passwordElement == null || passwordElement.value == '') {

@@ -57,6 +57,11 @@ namespace VZTest.Controllers
             test.Opened = false;
             test.Public = false;
             test.MaxAttempts = model.MaxAttempts;
+            test.StartTime = model.StartTime;
+            if (model.StartTime != null && model.EndTime != null && DateTime.Compare(model.StartTime.Value, model.EndTime.Value) < 0)
+            {
+                test.EndTime = model.EndTime;
+            }
             test.Questions = new List<Question>();
             if (model.Password != null)
             {
