@@ -86,11 +86,11 @@
         <label for="StartTime">Время открытия теста (Необязательно):</label>
         @if (Model.StartTime != null)
         {
-            <input id="StartTime" type="datetime" class="form-control" value="@Model.StartTime" />
+            <input id="StartTime" type="datetime-local" class="form-control" value="@Model.StartTime" />
         }
         else
         {
-            <input id="StartTime" type="datetime" class="form-control" />
+            <input id="StartTime" type="datetime-local" class="form-control" />
         }
     </div>
 
@@ -98,11 +98,11 @@
         <label for="EndTime">Вермя закрытия теста (Необязательно):</label>
         @if (Model.EndTime != null)
         {
-            <input id="EndTime" type="datetime" class="form-control" value="@Model.EndTime" />
+            <input id="EndTime" type="datetime-local" class="form-control" value="@Model.EndTime" />
         }
         else
         {
-            <input id="EndTime" type="datetime" class="form-control" />
+            <input id="EndTime" type="datetime-local" class="form-control" />
         }
         <span id="EndTime-Errors" class="text-danger"></span>
     </div>

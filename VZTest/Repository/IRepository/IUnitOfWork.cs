@@ -20,7 +20,7 @@ namespace VZTest.Repository.IRepository
         Attempt? GetAttemptWithAnswers(int attemptId);
         Attempt? GetAttemptMainInfo(int attemptId);
         Task<int> GetTestAttemptsCount(int testId);
-        Task<Attempt?> CreateAttempt(Test test, string userId)
+        Task<Attempt?> CreateAttempt(Test test, string userId);
         Task AddAttemptAsync(Attempt attempt);
         void CheckAttempt(Attempt attempt);
         void RemoveAttempt(int attemptId);

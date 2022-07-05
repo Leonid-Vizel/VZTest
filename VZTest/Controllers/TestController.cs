@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using X.PagedList;
-using VZTest.Instruments;
 using VZTest.Models;
 using VZTest.Models.Test;
 using VZTest.Models.Test.CorrectAnswers;
 using VZTest.Repository.IRepository;
+using X.PagedList;
 
 namespace VZTest.Controllers
 {
@@ -37,7 +36,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(401);
             }
-            if (model.Questions.Count == 0 || model.Title.Length == 0 || model.MaxAttempts == 0)
+            if (model.Questions.Count == 0 || model.Title.Length == 0 || model.MaxAttempts <= 0)
             {
                 return BadRequest();
             }
@@ -183,6 +182,8 @@ namespace VZTest.Controllers
             }
             foundTest.Shuffle = model.Shuffle;
             foundTest.EditedTime = DateTime.Now;
+            foundTest.EndTime = model.EndTime;
+            foundTest.StartTime = model.StartTime;
             #endregion
 
             unitOfWork.UpdateTest(foundTest);

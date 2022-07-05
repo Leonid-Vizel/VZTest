@@ -174,6 +174,10 @@ namespace VZTest.Repository.Repository
 
         public void CheckAttempt(Attempt attempt)
         {
+            if (attempt.Active)
+            {
+                attempt.Active = false;
+            }
             attempt.MaxBalls = GetTestTotalBalls(attempt.TestId);
             foreach (Answer answer in attempt.Answers)
             {
