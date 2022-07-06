@@ -33,6 +33,8 @@ namespace VZTest.Models.Test
                 Title = Title,
                 Description = Description,
                 ImageUrl = ImageUrl,
+                StartTime = StartTime,
+                EndTime = EndTime,
                 MaxAttempts = MaxAttempts,
                 Shuffle = Shuffle,
                 Questions = Questions.Select(x => x.ToBlueprint()).ToList()

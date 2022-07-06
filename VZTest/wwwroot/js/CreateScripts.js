@@ -401,7 +401,7 @@ function CheckAndSend(method) {
 
     var imageElement = document.getElementById('ImageUrl');
     var imageError = document.getElementById('ImageUrl-Errors');
-    if (imageElement != null && !CheckUrl(imageElement.value)) {
+    if (imageElement != null && imageElement.value != '' && !CheckUrl(imageElement.value)) {
         imageError.innerHTML = "Укажите действительную ссылку!";
         return;
     }
@@ -487,7 +487,7 @@ function CheckAndSend(method) {
 
         var questionImageElement = document.getElementById('Questions[' + questionId + '].ImageUrl');
         var questionImageError = document.getElementById('Image-' + questionId + '-Errors');
-        if (questionImageElement != null && !CheckUrl(questionImageElement.value)) {
+        if (questionImageElement != null && questionImageElement.value != '' && !CheckUrl(questionImageElement.value)) {
             questionImageError.innerHTML = "Укажите действительную ссылку!";
             return;
         }

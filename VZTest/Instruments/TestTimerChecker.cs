@@ -11,7 +11,7 @@ namespace VZTest.Instruments
         public TestTimerChecker(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
-            timer = new System.Timers.Timer(5000);
+            timer = new System.Timers.Timer(20000);
             timer.AutoReset = true;
             timer.Elapsed += CheckTestsEnded;
             timer.Start();

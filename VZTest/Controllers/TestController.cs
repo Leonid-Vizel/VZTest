@@ -171,6 +171,10 @@ namespace VZTest.Controllers
             {
                 foundTest.ImageUrl = model.ImageUrl;
             }
+            else if (model.ImageUrl == null || model.ImageUrl.Equals(""))
+            {
+                foundTest.ImageUrl = null;
+            }
             foundTest.MaxAttempts = model.MaxAttempts;
             if (model.Password == null)
             {
@@ -275,7 +279,14 @@ namespace VZTest.Controllers
                 }
                 question.Title = updQuestion.Title;
                 question.Balls = updQuestion.Balls;
-                question.ImageUrl = updQuestion.ImageUrl;
+                if (Uri.IsWellFormedUriString(updQuestion.ImageUrl, UriKind.RelativeOrAbsolute))
+                {
+                    question.ImageUrl = updQuestion.ImageUrl;
+                }
+                else if (updQuestion.ImageUrl == null || updQuestion.ImageUrl.Equals(""))
+                {
+                    question.ImageUrl = null;
+                }
 
                 switch (question.Type)
                 {
@@ -626,14 +637,14 @@ namespace VZTest.Controllers
                 model.Forbidden = true;
                 return View(model);
             }
-            if (foundTest.StartTime != null && DateTime.Compare(foundTest.StartTime.Value,DateTime.Now) < 0)
+            if (foundTest.StartTime != null && DateTime.Compare(foundTest.StartTime.Value,DateTime.Now) > 0)
             {
                 TestPriviewModel model = new TestPriviewModel();
                 model.Test = foundTest;
                 model.BeforeStart = true;
                 return View(model);
             }
-            if (foundTest.EndTime != null && DateTime.Compare(foundTest.EndTime.Value, DateTime.Now) > 0)
+            if (foundTest.EndTime != null && DateTime.Compare(foundTest.EndTime.Value, DateTime.Now) < 0)
             {
                 TestPriviewModel model = new TestPriviewModel();
                 model.Test = foundTest;

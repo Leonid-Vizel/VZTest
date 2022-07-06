@@ -86,7 +86,7 @@
         <label for="StartTime">Время открытия теста (Необязательно):</label>
         @if (Model.StartTime != null)
         {
-            <input id="StartTime" type="datetime-local" class="form-control" value="@Model.StartTime" />
+            <input id="StartTime" type="datetime-local" class="form-control" value="@Model.StartTime.Value.ToString("yyyy-MM-ddTHH:mm")" />
         }
         else
         {
@@ -98,7 +98,7 @@
         <label for="EndTime">Вермя закрытия теста (Необязательно):</label>
         @if (Model.EndTime != null)
         {
-            <input id="EndTime" type="datetime-local" class="form-control" value="@Model.EndTime" />
+            <input id="EndTime" type="datetime-local" class="form-control" value="@Model.EndTime.Value.ToString("yyyy-MM-ddTHH:mm")" />
         }
         else
         {
