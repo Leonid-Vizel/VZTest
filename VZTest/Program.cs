@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VZTest.Data;
+using VZTest.Instruments;
 using VZTest.Repository.IRepository;
 using VZTest.Repository.Repository;
 
@@ -21,6 +22,9 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
+
+IServiceScope scope = app.Services.CreateScope();
+TestTimerChecker checker = new TestTimerChecker(scope.ServiceProvider.GetService<IUnitOfWork>());
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

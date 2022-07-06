@@ -12,9 +12,29 @@
     <partial name="_AuthorisePartial" />
     return;
 }
-@if (Model == null || Model.Forbidden)
+@if (Model == null)
+{
+    <partial name="_ErrorPartial" />
+    return;
+}
+@if (Model.Forbidden)
 {
     <partial name="_ForbiddenPartial" />
+    return;
+}
+@if (Model.Closed)
+{
+    <partial name="_TestClosedPartial" />
+    return;
+}
+@if (Model.BeforeStart)
+{
+    <partial name="_BeforeTimePartial" />
+    return;
+}
+@if (Model.AfterEnd)
+{
+    <partial name="_AfterTimePartial" />
     return;
 }
 @if (Model.NotFound)
@@ -56,7 +76,23 @@
 </div>
 <hr>
 <span style="white-space: pre-line">Название: <b>@Model.Test.Title</b>
-    Описание: <b>@Model.Test.Description</b>
+    @if (Model.Test.Description != null)
+    {
+        @:Описание: <b>@Model.Test.Description</b>
+    }
+    Дата создания: <b>@Model.Test.CreatedTime</b>
+    @if (Model.Test.EditedTime != null)
+    {
+        @:Дата последнего изменения: <b>@Model.Test.EditedTime</b>
+    }
+    @if (Model.Test.StartTime != null)
+    {
+        @:Тест открывается в: <b>@Model.Test.StartTime</b>
+    }
+    @if (Model.Test.EndTime != null)
+    {
+        @:Тест закрывается в: <b>@Model.Test.EndTime</b>
+    }
     Максимальное количество попыток: <b>@Model.Test.MaxAttempts</b>
     Был пройден пользователями платформы <b>@Model.TotalAttempts @WordHelp.Inflect(Model.TotalAttempts,"раз","раз","раза")</b>
 </span>

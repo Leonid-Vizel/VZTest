@@ -9,6 +9,9 @@ namespace VZTest.Models
         public int StarsCount { get; set; }
         public bool NotFound { get; set; }
         public bool Forbidden { get; set; }
+        public bool Closed { get; set; }
+        public bool BeforeStart { get; set; }
+        public bool AfterEnd { get; set; }
         public bool Liked { get; set; }
         public IEnumerable<Attempt> UserAttempts { get; set; }
     }

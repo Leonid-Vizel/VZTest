@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using X.PagedList;
-using VZTest.Instruments;
 using VZTest.Models;
 using VZTest.Models.Test;
 using VZTest.Models.Test.CorrectAnswers;
 using VZTest.Repository.IRepository;
+using X.PagedList;
 
 namespace VZTest.Controllers
 {
@@ -37,7 +36,7 @@ namespace VZTest.Controllers
             {
                 return StatusCode(401);
             }
-            if (model.Questions.Count == 0 || model.Title.Length == 0 || model.MaxAttempts == 0)
+            if (model.Questions.Count == 0 || model.Title.Length == 0 || model.MaxAttempts <= 0)
             {
                 return BadRequest();
             }
@@ -57,6 +56,11 @@ namespace VZTest.Controllers
             test.Opened = false;
             test.Public = false;
             test.MaxAttempts = model.MaxAttempts;
+            test.StartTime = model.StartTime;
+            if (model.StartTime != null && model.EndTime != null && DateTime.Compare(model.StartTime.Value, model.EndTime.Value) < 0)
+            {
+                test.EndTime = model.EndTime;
+            }
             test.Questions = new List<Question>();
             if (model.Password != null)
             {
@@ -167,6 +171,10 @@ namespace VZTest.Controllers
             {
                 foundTest.ImageUrl = model.ImageUrl;
             }
+            else if (model.ImageUrl == null || model.ImageUrl.Equals(""))
+            {
+                foundTest.ImageUrl = null;
+            }
             foundTest.MaxAttempts = model.MaxAttempts;
             if (model.Password == null)
             {
@@ -177,6 +185,9 @@ namespace VZTest.Controllers
                 foundTest.PasswordHash = Hasher.HashPassword(model.Password);
             }
             foundTest.Shuffle = model.Shuffle;
+            foundTest.EditedTime = DateTime.Now;
+            foundTest.EndTime = model.EndTime;
+            foundTest.StartTime = model.StartTime;
             #endregion
 
             unitOfWork.UpdateTest(foundTest);
@@ -268,7 +279,14 @@ namespace VZTest.Controllers
                 }
                 question.Title = updQuestion.Title;
                 question.Balls = updQuestion.Balls;
-                question.ImageUrl = updQuestion.ImageUrl;
+                if (Uri.IsWellFormedUriString(updQuestion.ImageUrl, UriKind.RelativeOrAbsolute))
+                {
+                    question.ImageUrl = updQuestion.ImageUrl;
+                }
+                else if (updQuestion.ImageUrl == null || updQuestion.ImageUrl.Equals(""))
+                {
+                    question.ImageUrl = null;
+                }
 
                 switch (question.Type)
                 {
@@ -600,48 +618,44 @@ namespace VZTest.Controllers
                 return View(null);
             }
             string userId = userManager.GetUserId(User);
-            TestStatistics? foundTest = await unitOfWork.GetTestStatistics(id, userId);
+            Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
             {
                 TestPriviewModel model = new TestPriviewModel();
                 model.NotFound = true;
                 return View(model);
             }
-            if (!foundTest.Test.UserId.Equals(userId) && foundTest.Test.PasswordHash != null && !foundTest.Test.PasswordHash.Equals(passwordHash))
+            if (!foundTest.Opened)
+            {
+                TestPriviewModel model = new TestPriviewModel();
+                model.Closed = true;
+                return View(model);
+            }
+            if (!foundTest.UserId.Equals(userId) && foundTest.PasswordHash != null && !foundTest.PasswordHash.Equals(passwordHash))
             {
                 TestPriviewModel model = new TestPriviewModel();
                 model.Forbidden = true;
                 return View(model);
             }
-            IEnumerable<Attempt> userAttempts = unitOfWork.GetUserTestAttempts(id, userId);
-            if (foundTest.Test.MaxAttempts <= userAttempts.Count())
+            if (foundTest.StartTime != null && DateTime.Compare(foundTest.StartTime.Value,DateTime.Now) > 0)
             {
-                return RedirectToAction("Preview");
+                TestPriviewModel model = new TestPriviewModel();
+                model.Test = foundTest;
+                model.BeforeStart = true;
+                return View(model);
             }
-            List<Question> questions = unitOfWork.GetTestQuestions(id, false).ToList();
-            if (foundTest.Test.Shuffle)
+            if (foundTest.EndTime != null && DateTime.Compare(foundTest.EndTime.Value, DateTime.Now) < 0)
             {
-                Shuffler.Shuffle(questions);
+                TestPriviewModel model = new TestPriviewModel();
+                model.Test = foundTest;
+                model.AfterEnd = true;
+                return View(model);
             }
-            Attempt attempt = new Attempt()
+            Attempt? attempt = await unitOfWork.CreateAttempt(foundTest, userId);
+            if (attempt == null)
             {
-                UserId = userId,
-                TestId = id,
-                TimeStarted = DateTime.Now,
-                Active = true,
-                Sequence = string.Join('-', questions.Select(x => x.Id))
-            };
-            await unitOfWork.AddAttemptAsync(attempt);
-            await unitOfWork.SaveAsync();
-            List<Answer> answers = new List<Answer>();
-            foreach (Question question in questions)
-            {
-                Answer answer = new Answer();
-                answer.QuestionId = question.Id;
-                answer.AttemptId = attempt.Id;
-                answers.Add(answer);
+                return RedirectToAction("Preview", new { id = id });
             }
-            await unitOfWork.AddAnswerRangeAsync(answers);
             await unitOfWork.SaveAsync();
             return RedirectToAction("Attempt", new { id = attempt.Id });
         }
