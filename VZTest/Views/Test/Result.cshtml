@@ -78,7 +78,7 @@
         {
             <span style="color: #50c878;">(@question.Balls @WordHelp.Inflect((int)question.Balls, "баллов", "балл", "балл"))</span>
         }
-        else if (Model.Attempt.Answers[i].Balls != 0)
+        else if (Model.Attempt.Answers[i].Balls != 0 && Model.Attempt.Answers[i].Balls < question.Balls)
         {
             <span style="color: #ff6800;">(@Model.Attempt.Answers[i].Balls @WordHelp.Inflect((int)Model.Attempt.Answers[i].Balls, "баллов", "балл", "балл"))</span>
         }

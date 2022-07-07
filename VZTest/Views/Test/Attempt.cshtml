@@ -32,9 +32,9 @@
 
 <partial name="_SweetAlertsPartial"/>
 <partial name="_AjaxPartial"/>
-@if (Model.Test.Questions.Any(x => x.Type == QuestionType.Double))
+@if (Model.Test.Questions.Any(x => x.Type == QuestionType.Int || x.Type == QuestionType.Double))
 {
-    <script src="~/js/IntInputLimit.js"></script>
+    <script src="~/js/InputLimits.js"></script>
 }
 <script src="~/js/SaveScript.js"></script>
 <script src="~/js/InputScripts.js"></script>
@@ -95,11 +95,11 @@
                 <a class="btn btn-primary mt-2" name="save-button" onclick="OnSaveClick(@Model.Attempt.Id,@question.Id,GetInputValue('Attempt_Answers_' + @i + '__DateAnswer'))"><i class="bi bi-save"></i> Сохранить</a>
                 break;
             case QuestionType.Int:
-                <input asp-for="Attempt.Answers[i].IntAnswer" type="text" class="form-control" oninput = "OnInput(event);"/>
+                <input asp-for="Attempt.Answers[i].IntAnswer" type="text" class="form-control" oninput = "OnIntInput(event);"/>
                 <a class="btn btn-primary mt-2" name="save-button" onclick="OnSaveClick(@Model.Attempt.Id,@question.Id,GetInputValue('Attempt_Answers_' + @i + '__IntAnswer'))"><i class="bi bi-save"></i> Сохранить</a>
                 break;
             case QuestionType.Double:
-                <input asp-for="Attempt.Answers[i].DoubleAnswer" type = "number" class="form-control" />
+                <input asp-for="Attempt.Answers[i].DoubleAnswer" class="form-control" oninput = "OnDoubleInput(event);"/>
                 <a class="btn btn-primary mt-2" name="save-button" onclick="OnSaveClick(@Model.Attempt.Id,@question.Id,GetInputValue('Attempt_Answers_' + @i + '__DoubleAnswer'))"><i class="bi bi-save"></i> Сохранить</a>
                 break;
             case QuestionType.Radio:

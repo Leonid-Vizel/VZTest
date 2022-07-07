@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using VZTest.Models;
 using VZTest.Models.Test;
 using VZTest.Models.Test.CorrectAnswers;
@@ -921,7 +922,7 @@ namespace VZTest.Controllers
                         foundAnswer.IntAnswer = intResult;
                         break;
                     case QuestionType.Double:
-                        if (!double.TryParse(value, out double doubleResult))
+                        if (!double.TryParse(value.Replace(".",","), out double doubleResult))
                         {
                             return StatusCode(400);
                         }

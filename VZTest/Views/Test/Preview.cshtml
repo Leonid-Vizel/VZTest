@@ -27,14 +27,14 @@
     <partial name="_TestClosedPartial" />
     return;
 }
-@if (Model.BeforeStart)
+@if (Model.Test.StartTime != null && Model.BeforeStart)
 {
-    <partial name="_BeforeTimePartial" />
+    <partial name="_BeforeTimePartial" model = "new Tuple<DateTime,int>(Model.Test.StartTime.Value,Model.Test.Id)" />
     return;
 }
 @if (Model.AfterEnd)
 {
-    <partial name="_AfterTimePartial" />
+    <partial name="_AfterTimePartial" model = "@Model.Test.EndTime"/>
     return;
 }
 @if (Model.NotFound)
@@ -50,6 +50,7 @@
 <script src="~/js/PublicToggleScript.js"></script>
 <script src="~/js/ProcessErrorsScript.js"></script>
 <script src="~/js/PreEditCheck.js"></script>
+<script src="~/js/CheckActiveScript.js"></script>
 <partial name="_AjaxPartial" />
 <partial name="_SweetAlertsPartial" />
 <script src="~/js/StarScript.js"></script>
@@ -60,8 +61,6 @@
         float: left;
     }
 </style>
-
-<script src="~/js/CheckActiveScript.js"></script>
 
 <h2><i class="bi bi-list-check"></i> Информация об опросе #@Model.Test.Id</h2>
 <div class="pull-left">
