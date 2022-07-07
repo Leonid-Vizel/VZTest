@@ -1,11 +1,11 @@
-﻿var flag = true;
+﻿let flag = true;
 
 function CheckActive(e, id) {
     if (!flag) {
         return;
     }
     e.preventDefault();
-    var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+    let verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
     $.ajax({
         type: "POST",
         url: "/Test/CheckActiveAttemps/",

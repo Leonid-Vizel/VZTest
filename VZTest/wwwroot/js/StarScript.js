@@ -1,6 +1,6 @@
 ﻿function StarToggle(id) {
-    var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
-    var starred = document.getElementById("star-toggle-" + id) == null;
+    let verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+    let starred = document.getElementById("star-toggle-" + id) == null;
     $.ajax({
         type: "POST",
         url: "/Test/StarToggle/",
@@ -23,12 +23,12 @@
         },
         success: function (data) {
             if (starred) {
-                var element = document.getElementById("unstar-toggle-" + id);
+                let element = document.getElementById("unstar-toggle-" + id);
                 element.innerHTML = "<small>" + data + " <i class=\"bi bi-star\"></i></small>";
                 element.setAttribute('id', "star-toggle-" + id);
             }
             else {
-                var element = document.getElementById("star-toggle-" + id);
+                let element = document.getElementById("star-toggle-" + id);
                 element.innerHTML = "<small>" + data + " <i class=\"bi bi-star-fill\"></i></small>";
                 element.setAttribute('id', "unstar-toggle-" + id);
             }

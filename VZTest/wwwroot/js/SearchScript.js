@@ -1,6 +1,6 @@
 ﻿function Search() {
-    var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
-    var id = document.getElementById('SearchId').value;
+    let verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+    let id = document.getElementById('SearchId').value;
     $.ajax({
         type: "POST",
         url: "/Test/SearchNoPassword/",

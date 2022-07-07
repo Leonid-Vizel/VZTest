@@ -1,5 +1,5 @@
 ﻿function GetRadioValue(groupName) {
-    var found = document.querySelector('input[name="' + groupName + '"]:checked');
+    let found = document.querySelector('input[name="' + groupName + '"]:checked');
     if (found != null) {
         return found.value;
     }
@@ -13,8 +13,8 @@ function GetInputValue(inputId) {
 }
 
 function GetCheckValue(groupName) {
-    var result = "";
-    var elements = document.getElementsByName(groupName);
+    let result = "";
+    let elements = document.getElementsByName(groupName);
     for (var i = 0; i < elements.length; i++) {
         if (elements[i].checked) {
             result += elements[i].value + ",";

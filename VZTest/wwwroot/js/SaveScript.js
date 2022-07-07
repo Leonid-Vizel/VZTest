@@ -1,5 +1,5 @@
-﻿var lastSave = false;
-var ajaxArray = new Array();
+﻿let lastSave = false;
+let ajaxArray = new Array();
 
 function ProcessErrors(error) {
     switch (error.status) {
@@ -22,8 +22,8 @@ function OnSaveClick(attemptId, questionId, value) {
     if (value == null) {
         value = "";
     }
-    var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
-    var ajax = $.ajax({
+    let verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+    let ajax = $.ajax({
         type: "POST",
         url: "/Test/SaveAttemptAnswer/",
         data: { attemptId: attemptId, questionId: questionId, value: value, __RequestVerificationToken: verificationValue },
@@ -37,8 +37,8 @@ function OnSaveClick(attemptId, questionId, value) {
 }
 
 function SaveAll() {
-    var elements = document.getElementsByName('save-button');
-    for (var i = 0; i < elements.length; i++) {
+    let elements = document.getElementsByName('save-button');
+    for (let i = 0; i < elements.length; i++) {
         elements[i].click();
     }
     if (lastSave) {

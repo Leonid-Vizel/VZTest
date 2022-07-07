@@ -1,6 +1,6 @@
 ﻿function OpenToggle(id) {
-    var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
-    var open = document.getElementById("Open-" + id) == null;
+    let verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+    let open = document.getElementById("Open-" + id) == null;
     if (open) {
         swal({
             title: "Вы действительно хотите закрыть этот тест?",
@@ -18,7 +18,7 @@
                             ProcessErrors(error);
                         },
                         success: function () {
-                            var element = document.getElementById("Close-" + id);
+                            let element = document.getElementById("Close-" + id);
                             element.setAttribute('class', 'btn btn-success');
                             element.innerHTML = "<i class=\"bi bi-door-open\"></i> Открыть";
                             element.setAttribute('id', "Open-" + id);
@@ -44,7 +44,7 @@
                             ProcessErrors(error);
                         },
                         success: function () {
-                            var element = document.getElementById("Open-" + id);
+                            let element = document.getElementById("Open-" + id);
                             element.setAttribute('class', 'btn btn-warning');
                             element.innerHTML = "<i class=\"bi bi-door-closed\"></i> Закрыть";
                             element.setAttribute('id', "Close-" + id);

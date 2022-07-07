@@ -64,7 +64,7 @@ function ReindexQuestion(oldId, newId) {
         let correctErrorSpan = document.getElementById('Correct-' + oldId + '-Errors');
         correctErrorSpan.setAttribute('id', 'Correct-' + newId + '-Errors');
     }
-    var creator = document.getElementById('Creator-' + oldId);
+    let creator = document.getElementById('Creator-' + oldId);
     if (creator != null) {
         creator.setAttribute('onclick', 'AddRadioOption(' + newId + ');');
         creator.setAttribute('id', 'Creator-' + newId);
@@ -114,22 +114,22 @@ function DeleteOption(questionId, optionId) {
 }
 
 function ReindexOptions(questionId) {
-    var options = document.getElementsByName('option-' + questionId);
-    for (var i = 0; i < options.length; i++) {
-        var option = options[i];
-        var splitArray = option.id.split('-');
-        var oldId = splitArray[splitArray.length - 1];
+    let options = document.getElementsByName('option-' + questionId);
+    for (let i = 0; i < options.length; i++) {
+        let option = options[i];
+        let splitArray = option.id.split('-');
+        let oldId = splitArray[splitArray.length - 1];
         ReindexOption(questionId, oldId, i);
         option.setAttribute('id', 'option-' + questionId + '-' + i);
     }
 }
 
 function ReindexOptionsWithQuestion(oldQuestionId, newQuestionId) {
-    var options = document.getElementsByName('option-' + oldQuestionId);
-    for (var i = 0; i < options.length; i++) {
-        var option = options[i];
-        var splitArray = option.id.split('-');
-        var oldId = splitArray[splitArray.length - 1];
+    let options = document.getElementsByName('option-' + oldQuestionId);
+    for (let i = 0; i < options.length; i++) {
+        let option = options[i];
+        let splitArray = option.id.split('-');
+        let oldId = splitArray[splitArray.length - 1];
         ReindexOptionWithQuestion(oldQuestionId, newQuestionId, oldId, i);
         option.setAttribute('id', 'option-' + newQuestionId + '-' + i);
     }
@@ -144,40 +144,40 @@ function ReindexOption(questionId, oldId, newId) {
     if (oldId == newId) {
         return;
     }
-    var titleInput = document.getElementById('Questions[' + questionId + '].Options[' + oldId + '].Text');
+    let titleInput = document.getElementById('Questions[' + questionId + '].Options[' + oldId + '].Text');
     titleInput.setAttribute('id', 'Questions[' + questionId + '].Options[' + newId + '].Text');
-    var correctInput = document.getElementById('Option-' + questionId + '-' + oldId + '-Correct');
+    let correctInput = document.getElementById('Option-' + questionId + '-' + oldId + '-Correct');
     correctInput.setAttribute('id', 'Option-' + questionId + '-' + newId + '-Correct');
     correctInput.setAttribute('value', newId);
-    var deleteBtn = document.getElementById('delete-question-' + questionId + '-option-' + oldId);
+    let deleteBtn = document.getElementById('delete-question-' + questionId + '-option-' + oldId);
     deleteBtn.setAttribute('id', 'delete-question-' + questionId + '-option-' + newId);
     deleteBtn.setAttribute('onclick', 'DeleteOption(' + questionId + ',' + newId + ')');
 }
 
 function ReindexOptionWithQuestion(oldQuestionId, newQuestionId, oldId, newId) {
-    var titleInput = document.getElementById('Questions[' + oldQuestionId + '].Options[' + oldId + '].Text');
+    let titleInput = document.getElementById('Questions[' + oldQuestionId + '].Options[' + oldId + '].Text');
     titleInput.setAttribute('id', 'Questions[' + newQuestionId + '].Options[' + newId + '].Text');
-    var correctInput = document.getElementById('Option-' + oldQuestionId + '-' + oldId + '-Correct');
+    let correctInput = document.getElementById('Option-' + oldQuestionId + '-' + oldId + '-Correct');
     correctInput.setAttribute('id', 'Option-' + newQuestionId + '-' + newId + '-Correct');
     correctInput.setAttribute('name', 'Questions[' + newQuestionId + '].Correct');
     correctInput.setAttribute('value', newId);
-    var deleteBtn = document.getElementById('delete-question-' + oldQuestionId + '-option-' + oldId);
+    let deleteBtn = document.getElementById('delete-question-' + oldQuestionId + '-option-' + oldId);
     deleteBtn.setAttribute('id', 'delete-question-' + newQuestionId + '-option-' + newId);
     deleteBtn.setAttribute('onclick', 'DeleteOption(' + newQuestionId + ',' + newId + ')');
 }
 
 function DeleteOptions(questionId) {
-    var elements = document.getElementsByName('option-' + questionId);
+    let elements = document.getElementsByName('option-' + questionId);
     while (elements.length > 0) {
         elements[0].remove();
     }
 }
 
 function CheckCorrectInputCreated(questionId) {
-    var correctInput = document.getElementById('Questions[' + questionId + '].Correct');
-    var correctLabel = document.getElementById('CorrectLabel-' + questionId);
-    var correctErrorSpan = document.getElementById('Correct-' + questionId + '-Errors');
-    var ballsInput = document.getElementById('Questions[' + questionId + '].Balls');
+    let correctInput = document.getElementById('Questions[' + questionId + '].Correct');
+    let correctLabel = document.getElementById('CorrectLabel-' + questionId);
+    let correctErrorSpan = document.getElementById('Correct-' + questionId + '-Errors');
+    let ballsInput = document.getElementById('Questions[' + questionId + '].Balls');
     if (correctInput == null) {
         correctInput = document.createElement('input');
         correctInput.setAttribute('class', 'form-control');
@@ -206,13 +206,13 @@ function CheckCorrectInputCreated(questionId) {
 }
 
 function DeleteCorrectInput(questionId) {
-    var correctArray = document.getElementsByName('Questions[' + questionId + '].Correct');
+    let correctArray = document.getElementsByName('Questions[' + questionId + '].Correct');
     if (correctArray.length > 0) {
         return;
     }
-    var correctInput = document.getElementById('Questions[' + questionId + '].Correct');
-    var correctLabel = document.getElementById('CorrectLabel-' + questionId);
-    var correctErrorSpan = document.getElementById('Correct-' + questionId + '-Errors');
+    let correctInput = document.getElementById('Questions[' + questionId + '].Correct');
+    let correctLabel = document.getElementById('CorrectLabel-' + questionId);
+    let correctErrorSpan = document.getElementById('Correct-' + questionId + '-Errors');
     if (correctInput != null) {
         correctInput.remove();
     }
@@ -225,37 +225,37 @@ function DeleteCorrectInput(questionId) {
 }
 
 function AddRadioCreator(questionId) {
-    var creator = document.getElementById('Creator-' + questionId);
+    let creator = document.getElementById('Creator-' + questionId);
     if (creator != null) {
         creator.setAttribute('onclick', 'AddRadioOption(' + questionId + ');');
         return;
     }
-    var button = document.createElement('a');
+    let button = document.createElement('a');
     button.setAttribute('id', 'Creator-' + questionId);
     button.setAttribute('class', 'btn btn-outline-info mt-2');
     button.setAttribute('onclick', 'AddRadioOption(' + questionId + ');');
     button.innerHTML = "<i class=\"bi bi-plus-circle\"></i> Добавить опцию";
-    var ballsErrorSpan = document.getElementById('Balls-' + questionId + '-Errors');
+    let ballsErrorSpan = document.getElementById('Balls-' + questionId + '-Errors');
     ballsErrorSpan.insertAdjacentElement('afterend', button);
 }
 
 function AddCheckCreator(questionId) {
-    var creator = document.getElementById('Creator-' + questionId);
+    let creator = document.getElementById('Creator-' + questionId);
     if (creator != null) {
         creator.setAttribute('onclick', 'AddCheckOption(' + questionId + ');');
         return;
     }
-    var button = document.createElement('a');
+    let button = document.createElement('a');
     button.setAttribute('id', 'Creator-' + questionId);
     button.setAttribute('class', 'btn btn-outline-info mt-2');
     button.setAttribute('onclick', 'AddCheckOption(' + questionId + ');');
     button.innerHTML = "<i class=\"bi bi-plus-circle\"></i> Добавить опцию";
-    var ballsErrorSpan = document.getElementById('Balls-' + questionId + '-Errors');
+    let ballsErrorSpan = document.getElementById('Balls-' + questionId + '-Errors');
     ballsErrorSpan.insertAdjacentElement('afterend', button);
 }
 
 function DeleteCreator(questionId) {
-    var creator = document.getElementById('Creator-' + questionId);
+    let creator = document.getElementById('Creator-' + questionId);
     if (creator == null) {
         return;
     }
@@ -263,15 +263,15 @@ function DeleteCreator(questionId) {
 }
 
 function TransformCorrects(questionId, string) {
-    var elementArray = document.getElementsByName('Questions[' + questionId + '].Correct');
+    let elementArray = document.getElementsByName('Questions[' + questionId + '].Correct');
     switch (string) {
         case 'RadioToCheck':
-            for (var i = 0; i < elementArray.length; i++) {
+            for (let i = 0; i < elementArray.length; i++) {
                 elementArray[i].setAttribute('type', 'checkbox');
             }
             break;
         case 'CheckToRadio':
-            for (var i = 0; i < elementArray.length; i++) {
+            for (let i = 0; i < elementArray.length; i++) {
                 elementArray[i].setAttribute('type', 'radio');
             }
             break;
@@ -297,8 +297,8 @@ function CheckTime(timeLower, timeHigher) {
 }
 
 function OnSelectAnswer(questionId) {
-    var correctInput;
-    var element = document.getElementById('Questions[' + questionId + '].Type');
+    let correctInput;
+    let element = document.getElementById('Questions[' + questionId + '].Type');
     if (element == null) {
         return;
     }
@@ -349,10 +349,10 @@ function OnSelectAnswer(questionId) {
 }
 
 function CheckAndSend(method) {
-    var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+    let verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
     //Title
-    var titleElement = document.getElementById('Title');
-    var titleError = document.getElementById('Title-Errors');
+    let titleElement = document.getElementById('Title');
+    let titleError = document.getElementById('Title-Errors');
     if (titleElement == null || titleElement.value == '') {
         titleError.innerHTML = "Укажите название теста!";
         return;
@@ -361,8 +361,8 @@ function CheckAndSend(method) {
         titleError.innerHTML = "";
     }
     //Description
-    var descriptionElement = document.getElementById('Description');
-    var descriptionError = document.getElementById('Description-Errors');
+    let descriptionElement = document.getElementById('Description');
+    let descriptionError = document.getElementById('Description-Errors');
     if (descriptionElement == null || descriptionElement.value == '') {
         descriptionError.innerHTML = "Укажите описание теста!";
         return;
@@ -372,8 +372,8 @@ function CheckAndSend(method) {
     }
 
     //MaxAttempts
-    var attemptsElement = document.getElementById('MaxAttempts');
-    var attemptsError = document.getElementById('MaxAttempts-Errors');
+    let attemptsElement = document.getElementById('MaxAttempts');
+    let attemptsError = document.getElementById('MaxAttempts-Errors');
     if (attemptsElement == null || attemptsElement.value == '') {
         attemptsError.innerHTML = "Укажите максимальное количество попыток для теста!";
         return;
@@ -386,21 +386,21 @@ function CheckAndSend(method) {
         descriptionError.innerHTML = "";
     }
     //Password
-    var passwordElement = document.getElementById('Password');
+    let passwordElement = document.getElementById('Password');
     //Shuffle
-    var shuffleElement = document.getElementById('Shuffle');
+    let shuffleElement = document.getElementById('Shuffle');
     //Starting To Fill Dictionary
-    var dictionary = new Object();
+    let dictionary = new Object();
 
-    var testIdElement = document.getElementById('test-id');
+    let testIdElement = document.getElementById('test-id');
     if (testIdElement != null) {
         dictionary["Id"] = testIdElement.innerHTML;
     }
     dictionary["Title"] = titleElement.value;
     dictionary["Description"] = descriptionElement.value;
 
-    var imageElement = document.getElementById('ImageUrl');
-    var imageError = document.getElementById('ImageUrl-Errors');
+    let imageElement = document.getElementById('ImageUrl');
+    let imageError = document.getElementById('ImageUrl-Errors');
     if (imageElement != null && imageElement.value != '' && !CheckUrl(imageElement.value)) {
         imageError.innerHTML = "Укажите действительную ссылку!";
         return;
@@ -412,13 +412,13 @@ function CheckAndSend(method) {
         imageError.innerHTML = "";
     }
 
-    var startTimeElement = document.getElementById('StartTime');
+    let startTimeElement = document.getElementById('StartTime');
     if (startTimeElement != null) {
         dictionary['StartTime'] = startTimeElement.value;
     }
 
-    var endTimeElement = document.getElementById('EndTime');
-    var endTimeError = document.getElementById('EndTime-Errors');
+    let endTimeElement = document.getElementById('EndTime');
+    let endTimeError = document.getElementById('EndTime-Errors');
     if (endTimeElement != null && endTimeElement.value != '') {
         if (startTimeElement != null && startTimeElement.value != '' && !CheckTime(startTimeElement.value, endTimeElement.value)) {
             endTimeError.innerHTML = 'Дата и время окончания теста должны быть позже даты и времени его начала!';
@@ -447,7 +447,7 @@ function CheckAndSend(method) {
         dictionary['Shuffle'] = shuffleElement.checked;
     }
 
-    var questions = document.getElementsByName('QuestionContainer');
+    let questions = document.getElementsByName('QuestionContainer');
     if (questions.length == 0) {
         attemptsError.innerHTML = "В тесте должен быть как минимум 1 вопрос!";
         return;
@@ -455,10 +455,10 @@ function CheckAndSend(method) {
     else {
         attemptsError.innerHTML = "";
     }
-    for (var i = 0; i < questions.length; i++) {
-        var questionId = questions[i].id;
-        var questionError = document.getElementById('Question-' + questionId + '-Errors');
-        var questionTitleElement = document.getElementById('Questions[' + questionId + '].Title');
+    for (let i = 0; i < questions.length; i++) {
+        let questionId = questions[i].id;
+        let questionError = document.getElementById('Question-' + questionId + '-Errors');
+        let questionTitleElement = document.getElementById('Questions[' + questionId + '].Title');
         if (questionTitleElement == null || questionTitleElement.value == '') {
             questionError.innerHTML = "Укажите название вопроса!";
             return;
@@ -475,7 +475,7 @@ function CheckAndSend(method) {
             dictionary['Questions[' + questionId + '].Id'] = 0;
         }
 
-        var questionTypeElement = document.getElementById('Questions[' + questionId + '].Type');
+        let questionTypeElement = document.getElementById('Questions[' + questionId + '].Type');
         if (questionTypeElement == null || questionTypeElement.value == '') {
             questionError.innerHTML = "Укажите тип вопроса!";
             return;
@@ -485,8 +485,8 @@ function CheckAndSend(method) {
         }
         dictionary['Questions[' + questionId + '].Type'] = questionTypeElement.value;
 
-        var questionImageElement = document.getElementById('Questions[' + questionId + '].ImageUrl');
-        var questionImageError = document.getElementById('Image-' + questionId + '-Errors');
+        let questionImageElement = document.getElementById('Questions[' + questionId + '].ImageUrl');
+        let questionImageError = document.getElementById('Image-' + questionId + '-Errors');
         if (questionImageElement != null && questionImageElement.value != '' && !CheckUrl(questionImageElement.value)) {
             questionImageError.innerHTML = "Укажите действительную ссылку!";
             return;
@@ -498,8 +498,8 @@ function CheckAndSend(method) {
             questionImageError.innerHTML = "";
         }
 
-        var questionBallsElement = document.getElementById('Questions[' + questionId + '].Balls');
-        var questionBallsError = document.getElementById('Balls-' + questionId + '-Errors');
+        let questionBallsElement = document.getElementById('Questions[' + questionId + '].Balls');
+        let questionBallsError = document.getElementById('Balls-' + questionId + '-Errors');
         if (questionBallsElement == null || questionBallsElement.value == '') {
             questionBallsError.innerHTML = "Укажите баллы за правильный ответ!";
             return;
@@ -514,8 +514,8 @@ function CheckAndSend(method) {
             case '3':
             case '4':
             case '5':
-                var questionCorrectError = document.getElementById('Correct-' + questionId + '-Errors');
-                var questionCorrectElement = document.getElementById('Questions[' + questionId + '].Correct');
+                let questionCorrectError = document.getElementById('Correct-' + questionId + '-Errors');
+                let questionCorrectElement = document.getElementById('Questions[' + questionId + '].Correct');
                 if (questionCorrectElement == null || questionCorrectElement.value == '') {
                     questionCorrectError.innerHTML = "Укажите правильный ответ!";
                     return;
@@ -526,11 +526,11 @@ function CheckAndSend(method) {
                 dictionary['Questions[' + questionId + '].Correct'] = questionCorrectElement.value;
                 break;
             case '1':
-                var radioArray = document.getElementsByName('option-' + questionId);
-                for (var j = 0; j < radioArray.length; j++) {
-                    var idSplit = radioArray[j].id.split('-');
-                    var optionId = idSplit[idSplit.length - 1];
-                    var optionTitleElement = document.getElementById('Questions[' + questionId + '].Options[' + optionId + '].Text');
+                let radioArray = document.getElementsByName('option-' + questionId);
+                for (let j = 0; j < radioArray.length; j++) {
+                    let idSplit = radioArray[j].id.split('-');
+                    let optionId = idSplit[idSplit.length - 1];
+                    let optionTitleElement = document.getElementById('Questions[' + questionId + '].Options[' + optionId + '].Text');
                     if (optionTitleElement == null || optionTitleElement.value == '') {
                         questionError.innerHTML = "Укажите названия всех опций!";
                         return;
@@ -546,7 +546,7 @@ function CheckAndSend(method) {
                         dictionary['Questions[' + questionId + '].OptionIds[' + j + ']'] = 0;
                     }
                 }
-                var radioResult = GetRadioValue('Questions[' + questionId + '].Correct');
+                let radioResult = GetRadioValue('Questions[' + questionId + '].Correct');
                 if (radioResult == '') {
                     questionError.innerHTML = "Укажите правильный ответ!";
                     return;
@@ -557,11 +557,11 @@ function CheckAndSend(method) {
                 dictionary['Questions[' + questionId + '].Correct'] = radioResult;
                 break;
             case '2':
-                var checkArray = document.getElementsByName('option-' + questionId);
-                for (var j = 0; j < checkArray.length; j++) {
-                    var idSplit = checkArray[j].id.split('-');
-                    var optionId = idSplit[idSplit.length - 1];
-                    var optionTitleElement = document.getElementById('Questions[' + questionId + '].Options[' + optionId + '].Text');
+                let checkArray = document.getElementsByName('option-' + questionId);
+                for (let j = 0; j < checkArray.length; j++) {
+                    let idSplit = checkArray[j].id.split('-');
+                    let optionId = idSplit[idSplit.length - 1];
+                    let optionTitleElement = document.getElementById('Questions[' + questionId + '].Options[' + optionId + '].Text');
                     if (optionTitleElement == null || optionTitleElement.value == '') {
                         questionError.innerHTML = "Укажите названия всех опций!";
                         return;
@@ -577,7 +577,7 @@ function CheckAndSend(method) {
                         dictionary['Questions[' + questionId + '].OptionIds[' + j + ']'] = 0;
                     }
                 }
-                var checkResult = GetCheckValue('Questions[' + questionId + '].Correct');
+                let checkResult = GetCheckValue('Questions[' + questionId + '].Correct');
                 if (checkResult == '') {
                     questionError.innerHTML = "Укажите правильный ответ!";
                     return;

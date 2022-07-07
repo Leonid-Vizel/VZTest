@@ -1,6 +1,6 @@
 ﻿function PublicToggle(id) {
-    var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
-    var public = document.getElementById("Public-" + id) == null;
+    let verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+    let public = document.getElementById("Public-" + id) == null;
     if (public) {
         swal({
             title: "Вы действительно хотите сделать этот тест приватным?",
@@ -18,7 +18,7 @@
                             ProcessErrors(error);
                         },
                         success: function () {
-                            var element = document.getElementById("Private-" + id);
+                            let element = document.getElementById("Private-" + id);
                             element.setAttribute('class', 'btn btn-success');
                             element.innerHTML = "<i class=\"bi bi-door-open\"></i> Опубликовать";
                             element.setAttribute('id', "Public-" + id);
@@ -44,7 +44,7 @@
                             ProcessErrors(error);
                         },
                         success: function () {
-                            var element = document.getElementById("Public-" + id);
+                            let element = document.getElementById("Public-" + id);
                             element.setAttribute('class', 'btn btn-warning');
                             element.innerHTML = "<i class=\"bi bi-door-closed\"></i> Приватизировать";
                             element.setAttribute('id', "Private-" + id);

@@ -1,5 +1,5 @@
 ﻿function PreEditCheck(testId) {
-    var verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
+    let verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
     $.ajax({
         type: "POST",
         url: "/Test/GetTestStatus/" + testId,
