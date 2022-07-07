@@ -1,29 +1,31 @@
 ﻿function countDown() {
     let nowDate = new Date();
     let element = document.getElementById('timer');
+    let elementLabel = document.getElementById('timer-label');
     let achiveDate = Date.parse(element.getAttribute('data-time'));
     let result = (achiveDate - nowDate) + 1000;
     if (result < 0) {
+        let form = document.getElementById('form');
+        form.removeAttribute('hidden');
+        if (element.getAttribute('data-partial') == 'True') {
+            let recommendElement = document.getElementById('recommend-label');
+            if (recommendElement != null) {
+                recommendElement.remove();
+            }
+            let topLabel = document.getElementById('top-label');
+            if (topLabel != null) {
+                topLabel.innerHTML = 'Время пришло!';
+                let label = document.createElement('h5');
+                label.setAttribute('class', 'text-center');
+                label.innerHTML = 'Чтобы пройти тест просто нажмите на эту кнопку';
+                topLabel.insertAdjacentElement("afterend", label);
+            }
+        }
         if (element != null) {
             element.remove();
         }
-        let form = document.getElementById('form');
-        form.removeAttribute('hidden');
-        let elementLabel = document.getElementById('timer-label');
         if (elementLabel != null) {
             elementLabel.remove();
-        }
-        let recommendElement = document.getElementById('recommend-label');
-        if (recommendElement != null) {
-            recommendElement.remove();
-        }
-        let topLabel = document.getElementById('top-label');
-        if (topLabel != null) {
-            topLabel.innerHTML = 'Время пришло!';
-            let label = document.createElement('h5');
-            label.setAttribute('class', 'text-center');
-            label.innerHTML = 'Чтобы пройти тест просто нажмите на эту кнопку';
-            topLabel.insertAdjacentElement("afterend", label);
         }
         return;
     }

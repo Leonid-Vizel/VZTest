@@ -6,7 +6,7 @@
 <div class="mainbox text-center">
     <h1 id="top-label">Вы немного рановато)</h1>
     <h3 id="timer-label">До начала теста осталось:</h3>
-    <h3 id="timer" data-time="@Model.Item1"></h3>
+    <h3 id="timer" data-time="@Model.Item1.ToString("yyyy-MM-ddTHH:mm:ss")" data-partial = "True"></h3>
     <form method="post" id="form" asp-action="Preview" asp-controller="Test" asp-route-id="@Model.Item2" hidden>
         <button id="main-button" class="btn btn-outline-primary" onclick="CheckActive(event, @Model.Item2);" type="submit"><i class="bi bi-check2"></i> Пройти</button>
     </form>
