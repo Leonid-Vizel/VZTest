@@ -6,14 +6,14 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial"/>
+    <partial name="Errors/_AuthorisePartial"/>
     return;
 }
 
 <partial name="_AjaxPartial"/>
 <partial name="_SweetAlertsPartial"/>
-<link rel="stylesheet" href="~/css/Mainbox.css">
 <script src = "~/js/SearchScript.js"></script>
+<link rel="stylesheet" href="~/css/Mainbox.css">
 
 <form class="mainbox">
     <h2 class="text-center">@ViewData["Title"]</h2>

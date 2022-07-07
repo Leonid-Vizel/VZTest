@@ -16,25 +16,25 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial" />
+    <partial name="Errors/_AuthorisePartial" />
     return;
 }
 
 @if (Model == null)
 {
-    <partial name="_ErrorPartial" />
+    <partial name="Errors/_ErrorPartial" />
     return;
 }
 
 @if (Model.Forbidden)
 {
-    <partial name="_ForbiddenPartial" />
+    <partial name="Errors/_ForbiddenPartial" />
     return;
 }
 
 @if (Model.NotFound)
 {
-    <partial name="_NotFoundPartial" />
+    <partial name="Errors/_NotFoundPartial" />
     return;
 }
 

@@ -11,13 +11,13 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial" />
+    <partial name="Errors/_AuthorisePartial" />
     return;
 }
 
 @if (Model == null)
 {
-    <partial name="_ErrorPartial" />
+    <partial name="Errors/_ErrorPartial" />
     return;
 }
 

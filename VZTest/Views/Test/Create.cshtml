@@ -7,7 +7,7 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="_AuthorisePartial" />
+    <partial name="Errors/_AuthorisePartial" />
     return;
 }
 
