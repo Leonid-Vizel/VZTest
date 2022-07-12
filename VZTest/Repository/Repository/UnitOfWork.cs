@@ -178,7 +178,7 @@ namespace VZTest.Repository.Repository
             {
                 attempt.Active = false;
             }
-            attempt.MaxBalls = GetTestTotalBalls(attempt.TestId);
+            //attempt.MaxBalls = GetTestTotalBalls(attempt.TestId);
             foreach (Answer answer in attempt.Answers)
             {
                 answer.Balls = CheckAnswerCorrect(answer);

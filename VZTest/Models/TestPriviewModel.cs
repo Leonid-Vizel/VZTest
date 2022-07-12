@@ -13,6 +13,7 @@ namespace VZTest.Models
         public bool BeforeStart { get; set; }
         public bool AfterEnd { get; set; }
         public bool Liked { get; set; }
+        public double MaxBalls { get; set; }
         public IEnumerable<Attempt> UserAttempts { get; set; }
     }
 }

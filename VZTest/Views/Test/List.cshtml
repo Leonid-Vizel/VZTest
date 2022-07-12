@@ -24,10 +24,6 @@
     return;
 }
 
-<partial name="_AjaxPartial" />
-<partial name="_SweetAlertsPartial" />
-<script src="~/js/StarScript.js"></script>
-
 @if (ViewBag.TotalPages > 1)
 {
     <div style="display:flex; justify-content: center;">
@@ -75,4 +71,11 @@
         LiElementClasses = new string[] { "page-item" },
         PageClasses = new string[] { "page-link" }})
     </div>
+}
+
+@section Scripts
+{
+    <partial name="_AjaxPartial" />
+    <partial name="_SweetAlertsPartial" />
+    <script src="~/js/StarScript.js"></script>
 }

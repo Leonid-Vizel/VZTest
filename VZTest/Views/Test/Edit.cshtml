@@ -35,13 +35,6 @@
     return;
 }
 
-<partial name="_CreateBlocksPartial" />
-<partial name="_AjaxPartial" />
-<partial name="_SweetAlertsPartial" />
-<script src="~/js/CreateScripts.js"></script>
-<script src="~/js/IntInputLimit.js"></script>
-<script src="~/js/InputScripts.js"></script>
-
 <style>
     hr {
         margin: 0.5rem 0;
@@ -302,3 +295,13 @@
     <hr>
     <a class="btn btn-outline-primary" onclick="CheckAndSend('Edit')"><i class="bi bi-pencil-fill"></i> Редактировать</a>
 </form>
+
+@section Scripts
+{
+    <partial name="_CreateBlocksPartial" />
+    <partial name="_AjaxPartial" />
+    <partial name="_SweetAlertsPartial" />
+    <script src="~/js/CreateScripts.js"></script>
+    <script src="~/js/IntInputLimit.js"></script>
+    <script src="~/js/InputScripts.js"></script>
+}

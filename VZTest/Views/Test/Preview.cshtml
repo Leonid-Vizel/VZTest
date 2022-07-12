@@ -43,18 +43,6 @@
     return;
 }
 
-<link rel="stylesheet" href="~/css/PercentCircle.css">
-<link rel="stylesheet" href="~/css/CenterFlex.css">
-<script src="~/js/DeleteScript.js"></script>
-<script src="~/js/OpenToggleScript.js"></script>
-<script src="~/js/PublicToggleScript.js"></script>
-<script src="~/js/ProcessErrorsScript.js"></script>
-<script src="~/js/PreEditCheck.js"></script>
-<script src="~/js/CheckActiveScript.js"></script>
-<partial name="_AjaxPartial" />
-<partial name="_SweetAlertsPartial" />
-<script src="~/js/StarScript.js"></script>
-
 <style>
     h2 {
         display: inline-block;
@@ -93,6 +81,7 @@
     {
         @:Тест закрывается в: <b>@Model.Test.EndTime</b>
     }
+    Максимальный балл: <b>@Model.MaxBalls</b>
     Максимальное количество попыток: <b>@Model.Test.MaxAttempts</b>
     Был пройден пользователями платформы <b>@Model.TotalAttempts @WordHelp.Inflect(Model.TotalAttempts,"раз","раз","раза")</b>
 </span>
@@ -138,7 +127,7 @@
                   d="M18 2.0845
           a 15.9155 15.9155 0 0 1 0 31.831
           a 15.9155 15.9155 0 0 1 0 -31.831" />
-                        <text x="18" y="20.35" class="percentage">0 / @attempt.MaxBalls</text>
+                        <text x="18" y="20.35" class="percentage">0</text>
                     </svg>
                 </div>
                 <div class="center">
@@ -150,7 +139,7 @@
         }
         else
         {
-            int percent = (int)((attempt.Balls / attempt.MaxBalls) * 100);
+            int percent = (int)((attempt.Balls / Model.MaxBalls) * 100);
             <div class="flex-wrapper">
                 <div class="single-chart-sm">
                     <svg viewBox="0 0 36 36" class="circular-chart green">
@@ -165,7 +154,7 @@
                             a 15.9155 15.9155 0 0 1 0 31.831
                             a 15.9155 15.9155 0 0 1 0 -31.831" />
                         }
-                        <text x="18" y="20.35" class="percentage">@attempt.Balls / @attempt.MaxBalls</text>
+                        <text x="18" y="20.35" class="percentage">@attempt.Balls</text>
                     </svg>
                 </div>
                 <div class="center">
@@ -205,3 +194,22 @@
 <form method="post">
     <button id="main-button" class="btn btn-outline-primary" onclick="CheckActive(event, @Model.Test.Id);" type="submit"><i class="bi bi-check2"></i> Пройти</button>
 </form>
+
+@section Scripts
+{
+    <partial name="_AjaxPartial" />
+    <partial name="_SweetAlertsPartial" />
+    <script src="~/js/DeleteScript.js"></script>
+    <script src="~/js/OpenToggleScript.js"></script>
+    <script src="~/js/PublicToggleScript.js"></script>
+    <script src="~/js/ProcessErrorsScript.js"></script>
+    <script src="~/js/PreEditCheck.js"></script>
+    <script src="~/js/CheckActiveScript.js"></script>
+    <script src="~/js/StarScript.js"></script>
+}
+
+@section Styles
+{
+    <link rel="stylesheet" href="~/css/PercentCircle.css">
+    <link rel="stylesheet" href="~/css/CenterFlex.css">
+}

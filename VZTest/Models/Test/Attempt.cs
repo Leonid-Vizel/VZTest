@@ -12,7 +12,6 @@ namespace VZTest.Models.Test
         public DateTime TimeStarted { get; set; }
         public string UserId { get; set; }
         public int CorrectAnswers { get; set; }
-        public double MaxBalls { get; set; }
         public string Sequence
         {
             get => string.Join('-', QuestionSequence);

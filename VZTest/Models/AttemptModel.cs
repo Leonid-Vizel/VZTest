@@ -24,5 +24,6 @@ namespace VZTest.Models
 
         public bool NotFound { get; set; }
         public bool Forbidden { get; set; }
+        public double MaxBalls { get; set; }
     }
 }

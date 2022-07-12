@@ -10,11 +10,6 @@
     return;
 }
 
-<partial name="_AjaxPartial"/>
-<partial name="_SweetAlertsPartial"/>
-<script src = "~/js/SearchScript.js"></script>
-<link rel="stylesheet" href="~/css/Mainbox.css">
-
 <form class="mainbox">
     <h2 class="text-center">@ViewData["Title"]</h2>
     <input id="SearchId" type="number" class="form-control text-center" placeholder = "Введите ID">
@@ -22,3 +17,15 @@
         <a class="btn btn-outline-primary mt-1" onclick="Search();">Найти</a>
     </span>
 </form>
+
+@section Scripts
+{
+    <partial name="_AjaxPartial"/>
+    <partial name="_SweetAlertsPartial"/>
+    <script src = "~/js/SearchScript.js"></script>
+}
+
+@section Styles
+{
+    <link rel="stylesheet" href="~/css/Mainbox.css">
+}

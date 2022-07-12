@@ -547,6 +547,7 @@ namespace VZTest.Controllers
             }
             attemptModel.Attempt = foundAttempt;
             attemptModel.Test = foundTest;
+            attemptModel.MaxBalls = unitOfWork.GetTestTotalBalls(foundTest.Id);
             attemptModel.AlignQuestions();
             return View(attemptModel); //Ok
         }
@@ -575,6 +576,7 @@ namespace VZTest.Controllers
                 return View(model);
             }
             model.Test = foundTest;
+            model.MaxBalls = unitOfWork.GetTestTotalBalls(foundTest.Id);
             model.Attempts = unitOfWork.GetTestAttempts(id, true).Where(x=>!x.Active);
             return View(model);
         }
@@ -604,6 +606,7 @@ namespace VZTest.Controllers
             model.Liked = unitOfWork.CheckUserLiked(id, userId);
             model.StarsCount = await unitOfWork.GetTestStarsCount(id);
             model.Test = foundTest;
+            model.MaxBalls = unitOfWork.GetTestTotalBalls(foundTest.Id);
             model.TotalAttempts = await unitOfWork.GetTestAttemptsCount(id);
             model.UserAttempts = unitOfWork.GetUserTestAttempts(id, userId);
             return View(model);

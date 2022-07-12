@@ -8,5 +8,6 @@ namespace VZTest.Models
         public IEnumerable<Attempt> Attempts { get; set; }
         public bool NotFound { get; set; }
         public bool Forbidden { get; set; }
+        public double MaxBalls { get; set; }
     }
 }
