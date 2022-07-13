@@ -1,4 +1,4 @@
-﻿<script id="QuestionBlock" type="text/html">
+﻿<script id="QuestionBlock" type="text/html" asp-append-version="true">
     <h5 id = "QuestionHeader-{questionId}">Вопрос #{questionIdPlus}</h5>
     <div class="input-group">
         <input id = "Questions[{questionId}].Title" type = "text" class="form-control" placeholder = "Название"/>
@@ -31,7 +31,7 @@
     <hr>
 </script>
 
-<script id="RadioOptionBlock" type="text/html">
+<script id="RadioOptionBlock" type="text/html" asp-append-version="true">
     <div class="input-group-prepend">
         <div class="input-group-text">
             <input id = "Option-{questionId}-{optionId}-Correct" name = "Questions[{questionId}].Correct" class="form-check-input" type = "radio" value = "{optionId}"/>
@@ -44,7 +44,7 @@
     </div>
 </script>
 
-<script id="CheckOptionBlock" type="text/html">
+<script id="CheckOptionBlock" type="text/html" asp-append-version="true">
     <div class="input-group-prepend">
         <div class="input-group-text">
             <input id = "Option-{questionId}-{optionId}-Correct" name = "Questions[{questionId}].Correct" class="form-check-input" type = "checkbox" value = "{optionId}"/>
