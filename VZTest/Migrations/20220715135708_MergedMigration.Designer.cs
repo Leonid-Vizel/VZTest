@@ -12,14 +12,14 @@ using VZTest.Data;
 namespace VZTest.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220613085626_RemovedNumbers")]
-    partial class RemovedNumbers
+    [Migration("20220715135708_MergedMigration")]
+    partial class MergedMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.5")
+                .HasAnnotation("ProductVersion", "6.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -237,11 +237,11 @@ namespace VZTest.Migrations
                     b.Property<int>("AttemptId")
                         .HasColumnType("int");
 
+                    b.Property<double>("Balls")
+                        .HasColumnType("float");
+
                     b.Property<string>("CheckAnswerString")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Correct")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("DateAnswer")
                         .HasColumnType("datetime2");
@@ -276,9 +276,6 @@ namespace VZTest.Migrations
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
-
-                    b.Property<double>("Balls")
-                        .HasColumnType("float");
 
                     b.Property<int>("CorrectAnswers")
                         .HasColumnType("int");
@@ -322,9 +319,6 @@ namespace VZTest.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionId")
-                        .IsUnique();
-
                     b.ToTable("CorrectAnswers");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("CorrectAnswer");
@@ -337,9 +331,6 @@ namespace VZTest.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<bool>("Correct")
-                        .HasColumnType("bit");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
@@ -364,7 +355,7 @@ namespace VZTest.Migrations
                     b.Property<double>("Balls")
                         .HasColumnType("float");
 
-                    b.Property<string>("ImageName")
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TestId")
@@ -396,7 +387,13 @@ namespace VZTest.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageName")
+                    b.Property<DateTime?>("EditedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MaxAttempts")
@@ -413,6 +410,9 @@ namespace VZTest.Migrations
 
                     b.Property<bool>("Shuffle")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("StartTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -550,20 +550,6 @@ namespace VZTest.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("VZTest.Models.Test.CorrectAnswer", b =>
-                {
-                    b.HasOne("VZTest.Models.Test.Question", null)
-                        .WithOne("CorrectAnswer")
-                        .HasForeignKey("VZTest.Models.Test.CorrectAnswer", "QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("VZTest.Models.Test.Question", b =>
-                {
-                    b.Navigation("CorrectAnswer");
                 });
 #pragma warning restore 612, 618
         }
