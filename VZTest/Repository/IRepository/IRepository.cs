@@ -12,5 +12,6 @@ namespace VZTest.Repository.IRepository
         Task<int> CountAsync(Expression<Func<T, bool>> filter);
         IEnumerable<T> GetWhere(Expression<Func<T, bool>> filter);
         IEnumerable<T> GetAll();
+        void Update(T value);
     }
 }

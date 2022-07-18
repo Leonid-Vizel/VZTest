@@ -39,5 +39,8 @@ namespace VZTest.Repository.Repository
 
         public void Remove(T value)
             => set.Remove(value);
+
+        public void Update(T value)
+           => set.Update(value);
     }
 }

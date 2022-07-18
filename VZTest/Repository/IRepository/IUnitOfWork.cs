@@ -5,13 +5,13 @@ namespace VZTest.Repository.IRepository
 {
     public interface IUnitOfWork
     {
-        IAnswerRepository AnswerRepository { get; set; }
-        IAttemptRepository AttemptRepository { get; set; }
-        IOptionRepository OptionRepository { get; set; }
-        IQuestionRepository QuestionRepository { get; set; }
-        ITestRepository TestRepository { get; set; }
-        ICorrectAnswerRepository CorrectAnswerRepository { get; set; }
-        IUserStarRepository UserStarRepository { get; set; }
+        IRepository<Answer> AnswerRepository { get; set; }
+        IRepository<Attempt> AttemptRepository { get; set; }
+        IRepository<Option> OptionRepository { get; set; }
+        IRepository<Question> QuestionRepository { get; set; }
+        IRepository<Test> TestRepository { get; set; }
+        IRepository<CorrectAnswer> CorrectAnswerRepository { get; set; }
+        IRepository<UserStar> UserStarRepository { get; set; }
 
         #region Attempts
         IEnumerable<Attempt> GetUserAttempts(string userId, bool loadAnswers);

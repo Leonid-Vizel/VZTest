@@ -11,24 +11,24 @@ namespace VZTest.Repository.Repository
     {
         private ApplicationDbContext db;
 
-        public IAnswerRepository AnswerRepository { get; set; }
-        public IAttemptRepository AttemptRepository { get; set; }
-        public IOptionRepository OptionRepository { get; set; }
-        public IQuestionRepository QuestionRepository { get; set; }
-        public ITestRepository TestRepository { get; set; }
-        public ICorrectAnswerRepository CorrectAnswerRepository { get; set; }
-        public IUserStarRepository UserStarRepository { get; set; }
+        public IRepository<Answer> AnswerRepository { get; set; }
+        public IRepository<Attempt> AttemptRepository { get; set; }
+        public IRepository<Option> OptionRepository { get; set; }
+        public IRepository<Question> QuestionRepository { get; set; }
+        public IRepository<Test> TestRepository { get; set; }
+        public IRepository<CorrectAnswer> CorrectAnswerRepository { get; set; }
+        public IRepository<UserStar> UserStarRepository { get; set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
             this.db = db;
-            AnswerRepository = new AnswerRepository(db);
-            AttemptRepository = new AttemptRepository(db);
-            OptionRepository = new OptionRepository(db);
-            QuestionRepository = new QuestionRepository(db);
-            TestRepository = new TestRepository(db);
-            CorrectAnswerRepository = new CorrectAnswerRepository(db);
-            UserStarRepository = new UserStarRepository(db);
+            AnswerRepository = new Repository<Answer>(db);
+            AttemptRepository = new Repository<Attempt>(db);
+            OptionRepository = new Repository<Option>(db);
+            QuestionRepository = new Repository<Question>(db);
+            TestRepository = new Repository<Test>(db);
+            CorrectAnswerRepository = new Repository<CorrectAnswer>(db);
+            UserStarRepository = new Repository<UserStar>(db);
         }
 
         #region TestStatistics
@@ -353,13 +353,13 @@ namespace VZTest.Repository.Repository
         public async Task AddTest(Test value)
         {
             await TestRepository.AddAsync(value);
-            await TestRepository.SaveAsync();
+            await SaveAsync();
             foreach (Question question in value.Questions)
             {
                 question.TestId = value.Id;
             }
             await QuestionRepository.AddRangeAsync(value.Questions);
-            await QuestionRepository.SaveAsync();
+            await SaveAsync();
             foreach (Question question in value.Questions.Where(x => x.Options != null))
             {
                 foreach (Option option in question.Options)
