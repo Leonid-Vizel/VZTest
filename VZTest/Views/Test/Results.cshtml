@@ -31,6 +31,9 @@
     return;
 }
 
+<link rel="stylesheet" href="~/css/CenterFlex.css">
+<link rel="stylesheet" href="~/css/PercentCircle.css">
+
 <h2><i class="bi bi-list-check"></i> Результаты теста '@Model.Test.Title'</h2>
 <hr id="top-separator">
 
@@ -80,10 +83,4 @@
     <partial name="_SweetAlertsPartial" />
     <script src="~/js/DeleteAttemptScript.js" asp-append-version="true"></script>
     <script src="~/js/ProcessErrorsScript.js" asp-append-version="true"></script>
-}
-
-@section Styles
-{
-    <link rel="stylesheet" href="~/css/CenterFlex.css" asp-append-version="true">
-    <link rel="stylesheet" href="~/css/PercentCircle.css" asp-append-version="true">
 }

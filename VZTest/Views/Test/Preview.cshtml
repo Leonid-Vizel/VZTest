@@ -43,6 +43,9 @@
     return;
 }
 
+<link rel="stylesheet" href="~/css/PercentCircle.css">
+<link rel="stylesheet" href="~/css/CenterFlex.css">
+
 <style>
     h2 {
         display: inline-block;
@@ -179,7 +182,7 @@
 }
 @if (Model.Test.StartTime != null && DateTime.Compare(Model.Test.StartTime.Value, DateTime.Now) > 0)
 {
-    <form method="post" id = "form" hidden>
+    <form method="post" id="form" hidden>
         <button id="main-button" class="btn btn-outline-primary" onclick="CheckActive(event, @Model.Test.Id);" type="submit"><i class="bi bi-check2"></i> Пройти</button>
     </form>
     <script src="~/js/CountDownScript.js"></script>
@@ -196,7 +199,7 @@
 </form>
 
 @section Scripts
-{
+    {
     <partial name="_AjaxPartial" />
     <partial name="_SweetAlertsPartial" />
     <script src="~/js/DeleteScript.js" asp-append-version="true"></script>
@@ -206,10 +209,4 @@
     <script src="~/js/PreEditCheck.js" asp-append-version="true"></script>
     <script src="~/js/CheckActiveScript.js" asp-append-version="true"></script>
     <script src="~/js/StarScript.js" asp-append-version="true"></script>
-}
-
-@section Styles
-{
-    <link rel="stylesheet" href="~/css/PercentCircle.css" asp-append-version="true">
-    <link rel="stylesheet" href="~/css/CenterFlex.css" asp-append-version="true">
 }
