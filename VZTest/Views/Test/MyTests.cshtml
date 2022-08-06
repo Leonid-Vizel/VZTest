@@ -40,9 +40,9 @@
     return;
 }
 
-@if (ViewBag.TotalPages > 1)
+@if (Model.PageCount > 1)
 {
-    <div style="display:flex; justify-content: center;">
+    <div class="d-flex justify-content-center">
         @Html.PagedListPager(Model, page => Url.Action("MyTests","Test", new {page = page}),
         new PagedListRenderOptions {
         LiElementClasses = new string[] { "page-item" },
@@ -99,12 +99,12 @@
 }
 @if (Model.Count() < 5)
 {
-    <a asp-controller = "Test" asp-action = "Create" class = "btn btn-outline-primary" style = "width: 100%"><i class="bi bi-plus-circle"></i> Добавить</a>
+    <a asp-controller = "Test" asp-action = "Create" class = "btn btn-outline-primary w-100"><i class="bi bi-plus-circle"></i> Добавить</a>
     <hr>
 }
-@if (ViewBag.TotalPages > 1)
+@if (Model.PageCount > 1)
 {
-    <div class="mt-2" style="display:flex; justify-content: center;">
+    <div class="d-flex justify-content-center mt-2">
         @Html.PagedListPager(Model, page => Url.Action("MyTests","Test", new {page = page}),
         new PagedListRenderOptions {
         LiElementClasses = new string[] { "page-item" },
@@ -114,8 +114,7 @@
 
 @section Scripts
 {
-    <partial name="_AjaxPartial" />
-    <partial name="_SweetAlertsPartial" />
+    <partial name="_AlertsPartial" />
     <script src="~/js/ClipboardScript.js" asp-append-version="true"></script>
     <script src="~/js/DeleteScript.js" asp-append-version="true"></script>
     <script src="~/js/OpenToggleScript.js" asp-append-version="true"></script>

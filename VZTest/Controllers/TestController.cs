@@ -113,7 +113,7 @@ namespace VZTest.Controllers
         {
             if (!signInManager.IsSignedIn(User))
             {
-                return View(null);
+                return View();
             }
             Test? foundTest = unitOfWork.GetTestMainInfo(id);
             if (foundTest == null)
@@ -439,7 +439,7 @@ namespace VZTest.Controllers
         {
             if (!signInManager.IsSignedIn(User))
             {
-                return View(null);
+                return View();
             }
             Attempt? attempt = unitOfWork.GetAttemptWithAnswers(id);
             AttemptModel attemptModel = new AttemptModel();
@@ -476,7 +476,7 @@ namespace VZTest.Controllers
         {
             if (!signInManager.IsSignedIn(User))
             {
-                return View(null); //Authorize
+                return View();
             }
             Attempt? attempt = unitOfWork.GetAttemptWithAnswers(id);
             if (attempt == null)
@@ -516,7 +516,7 @@ namespace VZTest.Controllers
         {
             if (!signInManager.IsSignedIn(User))
             {
-                return View(null); //Authorize
+                return View();
             }
             string userId = userManager.GetUserId(User);
             AttemptModel attemptModel = new AttemptModel();
@@ -560,7 +560,7 @@ namespace VZTest.Controllers
             TestResultsModel model = new TestResultsModel();
             if (!signInManager.IsSignedIn(User))
             {
-                return View(null); //Authorize
+                return View();
             }
             string userId = userManager.GetUserId(User);
             Test? foundTest = unitOfWork.GetTestMainInfo(id);
@@ -587,7 +587,7 @@ namespace VZTest.Controllers
         {
             if (!signInManager.IsSignedIn(User))
             {
-                return View(null);
+                return View();
             }
             string userId = userManager.GetUserId(User);
             TestPriviewModel model = new TestPriviewModel();
@@ -618,7 +618,7 @@ namespace VZTest.Controllers
         {
             if (!signInManager.IsSignedIn(User))
             {
-                return View(null);
+                return View();
             }
             string userId = userManager.GetUserId(User);
             Test? foundTest = unitOfWork.GetTestMainInfo(id);
@@ -676,23 +676,13 @@ namespace VZTest.Controllers
         {
             if (!signInManager.IsSignedIn(User))
             {
-                return View(null);
+                return View();
             }
             if (page < 1)
             {
                 page = 1;
             }
             IEnumerable<TestStatistics> tests = await unitOfWork.GetPublicTestsStatistics(userManager.GetUserId(User));
-            int total = tests.Count();
-            if (total % pageSize > 0)
-            {
-                total = total / pageSize + 1;
-            }
-            else
-            {
-                total = total / pageSize;
-            }
-            ViewBag.TotalPages = total;
             return View(await tests.ToPagedListAsync(page, pageSize));
         }
         #endregion
@@ -702,23 +692,13 @@ namespace VZTest.Controllers
         {
             if (!signInManager.IsSignedIn(User))
             {
-                return View(null);
+                return View();
             }
             if (page < 1)
             {
                 page = 1;
             }
             IEnumerable<TestStatistics> tests = await unitOfWork.GetUserTestsStatistics(userManager.GetUserId(User));
-            int total = tests.Count();
-            if (total % pageSize > 0)
-            {
-                total = total / pageSize + 1;
-            }
-            else
-            {
-                total = total / pageSize;
-            }
-            ViewBag.TotalPages = total;
             return View(await tests.ToPagedListAsync(page, pageSize));
         }
         #endregion

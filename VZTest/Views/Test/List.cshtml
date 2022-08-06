@@ -24,9 +24,9 @@
     return;
 }
 
-@if (ViewBag.TotalPages > 1)
+@if (Model.PageCount > 1)
 {
-    <div style="display:flex; justify-content: center;">
+    <div class="d-flex justify-content-center">
         @Html.PagedListPager(Model, page => Url.Action("List","Test", new {page = page}),
     new PagedListRenderOptions {
     LiElementClasses = new string[] { "page-item" },
@@ -63,9 +63,9 @@
         </div>
     }
 </div>
-@if (ViewBag.TotalPages > 1)
+@if (Model.PageCount > 1)
 {
-    <div class="mt-2" style="display:flex; justify-content: center;">
+    <div class="d-flex justify-content-center mt-2">
         @Html.PagedListPager(Model, page => Url.Action("List","Test", new {page = page}),
         new PagedListRenderOptions {
         LiElementClasses = new string[] { "page-item" },
@@ -75,7 +75,6 @@
 
 @section Scripts
 {
-    <partial name="_AjaxPartial" />
-    <partial name="_SweetAlertsPartial" />
+    <partial name="_AlertsPartial" />
     <script src="~/js/StarScript.js" asp-append-version="true"></script>
 }

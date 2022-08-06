@@ -51,7 +51,7 @@
         @switch (question.Type)
         {
             case QuestionType.Text:
-                @Html.TextAreaFor(m => m.Attempt.Answers[i].TextAnswer, new {style = "width: 100%;", @class = "form-control"})
+                @Html.TextAreaFor(m => m.Attempt.Answers[i].TextAnswer, new {@class = "form-control w-100"})
                 <a class="btn btn-primary mt-2" name="save-button" onclick="OnSaveClick(@Model.Attempt.Id,@question.Id,GetInputValue('Attempt_Answers_' + @i + '__TextAnswer'))"><i class="bi bi-save"></i> Сохранить</a>
                 break;
             case QuestionType.Date:
@@ -116,8 +116,7 @@
     {
         <script src="~/js/InputLimits.js"></script>
     }
-    <partial name="_SweetAlertsPartial" />
-    <partial name="_AjaxPartial" />
+    <partial name="_AlertsPartial" />
     <script src="~/js/SaveScript.js" asp-append-version="true"></script>
     <script src="~/js/InputScripts.js" asp-append-version="true"></script>
     <script src="~/js/AttemptSaveScript.js" asp-append-version="true"></script>
