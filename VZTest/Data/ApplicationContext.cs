@@ -9,7 +9,7 @@ namespace VZTest.Data
     public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
-        { }
+        { Database.EnsureCreated(); }
 
         public DbSet<Test> Tests { get; set; }
         public DbSet<Question> Questions { get; set; }
