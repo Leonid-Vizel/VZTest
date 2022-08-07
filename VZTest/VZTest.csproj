@@ -36,4 +36,13 @@
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\DataModels\Voting\" />
+    <Folder Include="Models\DataModels\Survey\" />
+    <Folder Include="Models\Enumerations\Survey\" />
+    <Folder Include="Models\Enumerations\Voting\" />
+    <Folder Include="Models\ViewModels\Survey\" />
+    <Folder Include="Models\ViewModels\Voting\" />
+  </ItemGroup>
+
 </Project>

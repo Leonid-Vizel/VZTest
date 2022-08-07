@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using VZTest.Models.Enumerations.Test
+@using VZTest.Models.ViewModels.Test
 @inject SignInManager<IdentityUser> signInManager
 @model TestEditModel
 @{
@@ -137,7 +139,7 @@
                     <select class="form-select" id="Questions[@i].Type" onchange="OnSelectAnswer(@i);">
                         @switch (question.Type)
                         {
-                            case VZTest.Models.Test.QuestionType.Text:
+                            case QuestionType.Text:
                                 <option value="0" selected>Текст</option>
                                 <option value="1">Радио-кнопки</option>
                                 <option value="2">Флажки</option>
@@ -145,7 +147,7 @@
                                 <option value="4">Дробное число</option>
                                 <option value="5">Дата</option>
                                 break;
-                            case VZTest.Models.Test.QuestionType.Radio:
+                            case QuestionType.Radio:
                                 <option value="0">Текст</option>
                                 <option value="1" selected>Радио-кнопки</option>
                                 <option value="2">Флажки</option>
@@ -153,7 +155,7 @@
                                 <option value="4">Дробное число</option>
                                 <option value="5">Дата</option>
                                 break;
-                            case VZTest.Models.Test.QuestionType.Check:
+                            case QuestionType.Check:
                                 <option value="0">Текст</option>
                                 <option value="1">Радио-кнопки</option>
                                 <option value="2" selected>Флажки</option>
@@ -161,7 +163,7 @@
                                 <option value="4">Дробное число</option>
                                 <option value="5">Дата</option>
                                 break;
-                            case VZTest.Models.Test.QuestionType.Int:
+                            case QuestionType.Int:
                                 <option value="0">Текст</option>
                                 <option value="1">Радио-кнопки</option>
                                 <option value="2">Флажки</option>
@@ -169,7 +171,7 @@
                                 <option value="4">Дробное число</option>
                                 <option value="5">Дата</option>
                                 break;
-                            case VZTest.Models.Test.QuestionType.Double:
+                            case QuestionType.Double:
                                 <option value="0">Текст</option>
                                 <option value="1">Радио-кнопки</option>
                                 <option value="2">Флажки</option>
@@ -177,7 +179,7 @@
                                 <option value="4" selected>Дробное число</option>
                                 <option value="5">Дата</option>
                                 break;
-                            case VZTest.Models.Test.QuestionType.Date:
+                            case QuestionType.Date:
                                 <option value="0">Текст</option>
                                 <option value="1">Радио-кнопки</option>
                                 <option value="2">Флажки</option>
@@ -209,12 +211,12 @@
                 <span id="Balls-@i-Errors" class="text-danger"></span>
                 @switch (question.Type)
                 {
-                    case VZTest.Models.Test.QuestionType.Text:
+                    case QuestionType.Text:
                         <h5 id="CorrectLabel-@i">Правильный ответ:</h5>
                         <input id="Questions[@i].Correct" type="text" class="form-control" placeholder="Ответ" value="@question.Correct" />
                         <span id="Correct-@i-Errors" class="text-danger"></span>
                         break;
-                    case VZTest.Models.Test.QuestionType.Radio:
+                    case QuestionType.Radio:
                         @for (int j = 0; j < question.Options.Count; j++)
                         {
                             string title = question.Options[j];
@@ -242,7 +244,7 @@
                         }
                         <a id="Creator-@i" class="btn btn-outline-info mt-2" onclick="AddRadioOption(@i);"><i class="bi bi-plus-circle"></i> Добавить опцию</a>
                         break;
-                    case VZTest.Models.Test.QuestionType.Check:
+                    case QuestionType.Check:
                         string[] corrects = question.Correct.Split(',');
                         @for (int j = 0; j < question.Options.Count; j++)
                         {
@@ -271,17 +273,17 @@
                         }
                         <a id="Creator-@i" class="btn btn-outline-info mt-2" onclick="AddCheckOption(@i);"><i class="bi bi-plus-circle"></i> Добавить опцию</a>
                         break;
-                    case VZTest.Models.Test.QuestionType.Int:
+                    case QuestionType.Int:
                         <h5 id="CorrectLabel-@i">Правильный ответ:</h5>
                         <input id="Questions[@i].Correct" type="text" class="form-control" placeholder="Ответ" oninput="OnInput(event);" value="@question.Correct" />
                         <span id="Correct-@i-Errors" class="text-danger"></span>
                         break;
-                    case VZTest.Models.Test.QuestionType.Double:
+                    case QuestionType.Double:
                         <h5 id="CorrectLabel-@i">Правильный ответ:</h5>
                         <input id="Questions[@i].Correct" type="number" class="form-control" placeholder="Ответ" value="@question.Correct.ToString().Replace(",",".")" />
                         <span id="Correct-@i-Errors" class="text-danger"></span>
                         break;
-                    case VZTest.Models.Test.QuestionType.Date:
+                    case QuestionType.Date:
                         <h5 id="CorrectLabel-@i">Правильный ответ:</h5>
                         <input id="Questions[@i].Correct" type="date" class="form-control" placeholder="Ответ" value="@DateTime.Parse(question.Correct).ToString("yyyy-MM-dd")" />
                         <span id="Correct-@i-Errors" class="text-danger"></span>
@@ -297,7 +299,7 @@
 </form>
 
 @section Scripts
-{
+    {
     <partial name="_CreateBlocksPartial" />
     <partial name="_AlertsPartial" />
     <script src="~/js/CreateScripts.js" asp-append-version="true"></script>

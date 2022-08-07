@@ -12,14 +12,14 @@ using VZTest.Data;
 namespace VZTest.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220715135708_MergedMigration")]
-    partial class MergedMigration
+    [Migration("20220807160646_MergedMigrations")]
+    partial class MergedMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.6")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -226,7 +226,7 @@ namespace VZTest.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("VZTest.Models.Test.Answer", b =>
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.Answer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -266,7 +266,7 @@ namespace VZTest.Migrations
                     b.ToTable("Answers");
                 });
 
-            modelBuilder.Entity("VZTest.Models.Test.Attempt", b =>
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.Attempt", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -279,9 +279,6 @@ namespace VZTest.Migrations
 
                     b.Property<int>("CorrectAnswers")
                         .HasColumnType("int");
-
-                    b.Property<double>("MaxBalls")
-                        .HasColumnType("float");
 
                     b.Property<string>("Sequence")
                         .IsRequired()
@@ -302,7 +299,7 @@ namespace VZTest.Migrations
                     b.ToTable("Attempts");
                 });
 
-            modelBuilder.Entity("VZTest.Models.Test.CorrectAnswer", b =>
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.CorrectAnswer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -324,7 +321,7 @@ namespace VZTest.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("CorrectAnswer");
                 });
 
-            modelBuilder.Entity("VZTest.Models.Test.Option", b =>
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.Option", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -344,7 +341,7 @@ namespace VZTest.Migrations
                     b.ToTable("Options");
                 });
 
-            modelBuilder.Entity("VZTest.Models.Test.Question", b =>
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.Question", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -373,7 +370,7 @@ namespace VZTest.Migrations
                     b.ToTable("Questions");
                 });
 
-            modelBuilder.Entity("VZTest.Models.Test.Test", b =>
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.Test", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -427,7 +424,7 @@ namespace VZTest.Migrations
                     b.ToTable("Tests");
                 });
 
-            modelBuilder.Entity("VZTest.Models.UserStar", b =>
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.UserStar", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -447,9 +444,9 @@ namespace VZTest.Migrations
                     b.ToTable("UserStars");
                 });
 
-            modelBuilder.Entity("VZTest.Models.Test.CorrectAnswers.CorrectCheckAnswer", b =>
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.CorrectAnswers.CorrectCheckAnswer", b =>
                 {
-                    b.HasBaseType("VZTest.Models.Test.CorrectAnswer");
+                    b.HasBaseType("VZTest.Models.DataModels.Test.CorrectAnswer");
 
                     b.Property<string>("CheckAnswerString")
                         .HasColumnType("nvarchar(max)");
@@ -457,9 +454,9 @@ namespace VZTest.Migrations
                     b.HasDiscriminator().HasValue("CorrectCheckAnswer");
                 });
 
-            modelBuilder.Entity("VZTest.Models.Test.CorrectAnswers.CorrectDateAnswer", b =>
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.CorrectAnswers.CorrectDateAnswer", b =>
                 {
-                    b.HasBaseType("VZTest.Models.Test.CorrectAnswer");
+                    b.HasBaseType("VZTest.Models.DataModels.Test.CorrectAnswer");
 
                     b.Property<DateTime>("Correct")
                         .HasColumnType("datetime2");
@@ -467,9 +464,9 @@ namespace VZTest.Migrations
                     b.HasDiscriminator().HasValue("CorrectDateAnswer");
                 });
 
-            modelBuilder.Entity("VZTest.Models.Test.CorrectAnswers.CorrectDoubleAnswer", b =>
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.CorrectAnswers.CorrectDoubleAnswer", b =>
                 {
-                    b.HasBaseType("VZTest.Models.Test.CorrectAnswer");
+                    b.HasBaseType("VZTest.Models.DataModels.Test.CorrectAnswer");
 
                     b.Property<double>("Correct")
                         .HasColumnType("float")
@@ -478,9 +475,9 @@ namespace VZTest.Migrations
                     b.HasDiscriminator().HasValue("CorrectDoubleAnswer");
                 });
 
-            modelBuilder.Entity("VZTest.Models.Test.CorrectAnswers.CorrectIntAnswer", b =>
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.CorrectAnswers.CorrectIntAnswer", b =>
                 {
-                    b.HasBaseType("VZTest.Models.Test.CorrectAnswer");
+                    b.HasBaseType("VZTest.Models.DataModels.Test.CorrectAnswer");
 
                     b.Property<int>("Correct")
                         .HasColumnType("int")
@@ -489,9 +486,9 @@ namespace VZTest.Migrations
                     b.HasDiscriminator().HasValue("CorrectIntAnswer");
                 });
 
-            modelBuilder.Entity("VZTest.Models.Test.CorrectAnswers.CorrectTextAnswer", b =>
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.CorrectAnswers.CorrectTextAnswer", b =>
                 {
-                    b.HasBaseType("VZTest.Models.Test.CorrectAnswer");
+                    b.HasBaseType("VZTest.Models.DataModels.Test.CorrectAnswer");
 
                     b.Property<string>("Correct")
                         .IsRequired()
