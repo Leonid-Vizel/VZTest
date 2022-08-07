@@ -1,9 +1,11 @@
 ﻿@model int
-<link rel="stylesheet" href="~/css/Mainbox.css" asp-append-version="true">
-
-<div class="mainbox text-center">
-    <h1>Упс...</h1>
-    <h3>Кажется, этот тест всё ещё открыт!</h3>
-    <h5>Предлагаем Вам либо перейти к <a asp-controller="Test" asp-action="Preview" asp-route-id = "@Model">тесту</a>,</h5>
-    <h5>либо отправиться на <a asp-controller="Home" asp-action="Index">Главную</a>!</h5>
+<div class="d-flex flex-column" style="margin-top:200px;">
+    <div class="d-flex justify-content-center align-content-center">
+        <div class="w-75 text-center">
+            <h1>Упс...</h1>
+            <h3>Кажется, этот тест всё ещё открыт!</h3>
+            <h5>Предлагаем Вам либо перейти к <a asp-controller="Test" asp-action="Preview" asp-route-id="@Model">Тесту</a>,</h5>
+            <h5>либо отправиться на <a asp-controller="Home" asp-action="Index">Главную</a>!</h5>
+        </div>
+    </div>
 </div>

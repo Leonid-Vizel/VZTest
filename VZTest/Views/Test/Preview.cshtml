@@ -27,6 +27,11 @@
     <partial name="Errors/_TestClosedPartial" />
     return;
 }
+@if (Model.NotFound)
+{
+    <partial name="Errors/_NotFoundPartial" />
+    return;
+}
 @if (Model.Test.StartTime != null && Model.BeforeStart)
 {
     <partial name="Errors/_BeforeTimePartial" model="new Tuple<DateTime,int>(Model.Test.StartTime.Value,Model.Test.Id)" />
@@ -37,14 +42,9 @@
     <partial name="Errors/_AfterTimePartial" model="@Model.Test.EndTime" />
     return;
 }
-@if (Model.NotFound)
-{
-    <partial name="Errors/_NotFoundPartial" />
-    return;
-}
 
-<link rel="stylesheet" href="~/css/PercentCircle.css">
-<link rel="stylesheet" href="~/css/CenterFlex.css">
+<link rel="stylesheet" href="~/css/PercentCircle.css" asp-append-version="true">
+<link rel="stylesheet" href="~/css/CenterFlex.css" asp-append-version="true">
 
 <style>
     h2 {
@@ -173,30 +173,29 @@
 @if (Model.Test.MaxAttempts <= Model.UserAttempts.Count())
 {
     <h5>Вы исчерпали все попытки в этом тесте!</h5>
-    return;
 }
-@if (!Model.Test.Opened)
+else if (!Model.Test.Opened)
 {
     <h5>Тест закрыт. Пройти его станет возможно после открытия!</h5>
-    return;
 }
-@if (Model.Test.StartTime != null && DateTime.Compare(Model.Test.StartTime.Value, DateTime.Now) > 0)
+else if (Model.Test.StartTime != null && DateTime.Compare(Model.Test.StartTime.Value, DateTime.Now) > 0)
 {
     <form method="post" id="form" hidden>
         <button id="main-button" class="btn btn-outline-primary" onclick="CheckActive(event, @Model.Test.Id);" type="submit"><i class="bi bi-check2"></i> Пройти</button>
     </form>
     <script src="~/js/CountDownScript.js"></script>
     <h5 id="timer-label">Тест откроется через <span id="timer" data-time="@Model.Test.StartTime.Value.ToString("yyyy-MM-ddTHH:mm:ss")"></span></h5>
-    return;
 }
-@if (Model.Test.EndTime != null && DateTime.Compare(Model.Test.EndTime.Value, DateTime.Now) < 0)
+else if (Model.Test.EndTime != null && DateTime.Compare(Model.Test.EndTime.Value, DateTime.Now) < 0)
 {
     <h5>Тестирование окончено.</h5>
-    return;
 }
-<form method="post">
-    <button id="main-button" class="btn btn-outline-primary" onclick="CheckActive(event, @Model.Test.Id);" type="submit"><i class="bi bi-check2"></i> Пройти</button>
-</form>
+else
+{
+    <form method="post">
+        <button id="main-button" class="btn btn-outline-primary" onclick="CheckActive(event, @Model.Test.Id);" type="submit"><i class="bi bi-check2"></i> Пройти</button>
+    </form>
+}
 
 @section Scripts
     {
