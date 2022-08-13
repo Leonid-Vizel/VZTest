@@ -45,7 +45,7 @@
     return;
 }
 
-@foreach (Attempt attempt in Model.Attempts)
+@foreach (AttemptModel attempt in Model.Attempts)
 {
     int percent = (int)((attempt.Balls / Model.MaxBalls) * 100);
     IdentityUser user = await userManager.FindByIdAsync(attempt.UserId);

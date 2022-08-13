@@ -3,7 +3,7 @@
 @using VZTest.Models.ViewModels.Test
 @inject SignInManager<IdentityUser> signInManager
 @inject UserManager<IdentityUser> userManager
-@model TestPriviewModel
+@model TestPreviewModel
 @{
     ViewData["Title"] = "Предпросмотр теста";
 }
@@ -120,7 +120,7 @@
 @if (Model.UserAttempts.Count() > 0)
 {
     <h5>Ваши попытки:</h5>
-    @foreach (Attempt attempt in Model.UserAttempts)
+    @foreach (AttemptModel attempt in Model.UserAttempts)
     {
         @if (attempt.Active)
         {

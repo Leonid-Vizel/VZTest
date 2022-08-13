@@ -4,7 +4,7 @@
     $.ajax({
         type: "POST",
         url: "/Test/StarToggle/",
-        data: { id: id, starred: starred, __RequestVerificationToken: verificationValue },
+        data: { testId: id, __RequestVerificationToken: verificationValue },
         error: function (error) {
             switch (error.status) {
                 case 403:

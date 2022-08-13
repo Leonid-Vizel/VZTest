@@ -1,9 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using VZTest.Instruments
 @using VZTest.Models.DataModels.Test
 @using VZTest.Models.Enumerations.Test
 @using VZTest.Models.ViewModels.Test
 @inject SignInManager<IdentityUser> signInManager
-@model AttemptModel
+@model ResultViewModel
 @{
     ViewData["Title"] = "Простотр попытки";
     int percent = 0;
@@ -72,7 +73,7 @@
 <hr>
 @for (int i = 0; i < Model.Test.Questions.Count; i++)
 {
-    Question question = Model.Test.Questions[i];
+    QuestionModel question = Model.Test.Questions[i];
     <h3 class="mt-2">
         Вопрос #@(i + 1)
         @if (Model.Attempt.Answers[i].Balls == question.Balls)
@@ -114,7 +115,7 @@
             @foreach (Option option in question.Options)
             {
                 <div class="form-check">
-                    <input asp-for="Attempt.Answers[i].RadioAnswer" class="form-check-input" type="radio" value="@option.Id" disabled>
+                    <input asp-for="Attempt.Answers[i].IntAnswer" class="form-check-input" type="radio" value="@option.Id" disabled>
                     <label class="form-check-label">@option.Title</label>
                 </div>
             }
@@ -122,8 +123,9 @@
         case QuestionType.Check:
             @foreach (Option option in question.Options)
             {
+                int[] checkedIds = ArrayTransformer.ToIntArray(Model.Attempt.Answers[i].TextAnswer);
                 <div class="form-check">
-                    @if (Model.Attempt.Answers[i].CheckAnswers.Contains(option.Id))
+                    @if (checkedIds.Contains(option.Id))
                     {
                         <input class="form-check-input" type="checkbox" value="@option.Id" disabled checked>
                     }

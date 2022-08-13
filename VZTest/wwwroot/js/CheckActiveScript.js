@@ -8,7 +8,7 @@ function CheckActive(e, id) {
     let verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
     $.ajax({
         type: "POST",
-        url: "/Test/CheckActiveAttemps/",
+        url: "/Test/CheckActiveAttempts/",
         data: { id: id, __RequestVerificationToken: verificationValue },
         error: function (error) {
             switch (error.status) {

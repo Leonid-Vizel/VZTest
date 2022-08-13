@@ -1,6 +1,7 @@
 ﻿using System.Timers;
+using VZTest.Data.IRepository;
 using VZTest.Models.DataModels.Test;
-using VZTest.Repository.IRepository;
+using VZTest.Models.ViewModels.Test;
 
 namespace VZTest.Instruments
 {
@@ -36,12 +37,11 @@ namespace VZTest.Instruments
             int attemptUpdateAmount = 0;
             foreach (int testId in testIds)
             {
-                IEnumerable<Attempt> attempts = unitOfWork.GetTestAttempts(testId, true).Where(x => x.Active);
+                List<AttemptModel> attempts = unitOfWork.GetTestActiveAttemptModels(testId);
                 attemptUpdateAmount += attempts.Count(); // Не делаю ToList так как Count() и так вызывает принудительное выполнение
-                foreach (Attempt attempt in attempts)
+                foreach (AttemptModel attempt in attempts)
                 {
-                    unitOfWork.CheckAttempt(attempt);
-                    unitOfWork.UpdateAttempt(attempt);
+                    await unitOfWork.CheckAttempt(attempt,false);
                 }
             }
             Console.WriteLine($"Всего обновлено попыток: {attemptUpdateAmount}");

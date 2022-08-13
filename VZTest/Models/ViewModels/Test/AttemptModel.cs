@@ -1,30 +1,27 @@
 ﻿using VZTest.Models.DataModels.Test;
 
-
 namespace VZTest.Models.ViewModels.Test
 {
-    public class AttemptModel
+    public class AttemptModel : Attempt
     {
-        public DataModels.Test.Test Test { get; set; }
-        public Attempt Attempt { get; set; }
-
-        public void AlignQuestions()
+        public List<Answer> Answers { get; set; }
+        public double Balls => Answers.Sum(x => x.Balls);
+        public string[] QuestionSequence
         {
-            List<Question> alignedQuestions = new List<Question>();
-            IEnumerable<int> questionIds = Attempt.QuestionSequence.Select(x => int.Parse(x));
-            foreach (int questionId in questionIds)
-            {
-                Question? question = Test.Questions.FirstOrDefault(x => x.Id == questionId);
-                if (question != null)
-                {
-                    alignedQuestions.Add(question);
-                }
-            }
-            Test.Questions = alignedQuestions;
+            get => Sequence.Split('-');
+            set => Sequence = string.Join('-', QuestionSequence);
         }
 
-        public bool NotFound { get; set; }
-        public bool Forbidden { get; set; }
-        public double MaxBalls { get; set; }
+        public AttemptModel(Attempt attempt, List<Answer> answers)
+        {
+            Id = attempt.Id;
+            TestId = attempt.TestId;
+            Active = attempt.Active;
+            TimeStarted = attempt.TimeStarted;
+            UserId = attempt.UserId;
+            CorrectAnswers = attempt.CorrectAnswers;
+            Sequence = attempt.Sequence;
+            Answers = answers;
+        }
     }
 }
