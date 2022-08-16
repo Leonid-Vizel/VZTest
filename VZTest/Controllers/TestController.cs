@@ -124,7 +124,7 @@ namespace VZTest.Controllers
             {
                 return View();
             }
-            return View(unitOfWork.GetResultViewModelById(id, userManager.GetUserId(User)));
+            return View(unitOfWork.GetTestResultsModel(id, userManager.GetUserId(User)));
         }
         #endregion
 

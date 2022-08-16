@@ -23,7 +23,7 @@ namespace VZTest.Models.ViewModels.Test
 
         public QuestionBlueprint ToBlueprint()
         {
-            QuestionBlueprint blueprint = new QuestionBlueprint()
+            return new QuestionBlueprint()
             {
                 Id = Id,
                 Title = Title,
@@ -32,17 +32,8 @@ namespace VZTest.Models.ViewModels.Test
                 Balls = Balls,
                 Options = Options.Select(x => x.Title).ToList(),
                 OptionIds = Options.Select(x => x.Id).ToList(),
+                Correct = CorrectAnswer.ToString()
             };
-            if (Type == Enumerations.Test.QuestionType.Check)
-            {
-                blueprint.Correct = CorrectAnswer.ToString().Replace("-",",");
-            }
-            else
-            {
-                blueprint.Correct = CorrectAnswer.ToString();
-            }
-
-            return blueprint;
         }
     }
 }

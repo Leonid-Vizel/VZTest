@@ -16,7 +16,7 @@ namespace VZTest.Data.IRepository
         #region Test
         Test? GetTestById(int id);
         TestModel? GetTestModelById(int id);
-        TestModel GetTestModelFromTest(Test test, List<Question> questions);
+        TestModel? GetTestModelFromTest(Test test);
         double GetTestTotalBalls(int id);
         Task<TestPreviewModel> GetTestPreviewModel(int id, string userId, string? hash);
         TestResultsModel GetTestResultsModel(int id, string userId);
@@ -32,10 +32,7 @@ namespace VZTest.Data.IRepository
         #region Question
         Question? GetQuestionById(int id);
         QuestionModel? GetQuestionModelById(int id);
-        List<Question> GetTestQuestions(int testId);
         List<QuestionModel> GetTestQuestionModels(int testId);
-        QuestionModel? GetQuestionModelFromQuestion(Question question);
-        List<QuestionModel> GetQuestionModelsFromQuestions(List<Question> questions);
         Task<int> GetTestQuestionCount(int testId);
         List<int> GetTestQuestionIds(int testId);
         QuestionModel? GetQuestionModelFromBlueprint(QuestionBlueprint blueprint, bool transferId = false);
@@ -57,7 +54,6 @@ namespace VZTest.Data.IRepository
         List<AttemptModel> GetTestTotalAttemptModels(int testId);
         List<AttemptModel> GetTestActiveAttemptModels(int testId);
         AttemptViewModel GetAttemptViewModelById(int id, string userId);
-        ResultViewModel GetResultViewModelById(int id, string userId);
         Task<int> GetTestUserAttemptsCount(int testId, string userId);
         Task<Attempt?> CreateAttempt(Test test, string userId);
         Task CheckAttempt(AttemptModel model, bool save = true);
