@@ -40,34 +40,22 @@ namespace VZTest.Instruments
 
         public bool ConfirmFileIsImage(IFormFile file)
         {
-            //-------------------------------------------
-            //  Check the image mime types
-            //-------------------------------------------
             if (!AllowedContentTypes.Contains(file.ContentType.ToLower()))
             {
                 return false;
             }
 
-            //-------------------------------------------
-            //  Check the image extension
-            //-------------------------------------------
             if (!AllowedExtensions.Contains(Path.GetExtension(file.FileName)))
             {
                 return false;
             }
 
-            //-------------------------------------------
-            //  Attempt to read the file and check the first bytes
-            //-------------------------------------------
             try
             {
                 if (!file.OpenReadStream().CanRead)
                 {
                     return false;
-                }
-                //------------------------------------------
-                //check whether the image size exceeding the limit or not
-                //------------------------------------------ 
+                } 
                 if (file.Length < ImageMinimumBytes)
                 {
                     return false;
