@@ -46,9 +46,9 @@ namespace VZTest.Data.Repository
             return new TestModel(foundTest, GetTestQuestionModels(id));
         }
 
-        public TestModel? GetTestModelFromTest(Test test)
+        public TestModel GetTestModelFromTest(Test test, List<Question> questions)
         {
-            return new TestModel(test, GetTestQuestionModels(test.Id));
+            return new TestModel(test, GetQuestionModelsFromQuestions(questions));
         }
 
         public double GetTestTotalBalls(int id)
@@ -71,9 +71,12 @@ namespace VZTest.Data.Repository
                 return model;
             }
             model.Test = foundTest;
+            if (!model.Test.UserId.Equals(userId))
+            {
+                model.Closed = !foundTest.Opened;
+            }
             model.BeforeStart = (foundTest.StartTime != null && DateTime.Compare(foundTest.StartTime.Value, DateTime.Now) > 0);
             model.AfterEnd = (foundTest.EndTime != null && DateTime.Compare(foundTest.EndTime.Value, DateTime.Now) < 0);
-            model.Closed = !foundTest.Opened;
             model.TotalAttempts = await GetTestTotalAttemptsCount(id);
             model.Liked = CheckTestStarred(id, userId);
             model.UserAttempts = GetTestUserAttemptModels(id, userId);
@@ -249,7 +252,7 @@ namespace VZTest.Data.Repository
             foreach (QuestionModel questionModel in questions.Where(x => x.Type == QuestionType.Check))
             {
                 CorrectAnswer answer = questionModel.CorrectAnswer;
-                int[] indexes = ArrayTransformer.ToIntArray(answer.TextAnswer);
+                int[] indexes = ArrayTransformer.ToIntArray(answer.TextAnswer, ',');
                 int[] answers = new int[indexes.Length];
                 for (int i = 0; i < indexes.Length; i++)
                 {
@@ -269,15 +272,17 @@ namespace VZTest.Data.Repository
 
         public async Task<int> RemoveTest(int id, string userId)
         {
-            TestModel? foundModel = GetTestModelById(id);
-            if (foundModel == null)
+            Test? foundTest = GetTestById(id);
+            if (foundTest == null)
             {
                 return 404;
             }
-            if (!foundModel.UserId.Equals(userId))
+            if (!foundTest.UserId.Equals(userId))
             {
                 return 403;
             }
+            List<Question> questions = GetTestQuestions(id);
+            TestModel? foundModel = GetTestModelFromTest(foundTest, questions);
             foreach (QuestionModel questionModel in foundModel.Questions)
             {
                 if (questionModel.Type == QuestionType.Radio || questionModel.Type == QuestionType.Check)
@@ -286,8 +291,8 @@ namespace VZTest.Data.Repository
                 }
                 CorrectAnswerRepository.Remove(questionModel.CorrectAnswer);
             }
-            QuestionRepository.RemoveRange(foundModel.Questions);
-            TestRepository.Remove(foundModel);
+            QuestionRepository.RemoveRange(questions);
+            TestRepository.Remove(foundTest);
             await SaveAsync();
             return 200;
         }
@@ -373,7 +378,7 @@ namespace VZTest.Data.Repository
                 }
                 else
                 {
-                    int[] indexes = ArrayTransformer.ToIntArray(newQuestion.CorrectAnswer.TextAnswer);
+                    int[] indexes = ArrayTransformer.ToIntArray(newQuestion.CorrectAnswer.TextAnswer, ',');
                     int[] answers = new int[indexes.Length];
                     for (int i = 0; i < indexes.Length; i++)
                     {
@@ -457,7 +462,7 @@ namespace VZTest.Data.Repository
                                 }
                                 else
                                 {
-                                    int[] indexes = ArrayTransformer.ToIntArray(updQuestion.CorrectAnswer.TextAnswer);
+                                    int[] indexes = ArrayTransformer.ToIntArray(updQuestion.CorrectAnswer.TextAnswer, ',');
                                     int[] answers = new int[indexes.Length];
                                     for (int i = 0; i < indexes.Length; i++)
                                     {
@@ -521,7 +526,7 @@ namespace VZTest.Data.Repository
                                 }
                                 else
                                 {
-                                    int[] indexes = ArrayTransformer.ToIntArray(updQuestion.CorrectAnswer.TextAnswer);
+                                    int[] indexes = ArrayTransformer.ToIntArray(updQuestion.CorrectAnswer.TextAnswer, ',');
                                     int[] answers = new int[indexes.Length];
                                     for (int i = 0; i < indexes.Length; i++)
                                     {
@@ -566,6 +571,21 @@ namespace VZTest.Data.Repository
             return new QuestionModel(foundQuestion, GetQuestionOptions(id), foundAnswer);
         }
 
+        public QuestionModel? GetQuestionModelFromQuestion(Question question)
+        {
+            CorrectAnswer? foundAnswer = GetQuestionCorrectAnswer(question.Id);
+            if (foundAnswer == null)
+            {
+                return null;
+            }
+            return new QuestionModel(question, GetQuestionOptions(question.Id), foundAnswer);
+        }
+
+        public List<QuestionModel> GetQuestionModelsFromQuestions(List<Question> questions)
+        {
+            return questions.Select(x => GetQuestionModelFromQuestion(x)).Where(x=>x != null).ToList();
+        }
+
         public List<QuestionModel> GetTestQuestionModels(int testId)
         {
             List<int> testQuestions = GetTestQuestionIds(testId);
@@ -579,6 +599,11 @@ namespace VZTest.Data.Repository
                 }
             }
             return models;
+        }
+
+        public List<Question> GetTestQuestions(int testId)
+        {
+            return QuestionRepository.GetWhere(x=>x.TestId == testId).ToList();
         }
 
         public async Task<int> GetTestQuestionCount(int testId)
@@ -729,7 +754,8 @@ namespace VZTest.Data.Repository
 
         public List<AttemptModel> GetTestUserAttemptModels(int testId, string userId)
         {
-            return AttemptRepository.GetWhere(x => x.TestId == testId && x.UserId.Equals(userId)).Select(x => GetAttemptModel(x)).ToList();
+            IEnumerable<Attempt> attempts = AttemptRepository.GetWhere(x => x.TestId == testId && x.UserId.Equals(userId)).ToList();
+            return attempts.Select(x => GetAttemptModel(x)).ToList();
         }
 
         public List<Attempt> GetUserTotalAttempts(string userId)
@@ -835,9 +861,10 @@ namespace VZTest.Data.Repository
             {
                 answer.Balls = CheckAnswer(answer);
             }
-            model.Active = false;
             AnswerRepository.UpdateRange(model.Answers);
-            AttemptRepository.Update(model);
+            Attempt? foundAttempt = GetAttemptById(model.Id);
+            foundAttempt.Active = false;
+            AttemptRepository.Update(foundAttempt);
             if (save)
             {
                 await SaveAsync();
@@ -891,7 +918,7 @@ namespace VZTest.Data.Repository
         public double CheckAnswer(Answer answer)
         {
             Attempt? foundAttempt = GetAttemptById(answer.AttemptId);
-            Question? foundQuestion = GetQuestionById(answer.AttemptId);
+            Question? foundQuestion = GetQuestionById(answer.QuestionId);
             if (foundAttempt == null || foundQuestion == null)
             {
                 return 0;
@@ -924,8 +951,8 @@ namespace VZTest.Data.Repository
                     {
                         return foundQuestion.Balls;
                     }
-                    int[] correctOptions = ArrayTransformer.ToIntArray(answer.TextAnswer);
-                    int[] selectedOptions = ArrayTransformer.ToIntArray(foundAnswer.TextAnswer);
+                    int[] correctOptions = ArrayTransformer.ToIntArray(answer.TextAnswer, '-');
+                    int[] selectedOptions = ArrayTransformer.ToIntArray(foundAnswer.TextAnswer, '-');
                     int countWrong = 0;
                     foreach (int correctOption in correctOptions)
                     {
@@ -1022,7 +1049,7 @@ namespace VZTest.Data.Repository
                     foundAnswer.IntAnswer = radioResult;
                     break;
                 case QuestionType.Check:
-                    int[] answerArray = ArrayTransformer.ToIntArray(value);
+                    int[] answerArray = ArrayTransformer.ToIntArray(value, ',');
                     foreach(int id in answerArray)
                     {
                         if (!await OptionExists(questionId, id))

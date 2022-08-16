@@ -123,7 +123,7 @@
         case QuestionType.Check:
             @foreach (Option option in question.Options)
             {
-                int[] checkedIds = ArrayTransformer.ToIntArray(Model.Attempt.Answers[i].TextAnswer);
+                int[] checkedIds = ArrayTransformer.ToIntArray(Model.Attempt.Answers[i].TextAnswer, '-');
                 <div class="form-check">
                     @if (checkedIds.Contains(option.Id))
                     {

@@ -2,9 +2,13 @@
 {
     public static class ArrayTransformer
     {
-        public static int[] ToIntArray(string value)
+        public static int[] ToIntArray(string? value, char separator)
         {
-            string[] stringArray = value.Split('-');
+            if (value == null)
+            {
+                return new int[0];
+            }
+            string[] stringArray = value.Split(separator);
             List<int> intAnswers = new List<int>();
             foreach(string element in stringArray)
             {
