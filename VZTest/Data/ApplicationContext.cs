@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using VZTest.Models.DataModels.Test;
+using VZTest.Models.DataModels.Test.CorrectAnswers;
 
 namespace VZTest.Data
 {
@@ -16,5 +17,11 @@ namespace VZTest.Data
         public DbSet<Answer> Answers { get; set; }
         public DbSet<CorrectAnswer> CorrectAnswers { get; set; }
         public DbSet<UserStar> UserStars { get; set; }
+        //TPH for CorrectAnswer
+        public DbSet<CorrectTextAnswer> CorrectTextAnswers { get; set; }
+        public DbSet<CorrectIntAnswer> CorrectIntAnswers { get; set; }
+        public DbSet<CorrectDoubleAnswer> CorrectDoubleAnswers { get; set; }
+        public DbSet<CorrectDateAnswer> CorrectDateAnswers { get; set; }
+        public DbSet<CorrectCheckAnswer> CorrectCheckAnswers { get; set; }
     }
 }

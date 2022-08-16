@@ -238,6 +238,9 @@ namespace VZTest.Migrations
                     b.Property<double>("Balls")
                         .HasColumnType("float");
 
+                    b.Property<string>("CheckAnswerString")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("DateAnswer")
                         .HasColumnType("datetime2");
 
@@ -248,6 +251,9 @@ namespace VZTest.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RadioAnswer")
                         .HasColumnType("int");
 
                     b.Property<string>("TextAnswer")
@@ -299,24 +305,18 @@ namespace VZTest.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime?>("DateAnswer")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double?>("DoubleAnswer")
-                        .HasColumnType("float");
-
-                    b.Property<int?>("IntAnswer")
-                        .HasColumnType("int");
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
-                    b.Property<string>("TextAnswer")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("CorrectAnswers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("CorrectAnswer");
                 });
 
             modelBuilder.Entity("VZTest.Models.DataModels.Test.Option", b =>
@@ -440,6 +440,60 @@ namespace VZTest.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserStars");
+                });
+
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.CorrectAnswers.CorrectCheckAnswer", b =>
+                {
+                    b.HasBaseType("VZTest.Models.DataModels.Test.CorrectAnswer");
+
+                    b.Property<string>("CheckAnswerString")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("CorrectCheckAnswer");
+                });
+
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.CorrectAnswers.CorrectDateAnswer", b =>
+                {
+                    b.HasBaseType("VZTest.Models.DataModels.Test.CorrectAnswer");
+
+                    b.Property<DateTime>("Correct")
+                        .HasColumnType("datetime2");
+
+                    b.HasDiscriminator().HasValue("CorrectDateAnswer");
+                });
+
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.CorrectAnswers.CorrectDoubleAnswer", b =>
+                {
+                    b.HasBaseType("VZTest.Models.DataModels.Test.CorrectAnswer");
+
+                    b.Property<double>("Correct")
+                        .HasColumnType("float")
+                        .HasColumnName("CorrectDoubleAnswer_Correct");
+
+                    b.HasDiscriminator().HasValue("CorrectDoubleAnswer");
+                });
+
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.CorrectAnswers.CorrectIntAnswer", b =>
+                {
+                    b.HasBaseType("VZTest.Models.DataModels.Test.CorrectAnswer");
+
+                    b.Property<int>("Correct")
+                        .HasColumnType("int")
+                        .HasColumnName("CorrectIntAnswer_Correct");
+
+                    b.HasDiscriminator().HasValue("CorrectIntAnswer");
+                });
+
+            modelBuilder.Entity("VZTest.Models.DataModels.Test.CorrectAnswers.CorrectTextAnswer", b =>
+                {
+                    b.HasBaseType("VZTest.Models.DataModels.Test.CorrectAnswer");
+
+                    b.Property<string>("Correct")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CorrectTextAnswer_Correct");
+
+                    b.HasDiscriminator().HasValue("CorrectTextAnswer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

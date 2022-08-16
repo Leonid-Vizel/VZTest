@@ -1,10 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using VZTest.Instruments
 @using VZTest.Models.DataModels.Test
 @using VZTest.Models.Enumerations.Test
 @using VZTest.Models.ViewModels.Test
 @inject SignInManager<IdentityUser> signInManager
-@model AttemptViewModel
+@model AttemptModel
 @{
     ViewData["Title"] = "Прохождение теста";
 }
@@ -38,7 +37,7 @@
 <form method="post">
     @for (int i = 0; i < Model.Test.Questions.Count; i++)
     {
-        QuestionModel question = Model.Test.Questions[i];
+        Question question = Model.Test.Questions[i];
         <h3 class="mt-2">
             Вопрос #@(i + 1)
             <span class="text-muted">(@question.Balls @WordHelp.Inflect((int)question.Balls, "баллов", "балл", "балл"))</span>
@@ -73,7 +72,7 @@
                 foreach (Option option in question.Options)
                 {
                     <div class="form-check">
-                        @if (Model.Attempt.Answers[i].IntAnswer == option.Id)
+                        @if (Model.Attempt.Answers[i].RadioAnswer == option.Id)
                         {
                             <input name="Attempt.Answers[@i].RadioAnswer" class="form-check-input" type="radio" value="@option.Id" checked>
                         }
@@ -89,9 +88,8 @@
             case QuestionType.Check:
                 @foreach (Option option in question.Options)
                 {
-                    int[] checkedIds = ArrayTransformer.ToIntArray(Model.Attempt.Answers[i].TextAnswer);
                     <div class="form-check">
-                        @if (checkedIds.Contains(option.Id))
+                        @if (Model.Attempt.Answers[i].CheckAnswers.Contains(option.Id))
                         {
                             <input name="Attempt.Answers[@i].CheckAnswers" class="form-check-input" type="checkbox" value="@option.Id" checked>
                         }

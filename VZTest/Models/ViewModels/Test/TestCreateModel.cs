@@ -12,12 +12,6 @@ public class TestCreateModel
     public DateTime? EndTime { get; set; }
     public List<QuestionBlueprint> Questions { get; set; }
 
-    public TestCreateModel()
-    {
-        Title = "";
-        Questions = new List<QuestionBlueprint>();
-    }
-
     public bool Validate()
     {
         if (Title.Length == 0 || MaxAttempts <= 0 || Questions.Count == 0)

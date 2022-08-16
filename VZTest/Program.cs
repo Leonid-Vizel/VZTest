@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VZTest.Data;
-using VZTest.Data.IRepository;
-using VZTest.Data.Repository;
 using VZTest.Instruments;
+using VZTest.Repository.IRepository;
+using VZTest.Repository.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 

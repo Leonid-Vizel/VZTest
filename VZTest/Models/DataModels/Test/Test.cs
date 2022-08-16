@@ -9,10 +9,10 @@ public class Test
     [Key]
     public int Id { get; set; }
     [Required(ErrorMessage = "Укажите название теста")]
-    public string Title { get; set; } = null!;
+    public string Title { get; set; }
     public string? Description { get; set; }
     public string? ImageUrl { get; set; }
-    public string UserId { get; set; } = null!;
+    public string UserId { get; set; }
     [Required(ErrorMessage = "Укажите максимальное количество попыток")]
     public int MaxAttempts { get; set; }
     public bool Opened { get; set; }
@@ -23,4 +23,22 @@ public class Test
     public DateTime? StartTime { get; set; }
     public DateTime? EndTime { get; set; }
     public bool Shuffle { get; set; }
+    [NotMapped]
+    public List<Question> Questions { get; set; }
+
+    public TestEditModel ToEditModel(int id)
+    {
+        return new TestEditModel()
+        {
+            Id = id,
+            Title = Title,
+            Description = Description,
+            ImageUrl = ImageUrl,
+            StartTime = StartTime,
+            EndTime = EndTime,
+            MaxAttempts = MaxAttempts,
+            Shuffle = Shuffle,
+            Questions = Questions.Select(x => x.ToBlueprint()).ToList()
+        };
+    }
 }

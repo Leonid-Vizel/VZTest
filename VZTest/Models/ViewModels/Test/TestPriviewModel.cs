@@ -2,9 +2,9 @@
 
 namespace VZTest.Models.ViewModels.Test;
 
-public class TestPreviewModel
+public class TestPriviewModel
 {
-    public DataModels.Test.Test Test { get; set; } = null!;
+    public DataModels.Test.Test Test { get; set; }
     public int TotalAttempts { get; set; }
     public int StarsCount { get; set; }
     public bool NotFound { get; set; }
@@ -14,7 +14,5 @@ public class TestPreviewModel
     public bool AfterEnd { get; set; }
     public bool Liked { get; set; }
     public double MaxBalls { get; set; }
-    public List<AttemptModel> UserAttempts { get; set; } = null!;
-
-    public bool Errored => NotFound || Forbidden || Closed || BeforeStart || AfterEnd;
+    public IEnumerable<Attempt> UserAttempts { get; set; }
 }

@@ -25,7 +25,7 @@ function OnSaveClick(attemptId, questionId, value) {
     let verificationValue = document.getElementsByName('__RequestVerificationToken')[0].getAttribute('value');
     let ajax = $.ajax({
         type: "POST",
-        url: "/Test/UpdateAttemptAnswer/",
+        url: "/Test/SaveAttemptAnswer/",
         data: { attemptId: attemptId, questionId: questionId, value: value, __RequestVerificationToken: verificationValue },
         error: function (error) {
             ProcessErrors(error);
