@@ -1,9 +1,12 @@
-﻿<link rel="stylesheet" href="~/css/Mainbox.css" asp-append-version="true">
-<div class="mainbox text-center">
-    <h1>Здравствуй, странник!</h1>
-    <h5>Не могу вспомнить твоё лицо, авторизуйся пожалуйста!</h5>
-    <div class="container justify-content-center">
-        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary">Зарегистрироваться</a>
-        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary">Войти</a>
+﻿<div class="d-flex flex-column" style="margin-top:200px;">
+    <div class="d-flex justify-content-center align-content-center">
+        <div class="w-75 text-center">
+            <h1>Здравствуй, странник!</h1>
+            <h5>Не могу вспомнить твоё лицо, авторизуйся пожалуйста!</h5>
+            <div class="container justify-content-center">
+                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary">Зарегистрироваться</a>
+                <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary">Войти</a>
+            </div>
+        </div>
     </div>
 </div>

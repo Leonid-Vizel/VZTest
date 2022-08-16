@@ -1,12 +1,15 @@
 ﻿@model Tuple<DateTime,int>
-<link rel="stylesheet" href="~/css/Mainbox.css" asp-append-version="true">
 <script src="~/js/CountDownScript.js" asp-append-version="true"></script>
-<div class="mainbox text-center">
-    <h1 id="top-label">Вы немного рановато)</h1>
-    <h3 id="timer-label">До начала теста осталось:</h3>
-    <h3 id="timer" data-time="@Model.Item1.ToString("yyyy-MM-ddTHH:mm:ss")" data-partial = "True"></h3>
-    <form method="post" id="form" asp-action="Preview" asp-controller="Test" asp-route-id="@Model.Item2" hidden>
-        <button id="main-button" class="btn btn-outline-primary" onclick="CheckActive(event, @Model.Item2);" type="submit"><i class="bi bi-check2"></i> Пройти</button>
-    </form>
-    <h5 id="recommend-label">Предлагаем Вам отправиться на <a asp-controller="Home" asp-action="Index">Главную</a> или подождать!</h5>
+<div class="d-flex flex-column" style="margin-top:200px;">
+    <div class="d-flex justify-content-center align-content-center">
+        <div class="w-75 text-center">
+            <h1 id="top-label">Вы немного рановато)</h1>
+            <h3 id="timer-label">До начала теста осталось:</h3>
+            <h3 id="timer" data-time="@Model.Item1.ToString("yyyy-MM-ddTHH:mm:ss")" data-partial="True"></h3>
+            <form method="post" id="form" asp-action="Preview" asp-controller="Test" asp-route-id="@Model.Item2" hidden>
+                <button id="main-button" class="btn btn-outline-primary" onclick="CheckActive(event, @Model.Item2);" type="submit"><i class="bi bi-check2"></i> Пройти</button>
+            </form>
+            <h5 id="recommend-label">Предлагаем Вам отправиться на <a asp-controller="Home" asp-action="Index">Главную</a> или подождать!</h5>
+        </div>
+    </div>
 </div>

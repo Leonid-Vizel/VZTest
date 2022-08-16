@@ -6,22 +6,28 @@
 
 @if (!signInManager.IsSignedIn(User))
 {
-    <partial name="Errors/_AuthorisePartial"/>
+    <partial name="Errors/_AuthorisePartial" />
     return;
 }
 
-<link rel="stylesheet" href="~/css/Mainbox.css">
+<link rel="stylesheet" href="~/css/DisableInputArrows.css" asp-append-version="true">
 
-<form class="mainbox">
-    <h2 class="text-center">@ViewData["Title"]</h2>
-    <input id="SearchId" type="number" class="form-control text-center" placeholder = "Введите ID">
-    <span class="input-group-btn text-center">
-        <a class="btn btn-outline-primary mt-1" onclick="Search();">Найти</a>
-    </span>
-</form>
+<div class="d-flex flex-column" style="margin-top:200px;">
+    <div class="d-flex justify-content-center align-content-center">
+        <div class="w-75">
+            <h2 class="text-center">@ViewData["Title"]</h2>
+            <input id="SearchId" type="number" class="form-control text-center" placeholder="Введите ID">
+            <div class="d-flex flex-column">
+                <div class="d-flex justify-content-center">
+                    <a class="btn btn-outline-primary mt-1" onclick="Search();">Найти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts
-{
-    <partial name="_AlertsPartial"/>
-    <script src = "~/js/SearchScript.js" asp-append-version="true"></script>
+    {
+    <partial name="_AlertsPartial" />
+    <script src="~/js/SearchScript.js" asp-append-version="true"></script>
 }

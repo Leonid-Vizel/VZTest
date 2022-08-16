@@ -12,14 +12,14 @@ using VZTest.Data;
 namespace VZTest.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220715135708_MergedMigration")]
-    partial class MergedMigration
+    [Migration("20220816162154_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.6")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -279,9 +279,6 @@ namespace VZTest.Migrations
 
                     b.Property<int>("CorrectAnswers")
                         .HasColumnType("int");
-
-                    b.Property<double>("MaxBalls")
-                        .HasColumnType("float");
 
                     b.Property<string>("Sequence")
                         .IsRequired()
