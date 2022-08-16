@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace VZTest.Migrations
 {
-    public partial class MergedMigrations : Migration
+    public partial class MergedMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -80,6 +80,7 @@ namespace VZTest.Migrations
                     TimeStarted = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CorrectAnswers = table.Column<int>(type: "int", nullable: false),
+                    MaxBalls = table.Column<double>(type: "float", nullable: false),
                     Sequence = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>

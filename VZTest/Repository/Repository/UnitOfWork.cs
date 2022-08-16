@@ -1,9 +1,8 @@
 ﻿using VZTest.Data;
 using VZTest.Instruments;
-using VZTest.Models.DataModels.Test;
-using VZTest.Models.DataModels.Test.CorrectAnswers;
-using VZTest.Models.Enumerations.Test;
-using VZTest.Models.ViewModels.Test;
+using VZTest.Models;
+using VZTest.Models.Test;
+using VZTest.Models.Test.CorrectAnswers;
 using VZTest.Repository.IRepository;
 
 namespace VZTest.Repository.Repository

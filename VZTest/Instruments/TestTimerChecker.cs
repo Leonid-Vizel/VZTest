@@ -1,5 +1,5 @@
 ﻿using System.Timers;
-using VZTest.Models.DataModels.Test;
+using VZTest.Models.Test;
 using VZTest.Repository.IRepository;
 
 namespace VZTest.Instruments

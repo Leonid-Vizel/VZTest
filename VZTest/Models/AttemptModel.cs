@@ -1,11 +1,10 @@
-﻿using VZTest.Models.DataModels.Test;
+﻿using VZTest.Models.Test;
 
-
-namespace VZTest.Models.ViewModels.Test
+namespace VZTest.Models
 {
     public class AttemptModel
     {
-        public DataModels.Test.Test Test { get; set; }
+        public Test.Test Test { get; set; }
         public Attempt Attempt { get; set; }
 
         public void AlignQuestions()

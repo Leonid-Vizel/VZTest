@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using VZTest.Models.DataModels.Test;
-using VZTest.Models.DataModels.Test.CorrectAnswers;
+using VZTest.Models;
+using VZTest.Models.Test;
+using VZTest.Models.Test.CorrectAnswers;
 
 namespace VZTest.Data
 {

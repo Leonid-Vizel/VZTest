@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using VZTest.Models.DataModels.Test;
-using VZTest.Models.DataModels.Test.CorrectAnswers;
-using VZTest.Models.Enumerations.Test;
-using VZTest.Models.ViewModels.Test;
+using VZTest.Models;
+using VZTest.Models.Test;
+using VZTest.Models.Test.CorrectAnswers;
 using VZTest.Repository.IRepository;
 using X.PagedList;
 

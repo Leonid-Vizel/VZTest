@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using VZTest.Models;
-using VZTest.Models.ViewModels.Test;
 
 namespace VZTest.Controllers
 {

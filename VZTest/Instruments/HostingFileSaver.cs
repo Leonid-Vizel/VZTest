@@ -2,13 +2,13 @@
 
 namespace VZTest.Instruments
 {
-    public static class HostingFileSaver
+    public class HostingFileSaver
     {
         private const int ImageMinimumBytes = 512;
-        private static readonly string[] AllowedContentTypes = new string[] { "image/jpg", "image/jpeg", "image/pjpeg", "image/gif", "image/x-png", "image/png" };
-        private static readonly string[] AllowedExtensions = new string[] { ".jpg", ".png", ".gif", ".jpeg" };
+        private readonly string[] AllowedContentTypes = new string[] { "image/jpg", "image/jpeg", "image/pjpeg", "image/gif", "image/x-png", "image/png" };
+        private readonly string[] AllowedExtensions = new string[] { ".jpg", ".png", ".gif", ".jpeg" };
 
-        public static async Task<string> Save(IFormFile file, IWebHostEnvironment environment)
+        public async Task<string> Save(IFormFile file, IWebHostEnvironment environment)
         {
             if (!ConfirmFileIsImage(file))
             {
@@ -38,7 +38,7 @@ namespace VZTest.Instruments
             return FileName;
         }
 
-        public static bool ConfirmFileIsImage(IFormFile file)
+        public bool ConfirmFileIsImage(IFormFile file)
         {
             //-------------------------------------------
             //  Check the image mime types

@@ -1,6 +1,5 @@
 ﻿using VZTest.Models;
-using VZTest.Models.DataModels.Test;
-using VZTest.Models.ViewModels.Test;
+using VZTest.Models.Test;
 
 namespace VZTest.Repository.IRepository
 {

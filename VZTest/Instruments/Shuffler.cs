@@ -1,4 +1,6 @@
-﻿namespace VZTest.Instruments
+﻿using VZTest.Models.Test;
+
+namespace VZTest.Instruments
 {
     public static class Shuffler
     {
